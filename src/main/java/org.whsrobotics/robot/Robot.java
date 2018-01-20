@@ -5,9 +5,11 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 
 public class Robot extends TimedRobot {
 
+    OI oi;
+
     @Override
     public void robotInit() {
-
+        oi = OI.getInstance();
     }
 
     @Override
