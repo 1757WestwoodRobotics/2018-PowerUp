@@ -34,7 +34,8 @@ hs_err_pid*
 
 ### INTELLIJ ###
 *.iws
-
+*.ipr
+*.iml
 
 ### GRADLE ###
 .gradle/*
