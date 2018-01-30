@@ -1,7 +1,6 @@
 package org.whsrobotics.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
-import org.whsrobotics.subsystems.DriveTrain;
 
 import static org.whsrobotics.robot.RobotMap.XBOX_PORT;
 

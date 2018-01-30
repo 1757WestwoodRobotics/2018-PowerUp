@@ -4,12 +4,12 @@ import edu.wpi.first.wpilibj.SPI;
 
 public class RobotMap {
 
-    public enum DriveTrainTalon {
+    public enum DriveTrainTalons {
         LEFT_FRONT(5), LEFT_BACK(6), RIGHT_FRONT(7), RIGHT_BACK(8);
 
         private int port;
 
-        DriveTrainTalon(int port) {
+        DriveTrainTalons(int port) {
             this.port = port;
         }
 
