@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import org.whsrobotics.commands.DefaultDrive;
 import org.whsrobotics.robot.OI;
 import org.whsrobotics.robot.RobotMap;
+import org.whsrobotics.utils.RobotLogger;
 
 public class DriveTrain extends Subsystem {
 
@@ -33,12 +34,29 @@ public class DriveTrain extends Subsystem {
     private static double rotationPIDOutput;
     private static final double ROT_TOLERANCE_DEG = 0.5f;
 
-    private static boolean isInitialized = false;
-
     private static DriveTrain instance;
 
     private DriveTrain() {
-        isInitialized = init();
+
+        try {
+            leftFront = new WPI_TalonSRX(RobotMap.DriveTrainTalons.LEFT_FRONT.getPort());
+            leftBack = new WPI_TalonSRX(RobotMap.DriveTrainTalons.LEFT_BACK.getPort());
+            rightFront = new WPI_TalonSRX(RobotMap.DriveTrainTalons.RIGHT_FRONT.getPort());
+            rightBack = new WPI_TalonSRX(RobotMap.DriveTrainTalons.RIGHT_BACK.getPort());
+
+            leftDrive = new SpeedControllerGroup(leftFront, leftBack);
+            rightDrive = new SpeedControllerGroup(rightFront, rightBack);
+
+            differentialDrive = new DifferentialDrive(leftDrive, rightDrive);
+
+            navX = new AHRS(RobotMap.NAVX_PORT);
+            resetNavXYaw();
+
+        } catch (NullPointerException e) {
+            RobotLogger.err(this.getClass(), "Error instantiating the DriveTrain hardware!" + e.getMessage());
+
+        }
+
     }
 
     public static DriveTrain getInstance() {
@@ -54,40 +72,7 @@ public class DriveTrain extends Subsystem {
         setDefaultCommand(new DefaultDrive());
     }
 
-    // Initialization method
-
-    private static boolean init() {
-
-        if (!isInitialized) {
-            try {
-                leftFront = new WPI_TalonSRX(RobotMap.DriveTrainTalons.LEFT_FRONT.getPort());
-                leftBack = new WPI_TalonSRX(RobotMap.DriveTrainTalons.LEFT_BACK.getPort());
-                rightFront = new WPI_TalonSRX(RobotMap.DriveTrainTalons.RIGHT_FRONT.getPort());
-                rightBack = new WPI_TalonSRX(RobotMap.DriveTrainTalons.RIGHT_BACK.getPort());
-
-                leftDrive = new SpeedControllerGroup(leftFront, leftBack);
-                rightDrive = new SpeedControllerGroup(rightFront, rightBack);
-
-                differentialDrive = new DifferentialDrive(leftDrive, rightDrive);
-
-                navX = new AHRS(RobotMap.NAVX_PORT);
-                resetNavXYaw();
-
-                isInitialized = true;
-
-            } catch (NullPointerException e) {
-                System.err.println("Error instantiating the DriveTrain hardware" + e.getMessage());
-                DriverStation.reportError("Error instantiating the DriveTrain hardware!", true);
-                // Add RobotLogger stuff
-            }
-
-        }
-
-        return isInitialized;
-
-    }
-
-    // DriveTrain methods
+    // ------------ DRIVETRAIN METHODS ------------- //
 
     private static void drive(double x, double y, boolean squaredInputs) {
         differentialDrive.arcadeDrive(x, y, squaredInputs);
@@ -118,7 +103,7 @@ public class DriveTrain extends Subsystem {
         return navX.getYaw();
     }
 
-    // Turn to Angle / Rotation PID methods
+    // ------------ ANGLE TURNING / ROTATION PID METHODS ------------- //
 
     public static void turnToAngle(double speed, double angle) {
         rotationPIDController.setSetpoint(angle);
@@ -160,6 +145,6 @@ public class DriveTrain extends Subsystem {
         return rotationPIDController.getSetpoint();
     }
 
-    // Pathfinder
+    // ------------ PATHFINDER METHODS ------------- //
 
 }

@@ -2,28 +2,24 @@ package org.whsrobotics.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import org.whsrobotics.subsystems.DriveTrain;
 import org.whsrobotics.utils.RobotLogger;
-
-import java.util.logging.Level;
 
 public class Robot extends TimedRobot {
 
-    private static OI oi;
-    private static RobotLogger robotLogger;
-
     @Override
     public void robotInit() {
-        robotLogger = RobotLogger.getInstance();
-        robotLogger.log(this.getClass().getName(), Level.INFO, "Starting robotInit");
+        RobotLogger.log(this.getClass(), "Starting robot");
 
-        oi = OI.getInstance();
+        OI.getInstance();
+        DriveTrain.getInstance();
     }
 
     // ------------ AUTONOMOUS METHODS ------------- //
 
     @Override
     public void autonomousInit() {
-        robotLogger.log(this.getClass().getName(), Level.INFO, "Starting autonomousInit");
+        RobotLogger.log(this.getClass(), "Starting autonomous");
     }
 
     @Override
@@ -35,7 +31,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        robotLogger.log(this.getClass().getName(), Level.INFO, "Entering teleopInit");
+        RobotLogger.log(this.getClass(), "Starting teleop");
     }
 
     @Override
@@ -48,7 +44,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         // Any time robot goes into disabled (run once)
-        robotLogger.log(this.getClass().getName(), Level.INFO, "Entering disabledInit");
+        RobotLogger.log(this.getClass(), "Entering disabled");
     }
 
     @Override
