@@ -7,6 +7,7 @@ import static org.whsrobotics.robot.RobotMap.XBOX_PORT;
 public class OI {
 
     private static XboxController xboxController;
+    public static final double XBOX_DEADZONE = 0.05;
 
     private static OI instance;
 
@@ -25,6 +26,16 @@ public class OI {
 
     public static XboxController getXboxController() {
         return xboxController;
+    }
+
+    public static double checkXboxDeadzone(double value) {
+
+        if (Math.abs(value) >= XBOX_DEADZONE) {
+            return value;
+        }
+
+        return 0;
+
     }
 
 }

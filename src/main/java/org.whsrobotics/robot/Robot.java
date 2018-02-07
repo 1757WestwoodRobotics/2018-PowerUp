@@ -8,13 +8,13 @@ import java.util.logging.Level;
 
 public class Robot extends TimedRobot {
 
-    RobotLogger robotLogger;
-    OI oi;
+    private static OI oi;
+    private static RobotLogger robotLogger;
 
     @Override
     public void robotInit() {
         robotLogger = RobotLogger.getInstance();
-        robotLogger.log(this.getClass().getName(), Level.INFO, "Entering robotInit");
+        robotLogger.log(this.getClass().getName(), Level.INFO, "Starting robotInit");
 
         oi = OI.getInstance();
     }
@@ -23,12 +23,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        robotLogger.log(this.getClass().getName(), Level.INFO, "Entering autonomousInit");
+        robotLogger.log(this.getClass().getName(), Level.INFO, "Starting autonomousInit");
     }
 
     @Override
     public void autonomousPeriodic() {
-        robotLogger.log(this.getClass().getName(), Level.INFO, "Entering autonomousPeriodic");
         Scheduler.getInstance().run();
     }
 
@@ -41,7 +40,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        robotLogger.log(this.getClass().getName(), Level.INFO, "Entering teleopPeriodic");
         Scheduler.getInstance().run();
     }
 
@@ -55,8 +53,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-        // Do repeatedly while disabled (run repeatedly)
-        robotLogger.log(this.getClass().getName(), Level.INFO, "Entering disabledPeriodic");
     }
 
 }

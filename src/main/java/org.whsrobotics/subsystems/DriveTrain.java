@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import org.whsrobotics.commands.DefaultDrive;
+import org.whsrobotics.robot.OI;
 import org.whsrobotics.robot.RobotMap;
 
 public class DriveTrain extends Subsystem {
@@ -31,46 +33,12 @@ public class DriveTrain extends Subsystem {
     private static double rotationPIDOutput;
     private static final double ROT_TOLERANCE_DEG = 0.5f;
 
+    private static boolean isInitialized = false;
+
     private static DriveTrain instance;
 
     private DriveTrain() {
-
-        try {
-            leftFront = new WPI_TalonSRX(RobotMap.DriveTrainTalons.LEFT_FRONT.getPort());
-            leftBack = new WPI_TalonSRX(RobotMap.DriveTrainTalons.LEFT_BACK.getPort());
-            rightFront = new WPI_TalonSRX(RobotMap.DriveTrainTalons.RIGHT_FRONT.getPort());
-            rightBack = new WPI_TalonSRX(RobotMap.DriveTrainTalons.RIGHT_BACK.getPort());
-
-            leftDrive = new SpeedControllerGroup(leftFront, leftBack);
-            rightDrive = new SpeedControllerGroup(rightFront, rightBack);
-
-            differentialDrive = new DifferentialDrive(leftDrive, rightDrive);
-
-            navX = new AHRS(RobotMap.NAVX_PORT);
-
-        } catch (NullPointerException e) {
-            System.err.println("Error instantiating the DriveTrain hardware" + e.getMessage());
-            DriverStation.reportError("Error instantiating the DriveTrain hardware!", true);
-
-        }
-
-        try {
-            rotationPIDController = new PIDController(KP, KI, KD, navX, (output) -> rotationPIDOutput = -output);
-
-            rotationPIDController.setAbsoluteTolerance(ROT_TOLERANCE_DEG);
-            rotationPIDController.setInputRange(-180.0, 180.0);
-            rotationPIDController.setOutputRange(-1.0, 1.0);
-            rotationPIDController.setContinuous(true);
-            rotationPIDController.disable();
-
-        } catch (Exception e) {
-            System.err.println("Error creating the DriveTrain Rotation PIDController!" + e.getMessage());
-            DriverStation.reportError("Error creating the DriveTrain Rotation PIDController!", true);
-
-        }
-
-        resetNavXYaw();
-
+        isInitialized = init();
     }
 
     public static DriveTrain getInstance() {
@@ -83,18 +51,57 @@ public class DriveTrain extends Subsystem {
 
     @Override
     protected void initDefaultCommand() {
+        setDefaultCommand(new DefaultDrive());
+    }
+
+    // Initialization method
+
+    private static boolean init() {
+
+        if (!isInitialized) {
+            try {
+                leftFront = new WPI_TalonSRX(RobotMap.DriveTrainTalons.LEFT_FRONT.getPort());
+                leftBack = new WPI_TalonSRX(RobotMap.DriveTrainTalons.LEFT_BACK.getPort());
+                rightFront = new WPI_TalonSRX(RobotMap.DriveTrainTalons.RIGHT_FRONT.getPort());
+                rightBack = new WPI_TalonSRX(RobotMap.DriveTrainTalons.RIGHT_BACK.getPort());
+
+                leftDrive = new SpeedControllerGroup(leftFront, leftBack);
+                rightDrive = new SpeedControllerGroup(rightFront, rightBack);
+
+                differentialDrive = new DifferentialDrive(leftDrive, rightDrive);
+
+                navX = new AHRS(RobotMap.NAVX_PORT);
+                resetNavXYaw();
+
+                isInitialized = true;
+
+            } catch (NullPointerException e) {
+                System.err.println("Error instantiating the DriveTrain hardware" + e.getMessage());
+                DriverStation.reportError("Error instantiating the DriveTrain hardware!", true);
+                // Add RobotLogger stuff
+            }
+
+        }
+
+        return isInitialized;
 
     }
 
     // DriveTrain methods
 
-    public static void drive(double x, double y, boolean squaredInputs) {
+    private static void drive(double x, double y, boolean squaredInputs) {
         differentialDrive.arcadeDrive(x, y, squaredInputs);
     }
 
-    public static void turnToAngle(double speed, double angle) {
-        rotationPIDController.setSetpoint(angle);
-        drive(speed, rotationPIDOutput, false);
+    /**
+     * defaultDrive() is arcade drive with [acceleration-limiting,] input ramping, and deadzone implementation
+     */
+    public static void defaultDrive(double x, double y) {
+        drive(OI.checkXboxDeadzone(x), OI.checkXboxDeadzone(y), true);
+    }
+
+    public static void limitedAccelerationDrive() {
+
     }
 
     public static void stopDrive() {
@@ -111,7 +118,31 @@ public class DriveTrain extends Subsystem {
         return navX.getYaw();
     }
 
-    // Rotation PID methods
+    // Turn to Angle / Rotation PID methods
+
+    public static void turnToAngle(double speed, double angle) {
+        rotationPIDController.setSetpoint(angle);
+        drive(speed, rotationPIDOutput, false);
+    }
+
+    public static void initializeRotationPIDController() {
+
+        try {
+            rotationPIDController = new PIDController(KP, KI, KD, navX, (output) -> rotationPIDOutput = -output);
+
+            rotationPIDController.setAbsoluteTolerance(ROT_TOLERANCE_DEG);
+            rotationPIDController.setInputRange(-180.0, 180.0);
+            rotationPIDController.setOutputRange(-1.0, 1.0);
+            rotationPIDController.setContinuous(true);
+            rotationPIDController.disable();
+
+        } catch (Exception e) {
+            System.err.println("Error creating the DriveTrain Rotation PIDController!" + e.getMessage());
+            DriverStation.reportError("Error creating the DriveTrain Rotation PIDController!", true);
+
+        }
+
+    }
 
     public static void enableRotationPIDController() {
         rotationPIDController.enable();
@@ -128,5 +159,7 @@ public class DriveTrain extends Subsystem {
     public static double getRotationPIDControllerSetpoint() {
         return rotationPIDController.getSetpoint();
     }
+
+    // Pathfinder
 
 }

@@ -6,9 +6,9 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RobotLogger extends Logger {
+public class RobotLogger {
 
-    private static FileHandler fileHandler = null;
+    private Logger logger = Logger.getLogger("Robot");
 
     private static RobotLogger instance;
 
@@ -21,21 +21,16 @@ public class RobotLogger extends Logger {
     }
 
     private RobotLogger() {
-
-        super(null, null);
-
         try {
-            fileHandler = new FileHandler("/home/lvuser/logs/frc1757-robotlog-" + LocalDateTime.now() + "%u");
-            this.addHandler(fileHandler);
+            logger.addHandler(new FileHandler("/home/lvuser/logs/frc1757-" + "%u"));
         } catch (IOException e) {
-            this.log(Level.SEVERE, e.getMessage());
+            System.err.println("Error adding file handler to Logger. Did you make a directory called 'logs' under '/home/lvuser'?");
         }
 
     }
 
     public void log(String name, Level level, String message) {
-        Logger logger = RobotLogger.getLogger(name);
-        logger.log(level, message);
+        logger.log(level, name + " " + message);
 
     }
 
