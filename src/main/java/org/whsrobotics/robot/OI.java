@@ -7,7 +7,7 @@ import static org.whsrobotics.robot.RobotMap.XBOX_PORT;
 public class OI {
 
     private static XboxController xboxController;
-    public static final double XBOX_DEADZONE = 0.05;
+    private static final double XBOX_DEADZONE = 0.05;
 
     private static OI instance;
 
