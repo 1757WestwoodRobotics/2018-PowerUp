@@ -36,4 +36,9 @@ public class Led {
 
         return instance;
     }
+
+    // Test method to send a go command to Adrunio
+    public void Go() {
+
+    }
 }
