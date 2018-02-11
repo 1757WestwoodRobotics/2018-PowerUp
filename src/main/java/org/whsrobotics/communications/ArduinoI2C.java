@@ -12,8 +12,11 @@ public class ArduinoI2C {
         i2c = new I2C(Port.kOnboard, deviceAddress);
     }
 
+    /*
+    Here Roborio is the master and Arduino is the slave
+    If write is a sucess, return will be fale else true
+    */
     public boolean writeData(char[] charArray){
-
 
         // convert char stream to byte stream
         byte[] WriteData = new byte[charArray.length];
