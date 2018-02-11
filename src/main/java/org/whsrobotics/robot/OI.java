@@ -1,6 +1,8 @@
 package org.whsrobotics.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import org.whsrobotics.commands.DefaultDrive;
 
 import static org.whsrobotics.robot.RobotMap.XBOX_PORT;
 
@@ -13,7 +15,7 @@ public class OI {
 
     private OI() {
         xboxController = new XboxController(XBOX_PORT);
-
+        // (new JoystickButton(xboxController, 0)).whenPressed(new DefaultDrive());
     }
 
     public static OI getInstance() {

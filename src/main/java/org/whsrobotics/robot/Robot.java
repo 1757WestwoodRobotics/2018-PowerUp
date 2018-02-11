@@ -3,6 +3,7 @@ package org.whsrobotics.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.whsrobotics.subsystems.DriveTrain;
+import org.whsrobotics.subsystems.Vision;
 import org.whsrobotics.utils.RobotLogger;
 
 public class Robot extends TimedRobot {

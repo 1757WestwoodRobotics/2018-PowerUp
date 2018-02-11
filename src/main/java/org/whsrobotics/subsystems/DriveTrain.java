@@ -2,7 +2,6 @@ package org.whsrobotics.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -39,10 +38,10 @@ public class DriveTrain extends Subsystem {
     private DriveTrain() {
 
         try {
-            leftFront = new WPI_TalonSRX(RobotMap.DriveTrainTalons.LEFT_FRONT.getPort());
-            leftBack = new WPI_TalonSRX(RobotMap.DriveTrainTalons.LEFT_BACK.getPort());
-            rightFront = new WPI_TalonSRX(RobotMap.DriveTrainTalons.RIGHT_FRONT.getPort());
-            rightBack = new WPI_TalonSRX(RobotMap.DriveTrainTalons.RIGHT_BACK.getPort());
+            leftFront = new WPI_TalonSRX(RobotMap.MotorControllerPorts.DRIVE_LEFT_FRONT.getPort());
+            leftBack = new WPI_TalonSRX(RobotMap.MotorControllerPorts.DRIVE_LEFT_BACK.getPort());
+            rightFront = new WPI_TalonSRX(RobotMap.MotorControllerPorts.DRIVE_RIGHT_FRONT.getPort());
+            rightBack = new WPI_TalonSRX(RobotMap.MotorControllerPorts.DRIVE_RIGHT_BACK.getPort());
 
             leftDrive = new SpeedControllerGroup(leftFront, leftBack);
             rightDrive = new SpeedControllerGroup(rightFront, rightBack);
@@ -105,36 +104,43 @@ public class DriveTrain extends Subsystem {
 
     // ------------ ANGLE TURNING / ROTATION PID METHODS ------------- //
 
-    public static void turnToAngle(double speed, double angle) {
-        rotationPIDController.setSetpoint(angle);
-        drive(speed, rotationPIDOutput, false);
-    }
+    public static boolean initializeRotationPIDController() {
 
-    public static void initializeRotationPIDController() {
+        if (rotationPIDController == null) {
 
-        try {
-            rotationPIDController = new PIDController(KP, KI, KD, navX, (output) -> rotationPIDOutput = -output);
+            try {
+                rotationPIDController = new PIDController(KP, KI, KD, navX, (output) -> rotationPIDOutput = -output);
 
-            rotationPIDController.setAbsoluteTolerance(ROT_TOLERANCE_DEG);
-            rotationPIDController.setInputRange(-180.0, 180.0);
-            rotationPIDController.setOutputRange(-1.0, 1.0);
-            rotationPIDController.setContinuous(true);
-            rotationPIDController.disable();
+                rotationPIDController.setAbsoluteTolerance(ROT_TOLERANCE_DEG);
+                rotationPIDController.setInputRange(-180.0, 180.0);
+                rotationPIDController.setOutputRange(-1.0, 1.0);
+                rotationPIDController.setContinuous(true);
+                rotationPIDController.disable();
 
-        } catch (Exception e) {
-            System.err.println("Error creating the DriveTrain Rotation PIDController!" + e.getMessage());
-            DriverStation.reportError("Error creating the DriveTrain Rotation PIDController!", true);
+            } catch (Exception e) {
+                RobotLogger.err(instance.getClass(), "Error creating the DriveTrain Rotation PIDController!" + e.getMessage());
+                return false;
+            }
 
         }
+
+        return true;
 
     }
 
     public static void enableRotationPIDController() {
+        RobotLogger.log(instance.getClass(), "Enabling rotationPIDController");
         rotationPIDController.enable();
     }
 
     public static void disableRotationPIDController() {
+        RobotLogger.log(instance.getClass(), "Disabling rotationPIDController");
         rotationPIDController.disable();
+    }
+
+    public static void turnToAngle(double speed, double angle) {
+        rotationPIDController.setSetpoint(angle);
+        drive(speed, rotationPIDOutput/1.5, false);
     }
 
     public static boolean isRotationPIDControllerOnTarget() {
