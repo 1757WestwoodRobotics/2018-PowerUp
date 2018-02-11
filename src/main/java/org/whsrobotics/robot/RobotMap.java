@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.SPI;
 public class RobotMap {
 
     // TODO: Fix port numbers
-    public enum MotorControllerPorts {
+    public enum MotorControllerPort {
         DRIVE_LEFT_FRONT(5), DRIVE_LEFT_BACK(6), DRIVE_RIGHT_FRONT(7), DRIVE_RIGHT_BACK(8),
         ELEVATOR_LEFT(9), ELEVATOR_RIGHT(10),
         GRIPPER_LEFT(11), GRIPPER_RIGHT(12),
@@ -13,7 +13,7 @@ public class RobotMap {
 
         private int port;
 
-        MotorControllerPorts(int port) {
+        MotorControllerPort(int port) {
             this.port = port;
         }
 

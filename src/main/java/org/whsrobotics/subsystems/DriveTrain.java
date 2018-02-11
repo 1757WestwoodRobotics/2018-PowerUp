@@ -38,10 +38,10 @@ public class DriveTrain extends Subsystem {
     private DriveTrain() {
 
         try {
-            leftFront = new WPI_TalonSRX(RobotMap.MotorControllerPorts.DRIVE_LEFT_FRONT.getPort());
-            leftBack = new WPI_TalonSRX(RobotMap.MotorControllerPorts.DRIVE_LEFT_BACK.getPort());
-            rightFront = new WPI_TalonSRX(RobotMap.MotorControllerPorts.DRIVE_RIGHT_FRONT.getPort());
-            rightBack = new WPI_TalonSRX(RobotMap.MotorControllerPorts.DRIVE_RIGHT_BACK.getPort());
+            leftFront = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_LEFT_FRONT.getPort());
+            leftBack = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_LEFT_BACK.getPort());
+            rightFront = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_RIGHT_FRONT.getPort());
+            rightBack = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_RIGHT_BACK.getPort());
 
             leftDrive = new SpeedControllerGroup(leftFront, leftBack);
             rightDrive = new SpeedControllerGroup(rightFront, rightBack);
