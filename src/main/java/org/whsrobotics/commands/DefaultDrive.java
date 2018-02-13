@@ -13,7 +13,7 @@ public class DefaultDrive extends Command {
 
     @Override
     protected void initialize() {
-        // Check is DriveTrain is initialized
+        // Check if DriveTrain is initialized
     }
 
     @Override
