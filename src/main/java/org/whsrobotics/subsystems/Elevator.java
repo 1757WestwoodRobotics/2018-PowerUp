@@ -2,6 +2,7 @@ package org.whsrobotics.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -45,15 +46,18 @@ public class Elevator extends Subsystem {
             left = new TalonSRX(RobotMap.MotorControllerPort.ELEVATOR_LEFT.getPort());
             right = new TalonSRX(RobotMap.MotorControllerPort.ELEVATOR_RIGHT.getPort());
 
+            left.setNeutralMode(NeutralMode.Brake);
+            right.setNeutralMode(NeutralMode.Brake);
+
             left.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
-            // left.setSensorPhase(true); // Used to invert the direction of the sensor
+            // left.setSensorPhase(true); // Used to invert the direction of the sensor, if needed
 
-            left.configPeakOutputForward(0.5, 0);
-            left.configPeakOutputReverse(-0.5, 0);
+            left.configPeakOutputForward(1, 0);
+            left.configPeakOutputReverse(-1, 0);
 
-            // Native units TODO: tune
-            left.configReverseSoftLimitThreshold(0,0);
-            left.configForwardSoftLimitThreshold(1000,0);
+            // Native units
+            left.configReverseSoftLimitThreshold(3000,0);
+            left.configForwardSoftLimitThreshold(26000,0);
 
             left.configReverseSoftLimitEnable(true, 0);
             left.configForwardSoftLimitEnable(true, 0);
@@ -127,7 +131,7 @@ public class Elevator extends Subsystem {
     }
 
     public static void moveWithVelocity(double speed) {
-        left.set(ControlMode.Velocity, speed);
+        left.set(ControlMode.PercentOutput, speed);
     }
 
     public static int getEncoderPosition() {

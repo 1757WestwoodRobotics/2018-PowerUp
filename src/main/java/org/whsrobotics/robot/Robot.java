@@ -1,9 +1,7 @@
 package org.whsrobotics.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.subsystems.DriveTrain;
 import org.whsrobotics.subsystems.Led;
 import org.whsrobotics.subsystems.Elevator;
