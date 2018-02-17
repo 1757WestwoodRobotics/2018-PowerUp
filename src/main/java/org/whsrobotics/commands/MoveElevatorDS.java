@@ -18,4 +18,9 @@ public class MoveElevatorDS extends InstantCommand {
         Elevator.moveToDS(target);
     }
 
+    @Override
+    protected boolean isFinished() {
+        return Elevator.getPIDFinished();
+    }
+
 }

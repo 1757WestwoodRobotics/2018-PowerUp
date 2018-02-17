@@ -18,4 +18,9 @@ public class MoveElevatorPosition extends InstantCommand {
         Elevator.moveToPosition(position);
     }
 
+    @Override
+    protected boolean isFinished() {
+        return Elevator.getPIDFinished();
+    }
+
 }

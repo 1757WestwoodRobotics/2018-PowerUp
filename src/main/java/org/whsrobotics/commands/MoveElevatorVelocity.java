@@ -2,7 +2,6 @@ package org.whsrobotics.commands;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.robot.OI;
 import org.whsrobotics.subsystems.Elevator;
 
@@ -26,7 +25,8 @@ public class MoveElevatorVelocity extends Command {
 
     @Override
     protected void end() {
-        Elevator.moveWithVelocity(0);
+        Elevator.moveToDS(Elevator.getEncoderPosition());   // Hold the current position
+        // Elevator.moveWithVelocity(0);
     }
 
     @Override

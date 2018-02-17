@@ -11,6 +11,20 @@ public class CubeGripper extends Subsystem {
     private static TalonSRX left;
     private static TalonSRX right;
 
+    public enum Position {
+        STORE(0), OPEN(100), CLOSE(500);  // TODO: Reflect encoders
+
+        private double target;
+
+        Position(double target) {
+            this.target = target;
+        }
+
+        public double getTargetValue() {
+            return target;
+        }
+    }
+
     public CubeGripper(){
 
         try {
