@@ -7,7 +7,6 @@ import org.whsrobotics.utils.RobotLogger;
 
 public class CubeGripper extends Subsystem {
 
-
     private static TalonSRX left;
     private static TalonSRX right;
 

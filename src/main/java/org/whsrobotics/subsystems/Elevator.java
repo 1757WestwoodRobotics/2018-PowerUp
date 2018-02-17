@@ -143,8 +143,22 @@ public class Elevator extends Subsystem {
         return left.getSelectedSensorVelocity(0);
     }
 
+    // ------------ FINISHED METHODS ------------- //
+
     public static boolean getPIDFinished() {
         return left.getClosedLoopError(0) <= MAX_ERROR;
+    }
+
+    public static boolean reachedBoundaries() {
+        return getTopLimitSwitch() || getBottomLimitSwitch();
+    }
+
+    public static boolean getTopLimitSwitch() {
+        return false;
+    }
+
+    public static boolean getBottomLimitSwitch() {
+        return false;
     }
 
 }

@@ -8,9 +8,22 @@ import org.whsrobotics.utils.RobotLogger;
 
 public class CubeSpinner extends Subsystem {
 
-
     private static TalonSRX left;
     private static TalonSRX right;
+
+    public enum Mode {
+        FORWARD(1), BACKWARD(-1), HALF_FORWARD(0.5), HALF_BACKWARD(-0.5);
+
+        private double speed;
+
+        Mode(double speed) {
+            this.speed = speed;
+        }
+
+        public double getSpeed() {
+            return speed;
+        }
+    }
 
     public CubeSpinner(){
 
@@ -20,7 +33,6 @@ public class CubeSpinner extends Subsystem {
 
             right.setInverted(true);
             right.follow(left);
-
 
         } catch (Exception e) {
             RobotLogger.err(this.getClass(), "Error instantiating CubeSpinner hardware" + e.getMessage());
@@ -35,9 +47,12 @@ public class CubeSpinner extends Subsystem {
     }
 
     public static void spinWithSpeed(double speed) {
-
         left.set(ControlMode.PercentOutput, speed);
 
+    }
+
+    public static void spinWithMode(Mode mode) {
+        spinWithSpeed(mode.getSpeed());
     }
 
 }

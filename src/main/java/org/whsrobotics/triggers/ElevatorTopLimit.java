@@ -1,12 +1,12 @@
 package org.whsrobotics.triggers;
 
 import edu.wpi.first.wpilibj.buttons.Trigger;
+import org.whsrobotics.subsystems.Elevator;
 
 public class ElevatorTopLimit extends Trigger {
 
     @Override
     public boolean get() {
-        return false;
-        // return true if sensor has been triggered. since command called?
+        return Elevator.getTopLimitSwitch();
     }
 }
