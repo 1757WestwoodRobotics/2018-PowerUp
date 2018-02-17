@@ -39,10 +39,13 @@ public class Led {
 
     // Test method to send a go command to Adrunio
     public void On() {
+        /*
         if (arduino.isNotAddressable()) {
             RobotLogger.err(this.getClass(), "Unable to address Arduino!");
         }
         else {
+        */
+        {
             String data = "1";
             arduino.writeData(data.toCharArray());
         }

@@ -18,6 +18,9 @@ public class Robot extends TimedRobot {
         DriveTrain.getInstance();
         Elevator.getInstance();
         Led.getInstance();
+        Led led = Led.getInstance();
+        led.On();
+
     }
 
     // ------------ AUTONOMOUS METHODS ------------- //
