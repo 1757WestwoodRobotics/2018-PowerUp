@@ -10,7 +10,7 @@ import org.whsrobotics.utils.RobotLogger;
 
 public class Led {
     // this is the address we will use to communicate on the i2c wire between Rio and Arduino
-    private static final int ledAddress = 4;
+    private static final int ledAddress = 0X4;
     private static Led instance;
     private static ArduinoI2C arduino;
 
@@ -38,7 +38,23 @@ public class Led {
     }
 
     // Test method to send a go command to Adrunio
-    public void Go() {
+    public void On() {
+        if (arduino.isNotAddressable()) {
+            RobotLogger.err(this.getClass(), "Unable to address Arduino!");
+        }
+        else {
+            String data = "1";
+            arduino.writeData(data.toCharArray());
+        }
+    }
 
+    public void Off() {
+        if (arduino.isNotAddressable()) {
+            RobotLogger.err(this.getClass(), "Unable to address Arduino!");
+        }
+        else {
+            String data = "0";
+            arduino.writeData(data.toCharArray());
+        }
     }
 }
