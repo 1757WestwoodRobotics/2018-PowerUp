@@ -15,6 +15,10 @@ public class ArduinoI2C {
         wire = new I2C(Port.kOnboard, address);
     }
 
+    public boolean isNotAddressable() {
+        return wire.addressOnly();
+    }
+
     /*
     Here Roborio is the master and Arduino is the slave
     If write is aborted, return will be false else true
