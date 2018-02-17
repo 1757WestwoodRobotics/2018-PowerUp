@@ -13,12 +13,12 @@ public class DefaultDrive extends Command {
 
     @Override
     protected void initialize() {
-        // Check is DriveTrain is initialized
+        // Check if DriveTrain is initialized
     }
 
     @Override
     protected void execute() {
-        DriveTrain.defaultDrive(OI.getXboxController().getY(GenericHID.Hand.kLeft),
+        DriveTrain.defaultDrive(-OI.getXboxController().getY(GenericHID.Hand.kLeft),
                 OI.getXboxController().getX(GenericHID.Hand.kRight));
     }
 
