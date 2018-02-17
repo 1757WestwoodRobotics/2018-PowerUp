@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.commands.DefaultDrive;
 import org.whsrobotics.robot.OI;
 import org.whsrobotics.robot.RobotMap;
@@ -43,6 +44,16 @@ public class DriveTrain extends Subsystem {
             rightFront = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_RIGHT_FRONT.getPort());
             rightBack = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_RIGHT_BACK.getPort());
 
+            leftFront.configPeakOutputForward(1, 0);
+            leftBack.configPeakOutputForward(1, 0);
+            rightFront.configPeakOutputForward(1, 0);
+            rightBack.configPeakOutputForward(1, 0);
+
+            leftFront.configPeakOutputReverse(-1, 0);
+            leftBack.configPeakOutputReverse(-1, 0);
+            rightFront.configPeakOutputReverse(-1, 0);
+            rightBack.configPeakOutputReverse(-1, 0);
+
             leftDrive = new SpeedControllerGroup(leftFront, leftBack);
             rightDrive = new SpeedControllerGroup(rightFront, rightBack);
 
@@ -71,6 +82,15 @@ public class DriveTrain extends Subsystem {
         setDefaultCommand(new DefaultDrive());
     }
 
+    @Override
+    public void periodic() {
+        try {
+            SmartDashboard.putNumber("NavX - Yaw", getYawAngle());
+        } catch (Exception e) {
+            RobotLogger.err(instance.getClass(), "Error reading NavX data!" + e.getMessage());
+        }
+    }
+
     // ------------ DRIVETRAIN METHODS ------------- //
 
     private static void drive(double x, double y, boolean squaredInputs) {
@@ -92,7 +112,7 @@ public class DriveTrain extends Subsystem {
         differentialDrive.stopMotor();
     }
 
-    // NavX methods
+    // ------------ NAVX METHODS ------------- //
 
     public static void resetNavXYaw() {
         navX.reset();

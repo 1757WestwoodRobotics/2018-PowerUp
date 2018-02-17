@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.robot.RobotMap;
+import org.whsrobotics.triggers.LimitSwitch;
 import org.whsrobotics.utils.RobotLogger;
 
 public class Elevator extends Subsystem {
@@ -15,6 +16,9 @@ public class Elevator extends Subsystem {
 
     private static TalonSRX left;
     private static TalonSRX right;
+
+    private static LimitSwitch topLimit;
+    private static LimitSwitch bottomLimit;
 
     // TODO: Tune!
     private static double KP = 0.8;
@@ -70,6 +74,9 @@ public class Elevator extends Subsystem {
 
             right.follow(left);
             right.setInverted(true);
+
+            topLimit = new LimitSwitch(RobotMap.LimitSwitchPort.ELEVATOR_TOP.getPort());
+            bottomLimit = new LimitSwitch(RobotMap.LimitSwitchPort.ELEVATOR_BOTTOM.getPort());
 
         } catch (Exception e) {
             RobotLogger.err(instance.getClass(), "Error setting up / configuring Elevator hardware!" + e.getMessage());
@@ -154,11 +161,11 @@ public class Elevator extends Subsystem {
     }
 
     public static boolean getTopLimitSwitch() {
-        return false;
+        return topLimit.get();
     }
 
     public static boolean getBottomLimitSwitch() {
-        return false;
+        return bottomLimit.get();
     }
 
 }
