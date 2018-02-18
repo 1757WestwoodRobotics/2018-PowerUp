@@ -14,9 +14,9 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         RobotLogger.log(this.getClass(), "Starting robot");
 
-        OI.getInstance();
-        DriveTrain.getInstance();
-        Elevator.getInstance();
+      //  OI.getInstance();
+      //  DriveTrain.getInstance();
+      //  Elevator.getInstance();
         Arduino.getInstance();
     }
 
@@ -41,14 +41,19 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        Arduino uno = Arduino.getInstance(); // For Testing only
-
-        uno.lightsOn();
-        Timer.delay(1);
-        uno.lightsOff();
 
         Scheduler.getInstance().run();
 
+        Arduino uno = Arduino.getInstance(); // For Testing only
+
+        uno.ledCommand(Arduino.LED_ON);
+        Timer.delay(1);
+        uno.ledCommand(Arduino.REFL_TAPE);
+        Timer.delay(1);
+        uno.ledCommand(Arduino.FIND_BOX);
+        Timer.delay(1);
+        uno.ledCommand(Arduino.LED_OFF);
+        Timer.delay(1);
     }
 
     // ------------ DISABLED METHODS ------------- //
