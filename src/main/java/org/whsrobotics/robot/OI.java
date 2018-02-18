@@ -1,5 +1,6 @@
 package org.whsrobotics.robot;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
@@ -10,6 +11,7 @@ import org.whsrobotics.commands.MoveElevatorDS;
 import org.whsrobotics.commands.MoveElevatorPosition;
 import org.whsrobotics.commands.MoveElevatorVelocity;
 import org.whsrobotics.commands.SpinCubeSpinner;
+import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.CubeSpinner;
 import org.whsrobotics.subsystems.DriveTrain;
 import org.whsrobotics.subsystems.Elevator;
@@ -56,10 +58,10 @@ public class OI {
         xboxController = new XboxController(XBOX_PORT);
         // (new JoystickButton(xboxController, 0)).whenPressed(new DefaultDrive());
 
-        (new JoystickButton(xboxController, XboxButton.kY.getValue())).whenPressed(new Command() {
+        (new JoystickButton(xboxController, XboxButton.kBumperRight.getValue())).whenPressed(new Command() {
 
             @Override
-            protected void initialize() {
+            protected void execute() {
                 DriveTrain.removeLimitedAccelerationDrive();
             }
 
@@ -70,7 +72,7 @@ public class OI {
 
             @Override
             protected boolean isFinished() {
-                return true;
+                return xboxController.getBumperReleased(GenericHID.Hand.kRight);
             }
 
         });
@@ -79,6 +81,7 @@ public class OI {
 
         publishElevator();
         publishCubeSpinner();
+        publishCubeGripper();
 
     }
 
@@ -157,6 +160,16 @@ public class OI {
 
     public static CubeSpinner.Mode getSelectedCubeSpinnerMode() {
         return cubeSpinnerModeChooser.getSelected();
+    }
+
+    // ------------ CUBE GRIPPER METHODS ------------- //
+
+    private static void publishCubeGripper() {
+
+    }
+
+    public static int getManualTargetCubeGripperPosition() {
+        return (int) SmartDashboard.getNumber("Cube Gripper Target", CubeGripper.Position.CLOSE.getTarget());
     }
 
 }
