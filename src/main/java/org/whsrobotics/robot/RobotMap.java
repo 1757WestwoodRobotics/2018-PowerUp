@@ -23,6 +23,20 @@ public class RobotMap {
 
     }
 
+    public enum LimitSwitchPort {
+        ELEVATOR_BOTTOM(0), ELEVATOR_TOP(1);
+
+        private int port;
+
+        LimitSwitchPort(int port) {
+            this.port = port;
+        }
+
+        public int getPort() {
+            return this.port;
+        }
+    }
+
     public static final SPI.Port NAVX_PORT = SPI.Port.kMXP;
 
     public static final int XBOX_PORT = 0;

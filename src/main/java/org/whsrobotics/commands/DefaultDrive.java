@@ -13,7 +13,7 @@ public class DefaultDrive extends Command {
 
     @Override
     protected void initialize() {
-        // Check if DriveTrain is initialized
+        DriveTrain.configLimitedAccelerationDrive();
     }
 
     @Override

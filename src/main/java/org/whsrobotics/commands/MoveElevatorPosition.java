@@ -1,21 +1,28 @@
 package org.whsrobotics.commands;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
+import org.whsrobotics.robot.OI;
 import org.whsrobotics.subsystems.Elevator;
 
 public class MoveElevatorPosition extends InstantCommand {
 
-    Elevator.Position position;
+    private static MoveElevatorPosition instance;
 
-    public MoveElevatorPosition(Elevator.Position position) {
+    private MoveElevatorPosition() {
         requires(Elevator.getInstance());
+    }
 
-        this.position = position;
+    public static MoveElevatorPosition getInstance() {
+        if (instance == null) {
+            instance = new MoveElevatorPosition();
+        }
+
+        return instance;
     }
 
     @Override
-    protected void execute() {
-        Elevator.moveToPosition(position);
+    protected void end() {
+        Elevator.moveToPosition(OI.getSelectedElevatorPosition());
     }
 
 }

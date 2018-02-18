@@ -1,6 +1,7 @@
 package org.whsrobotics.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.whsrobotics.robot.RobotMap;
@@ -12,7 +13,7 @@ public class CubeSpinner extends Subsystem {
     private static TalonSRX right;
 
     public enum Mode {
-        FORWARD(1), BACKWARD(-1), HALF_FORWARD(0.5), HALF_BACKWARD(-0.5);
+        FORWARD(1), BACKWARD(-1), HALF_FORWARD(0.5), HALF_BACKWARD(-0.5), OFF(0);
 
         private double speed;
 
@@ -25,11 +26,22 @@ public class CubeSpinner extends Subsystem {
         }
     }
 
-    public CubeSpinner(){
+    private static CubeSpinner instance;
+
+    private CubeSpinner() {
 
         try {
             left = new TalonSRX(RobotMap.MotorControllerPort.SPINNER_LEFT.getPort());
             right = new TalonSRX(RobotMap.MotorControllerPort.SPINNER_RIGHT.getPort());
+
+            left.setNeutralMode(NeutralMode.Coast);
+            right.setNeutralMode(NeutralMode.Coast);
+
+            left.configPeakOutputForward(.50, 0);
+            left.configPeakOutputReverse(-.50, 0);
+
+            left.configReverseSoftLimitEnable(true, 0);
+            left.configForwardSoftLimitEnable(true, 0);
 
             right.setInverted(true);
             right.follow(left);
@@ -41,17 +53,25 @@ public class CubeSpinner extends Subsystem {
 
     }
 
-    @Override
-    protected void initDefaultCommand() {
+    public static CubeSpinner getInstance() {
+        if (instance == null) {
+            instance = new CubeSpinner();
+        }
 
+        return instance;
     }
 
-    public static void spinWithSpeed(double speed) {
+    @Override
+    protected void initDefaultCommand () {
+        // setDefaultCommand(new SpinCubeSpinner(Mode.OFF));
+    }
+
+    public static void spinWithSpeed ( double speed){
         left.set(ControlMode.PercentOutput, speed);
 
     }
 
-    public static void spinWithMode(Mode mode) {
+    public static void spinWithMode (Mode mode){
         spinWithSpeed(mode.getSpeed());
     }
 

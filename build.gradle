@@ -2,7 +2,7 @@ plugins {
     id "java"
     id "eclipse"
     id "idea"
-    id "jaci.openrio.gradle.GradleRIO" version "2018.01.22"
+    id "jaci.openrio.gradle.GradleRIO" version "2018.02.17"
 }
 
 def TEAM = 1757
@@ -20,7 +20,7 @@ deploy {
     artifacts {
         artifact('frcJava', jaci.openrio.gradle.frc.FRCJavaArtifact) {
             targets << "roborio"
-            //debug = true     // https://github.com/Open-RIO/GradleRIO/blob/master/docs/05-debugging.md
+            // debug = true     // https://github.com/Open-RIO/GradleRIO/blob/master/docs/05-debugging.md
         }
     }
 }
