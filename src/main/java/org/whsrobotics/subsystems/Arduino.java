@@ -20,8 +20,10 @@ public class Arduino extends Subsystem {
     private static ArduinoI2C i2c;
 
     // LED Control Commands ( We can add more based on need
-    private static String LED_ON = "1";
-    private static String LED_OFF = "0";
+    public static String LED_OFF = "0";
+    public  static String LED_ON = "1";
+    public static String REFL_TAPE = "2";
+    public static String FIND_BOX = "3";
 
 
     /*
@@ -47,23 +49,11 @@ public class Arduino extends Subsystem {
         return instance;
     }
 
-    // Turn ON the LED Ring lights connected to Arduuno via I2C Wire.
-    public void lightsOn() {
-        if (i2c.isNotAddressable()) {
-            RobotLogger.err(this.getClass(), "Unable to address Arduino!");
-        } else {
-            i2c.writeData(LED_ON.toCharArray());
-        }
+    // Based on LED Control Commands control the LED Ring lights connected to Arduuno via I2C Wire.
+    public void ledCommand( String command) {
+        i2c.writeData(command.toCharArray());
     }
 
-    // Turn OFF the LED Ring lights connected to Arduuno via I2C Wire.
-    public void lightsOff () {
-        if (i2c.isNotAddressable()) {
-                RobotLogger.err(this.getClass(), "Unable to address Arduino!");
-        } else {
-                i2c.writeData(LED_OFF.toCharArray());
-        }
-    }
 
     public double getDistance() {
 
