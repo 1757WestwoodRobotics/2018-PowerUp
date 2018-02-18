@@ -1,6 +1,9 @@
 package org.whsrobotics.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.commands.MoveElevatorDS;
@@ -8,6 +11,7 @@ import org.whsrobotics.commands.MoveElevatorPosition;
 import org.whsrobotics.commands.MoveElevatorVelocity;
 import org.whsrobotics.commands.SpinCubeSpinner;
 import org.whsrobotics.subsystems.CubeSpinner;
+import org.whsrobotics.subsystems.DriveTrain;
 import org.whsrobotics.subsystems.Elevator;
 import org.whsrobotics.triggers.ElevatorVelocityMode;
 
@@ -17,15 +21,59 @@ public class OI {
 
     private static XboxController xboxController;
     private static final double XBOX_DEADZONE = 0.05;
+    private static final double XBOX_RIGHT_DEADZONE = 0.1;
 
     private static SendableChooser<Elevator.Position> elevatorPositionChooser;
     private static SendableChooser<CubeSpinner.Mode> cubeSpinnerModeChooser;
 
     private static OI instance;
 
+    private enum XboxButton {
+        kBumperLeft(5),
+        kBumperRight(6),
+        kStickLeft(9),
+        kStickRight(10),
+        kA(1),
+        kB(2),
+        kX(3),
+        kY(4),
+        kBack(7),
+        kStart(8);
+
+        private int value;
+
+        XboxButton(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return this.value;
+        }
+
+    }
+
     private OI() {
         xboxController = new XboxController(XBOX_PORT);
         // (new JoystickButton(xboxController, 0)).whenPressed(new DefaultDrive());
+
+        (new JoystickButton(xboxController, XboxButton.kY.getValue())).whenPressed(new Command() {
+
+            @Override
+            protected void initialize() {
+                DriveTrain.removeLimitedAccelerationDrive();
+            }
+
+            @Override
+            protected void end() {
+                DriveTrain.configLimitedAccelerationDrive();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return true;
+            }
+
+        });
 
         (new ElevatorVelocityMode()).whenActive(new MoveElevatorVelocity());
 
@@ -56,6 +104,16 @@ public class OI {
 
     }
 
+    public static double checkXboxRightDeadzone(double value) {
+
+        if (Math.abs(value) >= XBOX_RIGHT_DEADZONE) {
+            return value;
+        }
+
+        return 0;
+
+    }
+
     // ------------ AUTONOMOUS METHODS ------------- //
 
     // ------------ ELEVATOR METHODS ------------- //
@@ -69,8 +127,8 @@ public class OI {
         }
 
         SmartDashboard.putData("Elevator Position", elevatorPositionChooser);
-        SmartDashboard.putData("Elevator - Manual Entry", new MoveElevatorDS(getManualTargetElevatorPosition()));   // May not actually work depending on when the value is read!
-        SmartDashboard.putData("Elevator - Position", new MoveElevatorPosition(getSelectedElevatorPosition()));
+        SmartDashboard.putData("Elevator - Manual Entry", MoveElevatorDS.getInstance());
+        SmartDashboard.putData("Elevator - Position", MoveElevatorPosition.getInstance());
 
     }
 

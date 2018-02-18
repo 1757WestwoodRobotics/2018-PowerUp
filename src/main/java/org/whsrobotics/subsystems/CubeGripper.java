@@ -24,8 +24,9 @@ public class CubeGripper extends Subsystem {
         }
     }
 
-    public CubeGripper(){
+    private static CubeGripper instance;
 
+    private CubeGripper() {
         try {
             left = new TalonSRX(RobotMap.MotorControllerPort.GRIPPER_LEFT.getPort());
             right = new TalonSRX(RobotMap.MotorControllerPort.GRIPPER_RIGHT.getPort());
@@ -36,8 +37,16 @@ public class CubeGripper extends Subsystem {
         }
     }
 
+    public static CubeGripper getInstance() {
+        if (instance == null) {
+            instance = new CubeGripper();
+        }
+        return instance;
+    }
+
     @Override
     protected void initDefaultCommand() {
 
     }
+
 }

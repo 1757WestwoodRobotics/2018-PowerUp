@@ -2,6 +2,7 @@ package org.whsrobotics.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -86,6 +87,11 @@ public class DriveTrain extends Subsystem {
     public void periodic() {
         try {
             SmartDashboard.putNumber("NavX - Yaw", getYawAngle());
+            SmartDashboard.putNumber("LF", leftFront.getMotorOutputVoltage());
+            SmartDashboard.putNumber("LB", leftBack.getMotorOutputVoltage());
+            SmartDashboard.putNumber("RF", rightFront.getMotorOutputVoltage());
+            SmartDashboard.putNumber("RB", rightBack.getMotorOutputVoltage());
+            SmartDashboard.putNumber("Xbox", OI.checkXboxDeadzone(OI.getXboxController().getX(GenericHID.Hand.kRight)));
         } catch (Exception e) {
             RobotLogger.err(instance.getClass(), "Error reading NavX data!" + e.getMessage());
         }
@@ -98,14 +104,24 @@ public class DriveTrain extends Subsystem {
     }
 
     /**
-     * defaultDrive() is arcade drive with [acceleration-limiting,] input ramping, and deadzone implementation
+     * Arcade drive with acceleration-limiting, input ramping, and deadzone implementation
      */
     public static void defaultDrive(double x, double y) {
-        drive(OI.checkXboxDeadzone(x), OI.checkXboxDeadzone(y), true);
+        drive(OI.checkXboxDeadzone(x), OI.checkXboxRightDeadzone(y), true);
     }
 
-    public static void limitedAccelerationDrive() {
+    public static void configLimitedAccelerationDrive() {
+        leftFront.configOpenloopRamp(5, 0);
+        leftBack.configOpenloopRamp(5, 0);
+        rightFront.configOpenloopRamp(5, 0);
+        rightBack.configOpenloopRamp(5, 0);
+    }
 
+    public static void removeLimitedAccelerationDrive() {
+        leftFront.configOpenloopRamp(0, 0);
+        leftBack.configOpenloopRamp(0, 0);
+        rightFront.configOpenloopRamp(0, 0);
+        rightBack.configOpenloopRamp(0, 0);
     }
 
     public static void stopDrive() {

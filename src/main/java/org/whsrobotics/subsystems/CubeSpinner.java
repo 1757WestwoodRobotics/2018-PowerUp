@@ -26,7 +26,9 @@ public class CubeSpinner extends Subsystem {
         }
     }
 
-    public CubeSpinner(){
+    private static CubeSpinner instance;
+
+    private CubeSpinner() {
 
         try {
             left = new TalonSRX(RobotMap.MotorControllerPort.SPINNER_LEFT.getPort());
@@ -51,17 +53,25 @@ public class CubeSpinner extends Subsystem {
 
     }
 
+    public static CubeSpinner getInstance() {
+        if (instance == null) {
+            instance = new CubeSpinner();
+        }
+
+        return instance;
+    }
+
     @Override
-    protected void initDefaultCommand() {
+    protected void initDefaultCommand () {
         // setDefaultCommand(new SpinCubeSpinner(Mode.OFF));
     }
 
-    public static void spinWithSpeed(double speed) {
+    public static void spinWithSpeed ( double speed){
         left.set(ControlMode.PercentOutput, speed);
 
     }
 
-    public static void spinWithMode(Mode mode) {
+    public static void spinWithMode (Mode mode){
         spinWithSpeed(mode.getSpeed());
     }
 

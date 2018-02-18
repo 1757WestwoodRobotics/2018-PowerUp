@@ -8,7 +8,7 @@ public class SpinCubeSpinner extends InstantCommand {
     private CubeSpinner.Mode mode;
 
     public SpinCubeSpinner(CubeSpinner.Mode mode) {
-        requires(new CubeSpinner());    // TODO: Convert to singleton getInstance()
+        requires(CubeSpinner.getInstance());
         this.mode = mode;
     }
 

@@ -41,11 +41,12 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        Led led = Led.getInstance();
         Scheduler.getInstance().run();
-        led.On();
-        Timer.delay(1);
-        led.Off();
+//        Led led = Led.getInstance();
+//        Scheduler.getInstance().run();
+//        led.On();
+//        Timer.delay(1);
+//        led.Off();
     }
 
     // ------------ DISABLED METHODS ------------- //

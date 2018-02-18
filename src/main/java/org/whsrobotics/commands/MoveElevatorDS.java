@@ -1,21 +1,28 @@
 package org.whsrobotics.commands;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
+import org.whsrobotics.robot.OI;
 import org.whsrobotics.subsystems.Elevator;
 
 public class MoveElevatorDS extends InstantCommand {
 
-    private int target;
+    private static MoveElevatorDS instance;
 
-    public MoveElevatorDS(int target) {
+    private MoveElevatorDS() {
         requires(Elevator.getInstance());
+    }
 
-        this.target = target;
+    public static MoveElevatorDS getInstance() {
+        if (instance == null) {
+            instance = new MoveElevatorDS();
+        }
+
+        return instance;
     }
 
     @Override
     protected void execute() {
-        Elevator.moveToDS(target);
+        Elevator.moveToDS(OI.getManualTargetElevatorPosition());
     }
 
 }
