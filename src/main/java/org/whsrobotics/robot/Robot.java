@@ -16,7 +16,7 @@ public class Robot extends TimedRobot {
 
         OI.getInstance();
         DriveTrain.getInstance();
-        Elevator.getInstance();
+        // Elevator.getInstance();
         Led.getInstance();
     }
 
