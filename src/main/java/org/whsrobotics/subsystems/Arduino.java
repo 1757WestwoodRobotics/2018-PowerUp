@@ -20,15 +20,15 @@ public class Arduino extends Subsystem {
     private static ArduinoI2C i2c;
 
     // LED Control Commands ( We can add more based on need
-    public static String LED_OFF = "0";
-    public  static String LED_ON = "1";
-    public static String REFL_TAPE = "2";
-    public static String FIND_BOX = "3";
+    public static String LED_OFF    = "0";
+    public static String LED_ON     = "1";
+    public static String REFL_TAPE  = "2";
+    public static String FIND_BOX   = "3";
 
 
     /*
-    We have to define command protocol between Rio and Arduino to do specific actions
-    with Strip Lights or Ring Lights; like changing colors or fireworks etc.
+     * We have to define command protocol between Rio and Arduino to do specific actions
+     * with Strip Lights or Ring Lights; like changing colors or fireworks etc.
     */
     private Arduino() {
 
@@ -49,12 +49,21 @@ public class Arduino extends Subsystem {
         return instance;
     }
 
-    // Based on LED Control Commands control the LED Ring lights connected to Arduuno via I2C Wire.
+    /*
+     * Method to control LED lights connected to Arduino. 
+     * Based on LED Control Commands control the LED Ring lights connected to Arduuno via I2C Wire.
+     */
+    
     public void ledCommand( String command) {
         i2c.writeData(command.toCharArray());
     }
-
-
+    
+    /*
+     * Method to retrieve distance of the near object the ultrasonic sensor
+     * connected to Arduino can see.
+     *
+     * Return: distance measured in inches.
+     */
     public double getDistance() {
 
         double distance = -1; // Error condition where sensor fails
