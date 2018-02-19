@@ -7,10 +7,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.whsrobotics.commands.MoveElevatorDS;
-import org.whsrobotics.commands.MoveElevatorPosition;
-import org.whsrobotics.commands.MoveElevatorVelocity;
-import org.whsrobotics.commands.SpinCubeSpinner;
+import org.whsrobotics.commands.*;
 import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.CubeSpinner;
 import org.whsrobotics.subsystems.DriveTrain;
@@ -82,6 +79,48 @@ public class OI {
         publishElevator();
         publishCubeSpinner();
         publishCubeGripper();
+
+        SmartDashboard.putData("Disable CubeGripper Mode", new Command() {
+
+            @Override
+            protected void execute() {
+                CubeGripper.setTalonNeutral();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return true;
+            }
+
+        });
+
+        SmartDashboard.putData("Reset CubeGripper Encoders", new Command() {
+
+            @Override
+            protected void execute() {
+                CubeGripper.resetEncoderPosition();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return true;
+            }
+
+        });
+
+        SmartDashboard.putData("CubeGripper Constant Voltage", new Command() {
+
+            @Override
+            protected void execute() {
+                CubeGripper.applyConstantVoltage();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return true;
+            }
+
+        });
 
     }
 
@@ -165,11 +204,12 @@ public class OI {
     // ------------ CUBE GRIPPER METHODS ------------- //
 
     private static void publishCubeGripper() {
-
+        SmartDashboard.putData("CubeGripper Button", MoveCubeGripperDS.getInstance());
+        System.out.println("Published Cube Gripper");
     }
 
     public static int getManualTargetCubeGripperPosition() {
-        return (int) SmartDashboard.getNumber("Cube Gripper Target", CubeGripper.Position.CLOSE.getTarget());
+        return (int) SmartDashboard.getNumber("CubeGripper Target Position", CubeGripper.Position.STORE.getTarget());
     }
 
 }

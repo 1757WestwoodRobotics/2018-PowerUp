@@ -3,6 +3,7 @@ package org.whsrobotics.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.Arduino;
 import org.whsrobotics.subsystems.DriveTrain;
 import org.whsrobotics.subsystems.Elevator;
@@ -17,7 +18,10 @@ public class Robot extends TimedRobot {
       //  OI.getInstance();
       //  DriveTrain.getInstance();
       //  Elevator.getInstance();
-        Arduino.getInstance();
+      //  Arduino.getInstance();
+
+        OI.getInstance();
+        CubeGripper.getInstance();
     }
 
     // ------------ AUTONOMOUS METHODS ------------- //
@@ -43,17 +47,17 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
 
         Scheduler.getInstance().run();
-
-        Arduino uno = Arduino.getInstance(); // For Testing only
-
-        uno.ledCommand(Arduino.LED_ON);
-        Timer.delay(1);
-        uno.ledCommand(Arduino.REFL_TAPE);
-        Timer.delay(1);
-        uno.ledCommand(Arduino.FIND_BOX);
-        Timer.delay(1);
-        uno.ledCommand(Arduino.LED_OFF);
-        Timer.delay(1);
+//
+//        Arduino uno = Arduino.getInstance(); // For Testing only
+//
+//        uno.ledCommand(Arduino.LED_ON);
+//        Timer.delay(1);
+//        uno.ledCommand(Arduino.REFL_TAPE);
+//        Timer.delay(1);
+//        uno.ledCommand(Arduino.FIND_BOX);
+//        Timer.delay(1);
+//        uno.ledCommand(Arduino.LED_OFF);
+//        Timer.delay(1);
     }
 
     // ------------ DISABLED METHODS ------------- //
