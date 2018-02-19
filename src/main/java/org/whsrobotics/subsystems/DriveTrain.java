@@ -111,10 +111,10 @@ public class DriveTrain extends Subsystem {
     }
 
     public static void configLimitedAccelerationDrive() {
-        leftFront.configOpenloopRamp(5, 0);
-        leftBack.configOpenloopRamp(5, 0);
-        rightFront.configOpenloopRamp(5, 0);
-        rightBack.configOpenloopRamp(5, 0);
+        leftFront.configOpenloopRamp(3, 0);
+        leftBack.configOpenloopRamp(3, 0);
+        rightFront.configOpenloopRamp(3, 0);
+        rightBack.configOpenloopRamp(3, 0);
     }
 
     public static void removeLimitedAccelerationDrive() {
