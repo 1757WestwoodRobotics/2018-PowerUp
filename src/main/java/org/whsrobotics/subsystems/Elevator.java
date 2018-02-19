@@ -185,5 +185,4 @@ public class Elevator extends Subsystem {
     public static boolean getBottomLimitSwitch() {
         return bottomLimit.get();
     }
-
 }
