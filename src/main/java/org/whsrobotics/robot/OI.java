@@ -194,7 +194,8 @@ public class OI {
         }
 
         SmartDashboard.putData("CubeSpinner Mode", cubeSpinnerModeChooser);
-        SmartDashboard.putData("CubeSpinner - Mode", new SpinCubeSpinner(getSelectedCubeSpinnerMode()));
+        //SmartDashboard.putData("CubeSpinner - Mode", new SpinCubeSpinner(getSelectedCubeSpinnerMode()));
+        SmartDashboard.putData("CubeSpinner - Mode", new SpinCubeSpinner());
     }
 
     public static CubeSpinner.Mode getSelectedCubeSpinnerMode() {

@@ -13,7 +13,7 @@ public class CubeSpinner extends Subsystem {
     private static TalonSRX right;
 
     public enum Mode {
-        FORWARD(1), BACKWARD(-1), HALF_FORWARD(0.5), HALF_BACKWARD(-0.5), OFF(0);
+        INWARD(1), OUTWARD(-1), HALF_INWARD(0.5), HALF_OUTWARD(-0.5), OFF(0);
 
         private double speed;
 
@@ -40,10 +40,10 @@ public class CubeSpinner extends Subsystem {
             left.configPeakOutputForward(.50, 0);
             left.configPeakOutputReverse(-.50, 0);
 
-            left.configReverseSoftLimitEnable(true, 0);
-            left.configForwardSoftLimitEnable(true, 0);
+            right.configPeakOutputForward(.50, 0);
+            right.configPeakOutputReverse(-.50, 0);
 
-            right.setInverted(true);
+            left.setInverted(true);
             right.follow(left);
 
         } catch (Exception e) {
@@ -62,16 +62,17 @@ public class CubeSpinner extends Subsystem {
     }
 
     @Override
-    protected void initDefaultCommand () {
+    protected void initDefaultCommand() {
         // setDefaultCommand(new SpinCubeSpinner(Mode.OFF));
     }
 
-    public static void spinWithSpeed ( double speed){
+    public static void spinWithSpeed(double speed){
+        System.out.println(speed);
         left.set(ControlMode.PercentOutput, speed);
 
     }
 
-    public static void spinWithMode (Mode mode){
+    public static void spinWithMode(Mode mode){
         spinWithSpeed(mode.getSpeed());
     }
 
