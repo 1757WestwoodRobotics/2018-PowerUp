@@ -12,21 +12,19 @@ import org.whsrobotics.utils.RobotLogger;
 
 public class Elevator extends Subsystem {
 
-    // Encoder rotates 4096 units per rotation
-
     private static TalonSRX left;
     private static TalonSRX right;
 
     private static LimitSwitch topLimit;
     private static LimitSwitch bottomLimit;
 
-    // TODO: Tune!
+    // TODO: Tune! and zero out sensor at bottom
     private static double KP = 0.8;
     private static double KI = 0.0;
     private static double KD = 0.0;
     private static double KF = 0.0;
 
-    private static final int MAX_ERROR = 50;
+    private static final int MAX_ERROR = 20;
 
     private static Elevator instance;
 
@@ -57,7 +55,7 @@ public class Elevator extends Subsystem {
             left.setNeutralMode(NeutralMode.Brake);
             right.setNeutralMode(NeutralMode.Brake);
 
-            left.configPeakOutputForward(.50, 0);
+            left.configPeakOutputForward(.50, 0);   // TODO: Raise
             left.configPeakOutputReverse(-.50, 0);
 
             right.follow(left);
