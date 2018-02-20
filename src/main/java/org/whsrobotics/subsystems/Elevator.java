@@ -18,7 +18,7 @@ public class Elevator extends Subsystem {
     private static LimitSwitch topLimit;
     private static LimitSwitch bottomLimit;
 
-    // TODO: Tune! and zero out sensor at bottom
+    // TODO: Retune! and zero out sensor at bottom, put PID setting code at bottom [commented out]
     private static double KP = 0.8;
     private static double KI = 0.0;
     private static double KD = 0.0;
@@ -55,7 +55,7 @@ public class Elevator extends Subsystem {
             left.setNeutralMode(NeutralMode.Brake);
             right.setNeutralMode(NeutralMode.Brake);
 
-            left.configPeakOutputForward(.50, 0);   // TODO: Raise
+            left.configPeakOutputForward(.50, 0);   // TODO: Raise?
             left.configPeakOutputReverse(-.50, 0);
 
             right.follow(left);
@@ -79,7 +79,7 @@ public class Elevator extends Subsystem {
             left.config_kF(0, KF, 0);
             left.selectProfileSlot(0, 0);
 
-            // Motion Magic
+            // Motion Magic //TODO: Retune
             left.configMotionCruiseVelocity(1000, 0);
             left.configMotionAcceleration(500, 0);
 

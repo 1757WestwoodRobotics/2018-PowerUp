@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.robot.RobotMap;
@@ -91,6 +92,14 @@ public class CubeGripper extends Subsystem {
             right.config_kF(0, KF, 0);
             right.selectProfileSlot(0, 0);
 
+
+            // Motion Magic
+            left.configMotionCruiseVelocity(200, 0);
+            left.configMotionAcceleration(200, 0);
+
+            right.configMotionCruiseVelocity(200, 0);
+            right.configMotionAcceleration(200, 0);
+
         } catch (Exception e) {
             RobotLogger.err(this.getClass(), "Error instantiating CubeGripper hardware" + e.getMessage());
 
@@ -157,8 +166,12 @@ public class CubeGripper extends Subsystem {
     public static void moveToDS(int target) {
         setPID();   // TEMP
         System.out.println(target); // TEMP
-        left.set(ControlMode.Position, target);
-        right.set(ControlMode.Position, target);
+
+//        left.set(ControlMode.Position, target);
+//        right.set(ControlMode.Position, target);
+
+        left.set(ControlMode.MotionMagic, target);
+        right.set(ControlMode.MotionMagic, target);
     }
 
     public static void moveToPosition(Position position) {
@@ -195,5 +208,48 @@ public class CubeGripper extends Subsystem {
         left.set(ControlMode.PercentOutput, 1);
         right.set(ControlMode.PercentOutput, 1);
     }
+
+    // ------------ AUXILIARY COMMANDS ------------- //
+
+    public static Command applyConstantVoltageCommand = new Command() {
+
+        @Override
+        protected void execute() {
+            applyConstantVoltage();
+        }
+
+        @Override
+        protected boolean isFinished() {
+            return true;
+        }
+
+    };
+
+    public static Command resetEncoderPositionCommand = new Command() {
+
+        @Override
+        protected void execute() {
+            resetEncoderPosition();
+        }
+
+        @Override
+        protected boolean isFinished() {
+            return true;
+        }
+    };
+
+    public static Command disableOutputCommand = new Command() {
+
+        @Override
+        protected void execute() {
+             setTalonNeutral();
+        }
+
+        @Override
+        protected boolean isFinished() {
+            return true;
+        }
+
+    };
 
 }
