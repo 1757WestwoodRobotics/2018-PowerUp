@@ -114,7 +114,7 @@ public class DriveTrain extends Subsystem {
         drive(OI.checkXboxDeadzone(x), OI.checkXboxRightDeadzone(y), true);
     }
 
-    // TODO: Different acceleration values for accel/decel/elevator position
+    // TODO: Different acceleration values for accel/decel/elevator position. Side-to-side different?
     public static void configLimitedAccelerationDrive() {
         leftFront.configOpenloopRamp(3, 0);
         leftBack.configOpenloopRamp(3, 0);
