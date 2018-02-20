@@ -19,37 +19,12 @@ import static org.whsrobotics.robot.RobotMap.XBOX_PORT;
 public class OI {
 
     private static XboxController xboxController;
-    private static final double XBOX_DEADZONE = 0.05;
-    private static final double XBOX_RIGHT_DEADZONE = 0.1;
 
     private static SendableChooser<Elevator.Position> elevatorPositionChooser;
+    private static SendableChooser<CubeGripper.Position> cubeGripperModeChooser;
     private static SendableChooser<CubeSpinner.Mode> cubeSpinnerModeChooser;
 
     private static OI instance;
-
-    private enum XboxButton {
-        kBumperLeft(5),
-        kBumperRight(6),
-        kStickLeft(9),
-        kStickRight(10),
-        kA(1),
-        kB(2),
-        kX(3),
-        kY(4),
-        kBack(7),
-        kStart(8);
-
-        private int value;
-
-        XboxButton(int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return this.value;
-        }
-
-    }
 
     private OI() {
         xboxController = new XboxController(XBOX_PORT);
@@ -80,48 +55,6 @@ public class OI {
         publishCubeSpinner();
         publishCubeGripper();
 
-        SmartDashboard.putData("Disable CubeGripper Mode", new Command() {
-
-            @Override
-            protected void execute() {
-                CubeGripper.setTalonNeutral();
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return true;
-            }
-
-        });
-
-        SmartDashboard.putData("Reset CubeGripper Encoders", new Command() {
-
-            @Override
-            protected void execute() {
-                CubeGripper.resetEncoderPosition();
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return true;
-            }
-
-        });
-
-        SmartDashboard.putData("CubeGripper Constant Voltage", new Command() {
-
-            @Override
-            protected void execute() {
-                CubeGripper.applyConstantVoltage();
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return true;
-            }
-
-        });
-
     }
 
     public static OI getInstance() {
@@ -130,6 +63,36 @@ public class OI {
         }
 
         return instance;
+    }
+
+
+    // ------------ XBOX CONTROLLER ------------- //
+
+    private static final double XBOX_DEADZONE = 0.05;
+    private static final double XBOX_RIGHT_DEADZONE = 0.1;
+
+    private enum XboxButton {
+        kBumperLeft(5),
+        kBumperRight(6),
+        kStickLeft(9),
+        kStickRight(10),
+        kA(1),
+        kB(2),
+        kX(3),
+        kY(4),
+        kBack(7),
+        kStart(8);
+
+        private int value;
+
+        XboxButton(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return this.value;
+        }
+
     }
 
     public static XboxController getXboxController() {
@@ -156,7 +119,9 @@ public class OI {
 
     }
 
+
     // ------------ AUTONOMOUS METHODS ------------- //
+
 
     // ------------ ELEVATOR METHODS ------------- //
 
@@ -168,9 +133,10 @@ public class OI {
             elevatorPositionChooser.addObject(position.toString(), position);
         }
 
-        SmartDashboard.putData("Elevator Position", elevatorPositionChooser);
+        SmartDashboard.putData("Elevator Chooser", elevatorPositionChooser);
+
         SmartDashboard.putData("Elevator - Manual Entry", MoveElevatorDS.getInstance());
-        SmartDashboard.putData("Elevator - Position", MoveElevatorPosition.getInstance());
+        SmartDashboard.putData("Elevator - Position", new MoveElevatorPosition(getSelectedElevatorPosition()));
 
     }
 
@@ -193,24 +159,36 @@ public class OI {
             cubeSpinnerModeChooser.addObject(mode.toString(), mode);
         }
 
-        SmartDashboard.putData("CubeSpinner Mode", cubeSpinnerModeChooser);
-        //SmartDashboard.putData("CubeSpinner - Mode", new SpinCubeSpinner(getSelectedCubeSpinnerMode()));
-        SmartDashboard.putData("CubeSpinner - Mode", new SpinCubeSpinner());
+        SmartDashboard.putData("CubeSpinner Chooser", cubeSpinnerModeChooser);
+        SmartDashboard.putData("CubeSpinner Button", new SpinCubeSpinnerDS());
     }
 
     public static CubeSpinner.Mode getSelectedCubeSpinnerMode() {
         return cubeSpinnerModeChooser.getSelected();
     }
 
+
     // ------------ CUBE GRIPPER METHODS ------------- //
 
     private static void publishCubeGripper() {
-        SmartDashboard.putData("CubeGripper Button", MoveCubeGripperDS.getInstance());
-        System.out.println("Published Cube Gripper");
+        cubeGripperModeChooser = new SendableChooser<>();
+        cubeGripperModeChooser.addDefault("Default - MIDDLE", CubeGripper.Position.MIDDLE);
+
+        for (CubeGripper.Position position : CubeGripper.Position.values()) {
+            cubeGripperModeChooser.addObject(position.toString(), position);
+        }
+
+        SmartDashboard.putData("CubeGripper Chooser", cubeGripperModeChooser);
+        SmartDashboard.putData("CubeGripper Button", new MoveCubeGripperDS());
+
+        SmartDashboard.putData("Disable CubeGripper Mode", CubeGripper.disableOutputCommand);
+        SmartDashboard.putData("Reset CubeGripper Encoders", CubeGripper.resetEncoderPositionCommand);
+        SmartDashboard.putData("CubeGripper Constant Voltage", CubeGripper.applyConstantVoltageCommand);
+
     }
 
-    public static int getManualTargetCubeGripperPosition() {
-        return (int) SmartDashboard.getNumber("CubeGripper Target Position", CubeGripper.Position.STORE.getTarget());
+    public static CubeGripper.Position getSelectedCubeGripperPosition() {
+        return cubeGripperModeChooser.getSelected();
     }
 
 }

@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import org.whsrobotics.robot.OI;
 import org.whsrobotics.robot.RobotMap;
 import org.whsrobotics.utils.RobotLogger;
 
@@ -13,7 +14,7 @@ public class CubeSpinner extends Subsystem {
     private static TalonSRX right;
 
     public enum Mode {
-        INWARD(1), OUTWARD(-1), HALF_INWARD(0.5), HALF_OUTWARD(-0.5), OFF(0);
+        INWARDS(1), OUTWARDS(-1), OFF(0);
 
         private double speed;
 
@@ -40,9 +41,6 @@ public class CubeSpinner extends Subsystem {
             left.configPeakOutputForward(.50, 0);
             left.configPeakOutputReverse(-.50, 0);
 
-            right.configPeakOutputForward(.50, 0);
-            right.configPeakOutputReverse(-.50, 0);
-
             left.setInverted(true);
             right.follow(left);
 
@@ -66,13 +64,19 @@ public class CubeSpinner extends Subsystem {
         // setDefaultCommand(new SpinCubeSpinner(Mode.OFF));
     }
 
-    public static void spinWithSpeed(double speed){
+    @Override
+    public void periodic() {
+        // System.out.println(OI.getSelectedCubeSpinnerMode());
+    }
+
+    public static void spinWithSpeed(double speed) {
         System.out.println(speed);
         left.set(ControlMode.PercentOutput, speed);
 
     }
 
     public static void spinWithMode(Mode mode){
+        System.out.println(mode);
         spinWithSpeed(mode.getSpeed());
     }
 

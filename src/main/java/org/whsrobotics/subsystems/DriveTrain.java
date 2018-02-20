@@ -2,6 +2,7 @@ package org.whsrobotics.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -26,6 +27,9 @@ public class DriveTrain extends Subsystem {
     private static DifferentialDrive differentialDrive;
 
     private static AHRS navX;
+//    private static Encoder leftEncoder;
+//    private static Encoder rightEncoder;
+
     private static PIDController rotationPIDController;
 
     private static final double KP = 0.05;   // Tuned values for the test robot (Pneumatic wheels)
@@ -110,6 +114,7 @@ public class DriveTrain extends Subsystem {
         drive(OI.checkXboxDeadzone(x), OI.checkXboxRightDeadzone(y), true);
     }
 
+    // TODO: Different acceleration values for accel/decel/elevator position. Side-to-side different?
     public static void configLimitedAccelerationDrive() {
         leftFront.configOpenloopRamp(3, 0);
         leftBack.configOpenloopRamp(3, 0);

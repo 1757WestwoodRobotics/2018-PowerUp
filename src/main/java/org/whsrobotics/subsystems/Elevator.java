@@ -10,6 +10,11 @@ import org.whsrobotics.robot.RobotMap;
 import org.whsrobotics.triggers.LimitSwitch;
 import org.whsrobotics.utils.RobotLogger;
 
+/**
+ * Subsystem for running the robot elevator.
+ *
+ * @author Larry Tseng
+ */
 public class Elevator extends Subsystem {
 
     private static TalonSRX left;
@@ -18,7 +23,7 @@ public class Elevator extends Subsystem {
     private static LimitSwitch topLimit;
     private static LimitSwitch bottomLimit;
 
-    // TODO: Tune! and zero out sensor at bottom
+    // TODO: Retune! and zero out sensor at bottom, put PID setting code at bottom [commented out]
     private static double KP = 0.8;
     private static double KI = 0.0;
     private static double KD = 0.0;
@@ -55,7 +60,7 @@ public class Elevator extends Subsystem {
             left.setNeutralMode(NeutralMode.Brake);
             right.setNeutralMode(NeutralMode.Brake);
 
-            left.configPeakOutputForward(.50, 0);   // TODO: Raise
+            left.configPeakOutputForward(.50, 0);   // TODO: Raise?
             left.configPeakOutputReverse(-.50, 0);
 
             right.follow(left);
@@ -79,7 +84,7 @@ public class Elevator extends Subsystem {
             left.config_kF(0, KF, 0);
             left.selectProfileSlot(0, 0);
 
-            // Motion Magic
+            // Motion Magic //TODO: Retune
             left.configMotionCruiseVelocity(1000, 0);
             left.configMotionAcceleration(500, 0);
 
@@ -126,6 +131,9 @@ public class Elevator extends Subsystem {
         }
     }
 
+    /**
+     * Testing code to easily set PID constants
+     */
     public static void setPID() {
         KP = SmartDashboard.getNumber("KP", KP);
         KI = SmartDashboard.getNumber("KI", KI);
@@ -144,26 +152,52 @@ public class Elevator extends Subsystem {
         System.out.println("KF: " + KF);
     }
 
+    /**
+     * Moves the elevator to a specified elevator position using PID and MotionMagic.
+     *
+     * @see Elevator.Position
+     * @param position The target elevator position
+     */
     public static void moveToPosition(Position position) {
         setPID();   // TEMP
         System.out.println(position.getTarget());
         left.set(ControlMode.MotionMagic, position.getTarget());       // ControlMode.MotionMagic or ControlMode.Position
     }
 
+    /**
+     * Moves the elevator to a specified elevator absolute encoder tick (4096 ticks per revolution).
+     *
+     * @param target The target elevator position defined in absolute encoder ticks
+     */
     public static void moveToDS(int target) {
         setPID();   // TEMP
         System.out.println(target); // TEMP
-        left.set(ControlMode.Position, target);
+        left.set(ControlMode.Position, target); // TODO: Switch to MotionMagic?
     }
 
+    /**
+     * Moves the elevator up (positive) or down (negative) with PercentOutput
+     *
+     * @param speed The speed at which the elevator moves [-1, 1]
+     */
     public static void moveWithVelocity(double speed) {
         left.set(ControlMode.PercentOutput, speed);
     }
 
+    /**
+     * Gets the absolute position of the left talon's encoder
+     *
+     * @return The absolute position of the encoder
+     */
     public static int getEncoderPosition() {
         return left.getSelectedSensorPosition(0);
     }
 
+    /**
+     * Gets the calculated velocity of the left talon's encoder
+     *
+     * @return The calculated velocity of the encoder
+     */
     public static int getEncoderVelocity() {
         return left.getSelectedSensorVelocity(0);
     }

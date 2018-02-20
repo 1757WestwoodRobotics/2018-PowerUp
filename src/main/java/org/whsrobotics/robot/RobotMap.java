@@ -24,7 +24,8 @@ public class RobotMap {
     }
 
     public enum LimitSwitchPort {
-        ELEVATOR_BOTTOM(0), ELEVATOR_TOP(1);
+        ELEVATOR_BOTTOM(0), ELEVATOR_TOP(1),
+        ARM_LEFT(2), ARM_RIGHT(3);
 
         private int port;
 
