@@ -7,23 +7,14 @@ import org.whsrobotics.subsystems.Elevator;
 
 public class MoveCubeGripperDS extends InstantCommand {
 
-    private static MoveCubeGripperDS instance;
+    public MoveCubeGripperDS() {
 
-    private MoveCubeGripperDS() {
-        requires(CubeGripper.getInstance());
-    }
-
-    public static MoveCubeGripperDS getInstance() {
-        if (instance == null) {
-            instance = new MoveCubeGripperDS();
-        }
-
-        return instance;
     }
 
     @Override
     protected void execute() {
-        CubeGripper.moveToDS(OI.getManualTargetCubeGripperPosition());
+        (new MoveCubeGripper(OI.getSelectedCubeGripperPosition())).start();
+
     }
 
 }

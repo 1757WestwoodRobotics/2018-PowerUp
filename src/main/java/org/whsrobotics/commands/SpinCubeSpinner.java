@@ -9,6 +9,7 @@ public class SpinCubeSpinner extends InstantCommand {
 
     public SpinCubeSpinner(CubeSpinner.Mode mode) {
         requires(CubeSpinner.getInstance());
+
         this.mode = mode;
     }
 

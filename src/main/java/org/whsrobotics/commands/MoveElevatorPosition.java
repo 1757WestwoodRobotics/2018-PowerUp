@@ -6,23 +6,17 @@ import org.whsrobotics.subsystems.Elevator;
 
 public class MoveElevatorPosition extends InstantCommand {
 
-    private static MoveElevatorPosition instance;
+    private Elevator.Position position;
 
-    private MoveElevatorPosition() {
+    public MoveElevatorPosition(Elevator.Position position) {
         requires(Elevator.getInstance());
-    }
 
-    public static MoveElevatorPosition getInstance() {
-        if (instance == null) {
-            instance = new MoveElevatorPosition();
-        }
-
-        return instance;
+        this.position = position;
     }
 
     @Override
-    protected void end() {
-        Elevator.moveToPosition(OI.getSelectedElevatorPosition());
+    protected void execute() {
+        Elevator.moveToPosition(position);
     }
 
 }

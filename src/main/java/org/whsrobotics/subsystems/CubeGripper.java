@@ -17,15 +17,15 @@ public class CubeGripper extends Subsystem {
     private static TalonSRX right;
 
     public enum Position {
-        STORE(0), OPEN(100), CLOSE(500), START_MATCH(-90), RECEIVE_CUBE(90);  // TODO: Reflect encoders, DEGREES conversion
+        MIDDLE(0), START_MATCH(-1024), RECEIVE_CUBE(1024);  // TODO: Reflect encoders, DEGREES conversion
 
-        private double target;
+        private int target;
 
-        Position(double target) {
+        Position(int target) {
             this.target = target;
         }
 
-        public double getTarget() {
+        public int getTarget() {
             return target;
         }
     }
@@ -58,7 +58,6 @@ public class CubeGripper extends Subsystem {
             right.configPeakOutputReverse(-.50, 0);
 
             left.setInverted(true);
-            // right.setInverted(true);
 
             // ------------ PID ------------- //
 
@@ -160,6 +159,10 @@ public class CubeGripper extends Subsystem {
         System.out.println(target); // TEMP
         left.set(ControlMode.Position, target);
         right.set(ControlMode.Position, target);
+    }
+
+    public static void moveToPosition(Position position) {
+        moveToDS(position.getTarget());
     }
 
     public static int getLeftEncoderPosition() {
