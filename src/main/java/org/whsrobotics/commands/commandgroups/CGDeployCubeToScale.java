@@ -7,15 +7,15 @@ import org.whsrobotics.commands.SpinCubeSpinner;
 import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.CubeSpinner;
 import org.whsrobotics.subsystems.Elevator;
-import org.whsrobotics.utils.ITimedCommand;
 
-public class CGDeployCubeToScale extends CommandGroup implements ITimedCommand {
+public class CGDeployCubeToScale extends CommandGroup {
 
-    public CGDeployCubeToScale(){
+public CGDeployCubeToScale(){
 
-        addSequential(new MoveElevatorPosition(Elevator.Position.UP));
-       // addSequential(new MoveCubeGripper(CubeGripper.Position.RECEIVE_CUBE));     TODO: Fix Later
-        addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS));  // TODO: Time/Sensor based
-        addSequential(new MoveElevatorPosition(Elevator.Position.DOWN));
+    addSequential(new MoveElevatorPosition(Elevator.Position.UP));
+   // addSequential(new MoveCubeGripper(CubeGripper.Position.RECEIVE_CUBE));     TODO: Fix Later
+    addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS));  // TODO: Time/Sensor based
+    addSequential(new MoveElevatorPosition(Elevator.Position.DOWN));
     }
+
 }
