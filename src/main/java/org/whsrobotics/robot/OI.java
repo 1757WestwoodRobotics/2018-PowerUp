@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.commands.*;
+import org.whsrobotics.commands.commandgroups.CGDeployCubeToScale;
+import org.whsrobotics.commands.commandgroups.CGGrabCube;
 import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.CubeSpinner;
 import org.whsrobotics.subsystems.DriveTrain;
@@ -54,6 +56,9 @@ public class OI {
         publishElevator();
         publishCubeSpinner();
         publishCubeGripper();
+
+        SmartDashboard.putData("CGGrabCube", new CGGrabCube());
+        SmartDashboard.putData("CGDeployCubeToScale", new CGDeployCubeToScale());
 
     }
 

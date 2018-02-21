@@ -23,8 +23,8 @@ public class Robot extends TimedRobot {
 
         OI.getInstance();
 
-        //  DriveTrain.getInstance();
-        //  Elevator.getInstance();
+        DriveTrain.getInstance();
+        Elevator.getInstance();
 
         CubeGripper.getInstance();
         CubeSpinner.getInstance();
