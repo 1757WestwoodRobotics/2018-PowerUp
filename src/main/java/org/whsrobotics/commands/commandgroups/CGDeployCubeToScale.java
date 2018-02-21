@@ -18,5 +18,4 @@ public CGDeployCubeToScale(){
     addSequential(new MoveElevatorPosition(Elevator.Position.DOWN));
     }
 
-
 }
