@@ -6,7 +6,6 @@ import org.whsrobotics.commands.SpinCubeSpinner;
 import org.whsrobotics.commands.TimedCommand;
 import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.CubeSpinner;
-import sun.rmi.rmic.IndentingWriter;
 
 /**
  * Sequence of commands to grab a Power Cube. Opens the robot arms and spins the intake wheels.

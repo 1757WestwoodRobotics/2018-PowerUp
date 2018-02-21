@@ -1,9 +1,7 @@
 package org.whsrobotics.commands;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
-import org.whsrobotics.robot.OI;
 import org.whsrobotics.subsystems.CubeGripper;
-import org.whsrobotics.utils.ITimedCommand;
 
 public class MoveCubeGripper extends InstantCommand {
 
