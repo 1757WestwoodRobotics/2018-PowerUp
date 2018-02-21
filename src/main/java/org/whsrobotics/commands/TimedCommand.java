@@ -12,6 +12,7 @@ public class TimedCommand extends edu.wpi.first.wpilibj.command.TimedCommand {
 
     public TimedCommand(Command command, double timeout) {
         super(timeout);
+        this.command = command;
     }
 
     @Override
