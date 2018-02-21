@@ -177,7 +177,7 @@ public class OI {
 
     private static void publishCubeGripper() {
         cubeGripperModeChooser = new SendableChooser<>();
-        cubeGripperModeChooser.addDefault("Default - MIDDLE", CubeGripper.Position.MIDDLE);
+        cubeGripperModeChooser.addDefault("Default - SWITCH", CubeGripper.Position.MIDDLE);
 
         for (CubeGripper.Position position : CubeGripper.Position.values()) {
             cubeGripperModeChooser.addObject(position.toString(), position);

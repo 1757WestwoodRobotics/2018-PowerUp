@@ -34,7 +34,7 @@ public class Elevator extends Subsystem {
     private static Elevator instance;
 
     public enum Position {
-        DOWN(4000), MIDDLE(10000), UP(25500);
+        DOWN(4000), SWITCH(10000), SCALE_TOP(25500);
 
         private double target;
 

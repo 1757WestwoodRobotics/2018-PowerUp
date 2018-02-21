@@ -11,8 +11,9 @@ import org.whsrobotics.subsystems.Elevator;
 public class CGDeployCubeToSwitch extends CommandGroup{
 
     public CGDeployCubeToSwitch(){
+
         //Brings Elevator to the Middle
-        addSequential(new MoveElevatorPosition(Elevator.Position.MIDDLE));
+        addSequential(new MoveElevatorPosition(Elevator.Position.SWITCH));
         //Spins Cube Outwards
         addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS));
         //Release CubeGripper
