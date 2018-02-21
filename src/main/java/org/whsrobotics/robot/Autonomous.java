@@ -4,10 +4,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import org.whsrobotics.subsystems.DriveTrain;
 import org.whsrobotics.utils.RobotLogger;
 
+/**
+ * Code that runs during Autonomous
+ */
 public class Autonomous {
-
-    // TODO: Convert to a singleton
-    private static Autonomous instance;
 
     private static String gameData = "";
     private static DriverStation.Alliance alliance = DriverStation.Alliance.Invalid;
@@ -19,6 +19,19 @@ public class Autonomous {
 
     public enum StartingPosition {
         LEFT, MIDDLE, RIGHT;
+    }
+
+    private static Autonomous instance;
+
+    private Autonomous() {
+
+    }
+
+    public static Autonomous getInstance() {
+        if (instance == null) {
+            instance = new Autonomous();
+        }
+        return instance;
     }
 
     public static String getGameData() {
@@ -44,10 +57,5 @@ public class Autonomous {
 
         return alliance;
     }
-    public static Autonomous getInstance() {
-        if (instance == null) {
-            instance = new Autonomous();
-        }
-        return instance;
-    }
+
 }
