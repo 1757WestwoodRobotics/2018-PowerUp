@@ -6,18 +6,24 @@ public class TimedCommand extends edu.wpi.first.wpilibj.command.TimedCommand {
 
     private Command command;
 
+    public TimedCommand(double timeout) {
+        super(timeout);
+    }
+
     public TimedCommand(Command command, double timeout) {
         super(timeout);
     }
 
     @Override
     protected void execute() {
-        command.start();
+        if (command != null)
+            command.start();
     }
 
     @Override
     protected void end() {
-        command.cancel();
+        if (command != null)
+            command.cancel();
     }
 
 }

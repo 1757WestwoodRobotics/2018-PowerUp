@@ -1,5 +1,6 @@
 package org.whsrobotics.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -16,12 +17,16 @@ import org.whsrobotics.subsystems.DriveTrain;
 import org.whsrobotics.subsystems.Elevator;
 import org.whsrobotics.triggers.ElevatorVelocityMode;
 
+import java.lang.reflect.Field;
+
 import static org.whsrobotics.robot.RobotMap.XBOX_PORT;
 
 public class OI {
 
     private static XboxController xboxController;
 
+    private static SendableChooser<Autonomous.FieldTarget> fieldTargetChooser;
+    private static SendableChooser<Autonomous.StartingPosition> startingPositionChooser;
     private static SendableChooser<Elevator.Position> elevatorPositionChooser;
     private static SendableChooser<CubeGripper.Position> cubeGripperModeChooser;
     private static SendableChooser<CubeSpinner.Mode> cubeSpinnerModeChooser;
@@ -56,6 +61,7 @@ public class OI {
         publishElevator();
         publishCubeSpinner();
         publishCubeGripper();
+        publishAutonomous();
 
         SmartDashboard.putData("CGGrabCube", new CGGrabCube());
         SmartDashboard.putData("CGDeployCubeToScale", new CGDeployCubeToScale());
@@ -127,6 +133,32 @@ public class OI {
 
     // ------------ AUTONOMOUS METHODS ------------- //
 
+
+    private void publishAutonomous() {
+
+        // Field Target (Manual)
+        fieldTargetChooser = new SendableChooser<>();
+
+        fieldTargetChooser.addDefault("Default - CROSS_LINE", Autonomous.FieldTarget.CROSS_LINE);
+
+        for (Autonomous.FieldTarget target : Autonomous.FieldTarget.values()) {
+            fieldTargetChooser.addObject(target.toString(), target);
+        }
+
+        SmartDashboard.putData("Manual Field Target Chooser", fieldTargetChooser);
+
+        // Robot Starting position
+        startingPositionChooser = new SendableChooser<>();
+
+        startingPositionChooser.addDefault("Default - LEFT", Autonomous.StartingPosition.LEFT);
+
+        for (Autonomous.StartingPosition position : Autonomous.StartingPosition.values()) {
+            startingPositionChooser.addObject(position.toString(), position);
+        }
+
+        SmartDashboard.putData("Starting Position Chooser", startingPositionChooser);
+
+    }
 
     // ------------ ELEVATOR METHODS ------------- //
 
