@@ -39,7 +39,7 @@ public class Autonomous {
             try {
                 gameData = DriverStation.getInstance().getGameSpecificMessage();
             } catch (Exception e) {
-                RobotLogger.err(Autonomous.class, "Error with getting the Game Data! " + e.getMessage());   // TODO: singleton
+                RobotLogger.err(instance.getClass(), "Error with getting the Game Data! " + e.getMessage());
             }
         }
 
@@ -51,7 +51,7 @@ public class Autonomous {
             try {
                 alliance = DriverStation.getInstance().getAlliance();
             } catch (Exception e) {
-                RobotLogger.err(Autonomous.class, "Error with getting the Alliance Data! " + e.getMessage());   // TODO: Singleton
+                RobotLogger.err(instance.getClass(), "Error with getting the Alliance Data! " + e.getMessage());
             }
         }
 
