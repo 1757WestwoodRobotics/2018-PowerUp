@@ -6,8 +6,6 @@ public class DriveForwardTimed extends TimedCommand{
 
     public DriveForwardTimed(double timeout) {
         super(new DriveForward(), timeout);
-
-
-
     }
+
 }
