@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -193,5 +194,26 @@ public class DriveTrain extends Subsystem {
     }
 
     // ------------ PATHFINDER METHODS ------------- //
+
+    // ------------ AUXILIARY COMMANDS ------------- //
+
+    public static Command disableLimitedAcceleration = new Command() {
+
+        @Override
+        protected void execute() {
+            DriveTrain.removeLimitedAccelerationDrive();
+        }
+
+        @Override
+        protected void end() {
+            DriveTrain.configLimitedAccelerationDrive();
+        }
+
+        @Override
+        protected boolean isFinished() {
+            return OI.getXboxController().getBumperReleased(GenericHID.Hand.kRight);
+        }
+
+    };
 
 }

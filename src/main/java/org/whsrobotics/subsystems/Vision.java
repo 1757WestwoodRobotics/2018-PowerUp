@@ -1,9 +1,7 @@
 package org.whsrobotics.subsystems;
 
-import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.communications.JetsonLAN;
-import org.whsrobotics.utils.RobotStatus;
 
 import java.util.Arrays;
 

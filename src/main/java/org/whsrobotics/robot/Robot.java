@@ -1,7 +1,6 @@
 package org.whsrobotics.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.whsrobotics.subsystems.*;
 import org.whsrobotics.utils.RobotLogger;
@@ -21,15 +20,16 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         RobotLogger.log(this.getClass(), "Starting robot");
 
-        OI.getInstance();
-
         DriveTrain.getInstance();
         Elevator.getInstance();
-
         CubeGripper.getInstance();
         CubeSpinner.getInstance();
 
-        //  Arduino.getInstance();
+        Arduino.getInstance();
+        Vision.getInstance();
+
+        Autonomous.getInstance();
+        OI.getInstance();
     }
 
     // ------------ AUTONOMOUS METHODS ------------- //
@@ -40,8 +40,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         RobotLogger.log(this.getClass(), "Starting autonomous");
-
-        // TODO: Create an autonomous class that holds the code for auto init.
+        Autonomous.startInit();
     }
 
     /**
@@ -80,9 +79,5 @@ public class Robot extends TimedRobot {
         // Any time robot goes into disabled (run once)
         RobotLogger.log(this.getClass(), "Entering disabled");
     }
-
-//    @Override
-//    public void disabledPeriodic() {
-//    }
 
 }
