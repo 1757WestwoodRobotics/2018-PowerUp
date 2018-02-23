@@ -40,6 +40,7 @@ public class Arduino extends Subsystem {
         } catch (NullPointerException e) {
             RobotLogger.err(this.getClass(), "Error instantiating the Led control!" + e.getMessage());
         }
+
     }
 
     public static Arduino getInstance() {

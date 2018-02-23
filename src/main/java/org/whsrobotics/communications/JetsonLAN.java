@@ -11,8 +11,8 @@ public class JetsonLAN {
         instance = NetworkTableInstance.getDefault();
         table = instance.getTable("Jetson");
 
-        table.addEntryListener("boxX", (table, key, entry, value, flags) -> {
-
+        table.addEntryListener("Jcommand", (table, key, entry, value, flags) -> {
+            // Do something
         }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
     }

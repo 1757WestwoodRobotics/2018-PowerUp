@@ -4,10 +4,8 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
 import org.whsrobotics.utils.RobotLogger;
 
-
-/*
-    I2C Utility class to send and read data from Arduino. This is a wrapper around the WPI I2C
-    FRC Library.
+/**
+ * I2C Utility class to send and read data from Arduino. This is a wrapper around the WPILib I2C class.
  */
 public class ArduinoI2C {
 
