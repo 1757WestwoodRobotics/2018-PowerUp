@@ -19,7 +19,8 @@ I2C Connectivity - Make sure to connect GND. If not communication will not work.
 
 |Arduino     |    Ultrasound Sensor |
 |-------     |    ----------------- |
-
+| Pin 12     |    Trigger           |
+| Pin 11     |    Echo
 
 
 
