@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.whsrobotics.commands.commandgroups.*;
 import org.whsrobotics.utils.RobotLogger;
+import sun.security.jca.GetInstance;
 
 /**
  * Code that runs at the beginning of Autonomous
@@ -48,7 +49,7 @@ public class Autonomous {
 
     public static void startInit() {
         // get FMS switch/scale side data
-        getGameData();
+        decodeGameData(getGameData());
 
         // get Shuffleboard choosers
         fieldTarget = OI.getSelectedAutoFieldTarget();
@@ -80,8 +81,26 @@ public class Autonomous {
         return gameData;
     }
 
-    // private static FieldCombo decodeGameData(String s)
-    //
+    private static void decodeGameData(String s){
+        switch (s.charAt(0)) {
+            case 'L':
+                switchSide = Ownership.LEFT;
+                break;
+            case 'R':
+                switchSide = Ownership.RIGHT;
+                break;
+        }
+        switch (s.charAt(1)){
+            case 'L':
+                scaleSide = Ownership.LEFT;
+                break;
+            case 'R':
+                scaleSide = Ownership.RIGHT;
+                break;
+        }
+    }
+
+
 
     private static Command decideAutoMode() {
         if (fieldTarget == FieldTarget.NONE) {
