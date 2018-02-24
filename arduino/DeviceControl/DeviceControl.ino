@@ -54,9 +54,13 @@ void setup() {
   Serial.begin(9600);
   pinMode (13, OUTPUT);
   digitalWrite (13, LOW);
-  Wire.begin(DEV_ADDRESS);                // join i2c bus with address #4
-  Wire.onReceive(receiveEvent); // register callback to recieve events
-  Wire.onRequest(requestEvent); // register callback to request events
+   
+  pinMode(TRIG_PIN, OUTPUT);     // Sets the trigPin as an Output
+  pinMode(ECHO_PIN, INPUT);      // Sets the echoPin as an Input
+   
+  Wire.begin(DEV_ADDRESS);       // join i2c bus with address #4
+  Wire.onReceive(receiveEvent);  // register callback to recieve events
+  Wire.onRequest(requestEvent);  // register callback to request events
 }
 
 void loop() {
