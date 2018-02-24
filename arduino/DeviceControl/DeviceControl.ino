@@ -10,6 +10,7 @@
 */
 #include <Wire.h>
 #include <SR04.h>
+#include <FastLED.h>          // Includes the FastLED library
 
 // I2C Section
 #define DEV_ADDRESS 0X4
