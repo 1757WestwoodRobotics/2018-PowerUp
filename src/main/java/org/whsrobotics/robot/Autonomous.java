@@ -77,7 +77,7 @@ public class Autonomous {
         }
         return gameData;
     }
-
+//gamedata
     private static Command decideAutoMode() {
 
         if (fieldTarget == FieldTarget.NONE) {

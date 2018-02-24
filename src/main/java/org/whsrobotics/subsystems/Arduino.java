@@ -1,5 +1,6 @@
 package org.whsrobotics.subsystems;
 
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import org.whsrobotics.communications.ArduinoI2C;
 import org.whsrobotics.utils.RobotLogger;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -20,11 +21,18 @@ public class Arduino extends Subsystem {
     private static ArduinoI2C i2c;
 
     // LED Control Commands ( We can add more based on need
-    public static String LED_OFF    = "0";
-    public static String LED_ON     = "1";
-    public static String REFL_TAPE  = "2";
-    public static String FIND_BOX   = "3";
+    public enum Command{
+        AllLEDsOff(0), RingLEDsRed(1),
+        RingLEDsGreen(2), RingLEDsYellow(3),
+        RingLEDsBlue(4), RingLEDsWhite(5),
+        UltrasonicSend(6), UltrasonicOff(7),
+        LEDStripGreen(8), LEDStripOrange(9),
+        LEDStripRed(10), LEDStripBlue(11),
+        LEDStripWhite(12), AllLEDsPattern(13);
 
+        public int value;
+        Command (int value) {this.value = value;}
+    }
 
     /*
      * We have to define command protocol between Rio and Arduino to do specific actions
