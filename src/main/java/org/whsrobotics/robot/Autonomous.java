@@ -13,6 +13,8 @@ import org.whsrobotics.utils.RobotLogger;
 public class Autonomous {
 
     private static String gameData = "";
+    private static Ownership switchSide;
+    private static Ownership scaleSide;
     private static FieldTarget fieldTarget = FieldTarget.CODE_DECISION;         // Default option
     private static StartingPosition startingPosition = StartingPosition.LEFT;   // Default option
 
@@ -27,8 +29,8 @@ public class Autonomous {
         LEFT, MIDDLE, RIGHT;
     }
 
-    private enum FieldCombo {
-        LSWITCH_LSCALE, LSWITCH_RSCALE, RSWITCH_LSCALE, RSWITCH_RSCALE;
+    public enum Ownership {
+        LEFT, RIGHT;
     }
 
     private static Autonomous instance;
@@ -82,7 +84,6 @@ public class Autonomous {
     //
 
     private static Command decideAutoMode() {
-
         if (fieldTarget == FieldTarget.NONE) {
             return new Command() {
                 @Override
@@ -91,27 +92,15 @@ public class Autonomous {
                 }
             };
         } else if (fieldTarget == FieldTarget.CODE_DECISION) {
-
-            // TODO: Based on FMS data
-            switch (startingPosition) {
-
-                case LEFT:
-                    break;
-                case MIDDLE:
-                    break;
-                case RIGHT:
-                    break;
-
-            }
-
+            // TODO: Make crossField param a SmartDashboard boolean
+            return new AutonomousCommand(startingPosition, switchSide, scaleSide, true);
         } else {
-            return manualAuto();
+            return manualAuto();    // MIGHT NOT IMPLEMENT
         }
 
-        return null;
     }
 
-    // These commands start from the driver station wall
+    // These commands start from the driver station wall TODO: REMOVE?
     private static Command manualAuto() {
 
         if (startingPosition == StartingPosition.LEFT) {
@@ -165,6 +154,8 @@ public class Autonomous {
                     return new AutoRightScale();
             }
 
+        } else {
+            throw new IllegalStateException("No such StartingPosition or FieldTarget!");
         }
 
         return new Command() {
