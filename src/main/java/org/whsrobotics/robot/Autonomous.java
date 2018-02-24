@@ -77,7 +77,10 @@ public class Autonomous {
         }
         return gameData;
     }
-//gamedata
+
+    // private static FieldCombo decodeGameData(String s)
+    //
+
     private static Command decideAutoMode() {
 
         if (fieldTarget == FieldTarget.NONE) {
@@ -105,8 +108,10 @@ public class Autonomous {
             return manualAuto();
         }
 
+        return null;
     }
 
+    // These commands start from the driver station wall
     private static Command manualAuto() {
 
         if (startingPosition == StartingPosition.LEFT) {
