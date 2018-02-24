@@ -30,8 +30,8 @@ public class Arduino extends Subsystem {
         LEDStripRed(10), LEDStripBlue(11),
         LEDStripWhite(12), AllLEDsPattern(13);
 
-        public int value;
-        Command (int value) {this.value = value;}
+       public int value;
+       Command (int value) {this.value = value;}
     }
 
     /*
@@ -63,8 +63,8 @@ public class Arduino extends Subsystem {
      * Based on LED Control Commands control the LED Ring lights connected to Arduuno via I2C Wire.
      */
     
-    public void ledCommand( String command) {
-        i2c.writeData(command.toCharArray());
+    public void Send(Command cmd) {
+        i2c.writeData(cmd.value);
     }
     
     /*

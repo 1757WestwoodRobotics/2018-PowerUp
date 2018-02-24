@@ -6,7 +6,7 @@
    Since there are two ringlights and one array of leds,
    configure the loops properly. 0-23 or 24-48.
 
-   Controls Ultrasound Sensor SR04 from Elegoo 
+   Controls Ultrasound Sensor SR04 from Elegoo
 */
 #include <Wire.h>
 #include <SR04.h>
@@ -14,6 +14,22 @@
 
 // I2C Section
 #define DEV_ADDRESS 0X4
+
+// Device control commands
+#define AllLEDsOff  0
+#define RingLEDsRed 1
+#define RingLEDsGreen 2
+#define RingLEDsYellow 3
+#define RingLEDsBlue 4
+#define RingLEDsWhite 5
+#define UltrasonicSend 6
+#define UltrasonicOff 7
+#define LEDStripGreen 8
+#define LEDStripOrange 9
+#define LEDStripRed 10
+#define LEDStripBlue 11
+#define LEDStripWhite 12
+#define AllLEDsPattern 13
 
 // SR04 Ultrsound Sensor section
 #define TRIG_PIN 12
@@ -55,40 +71,41 @@ void setup() {
   Serial.begin(9600);
   pinMode (13, OUTPUT);
   digitalWrite (13, LOW);
-   
+
   pinMode(TRIG_PIN, OUTPUT);     // Sets the trigPin as an Output
   pinMode(ECHO_PIN, INPUT);      // Sets the echoPin as an Input
-   
+
   Wire.begin(DEV_ADDRESS);       // join i2c bus with address #4
   Wire.onReceive(receiveEvent);  // register callback to recieve events
   Wire.onRequest(requestEvent);  // register callback to request events
 }
 
 void loop() {
-  double a; 
-  a = readSensor(); // Read the ultrsound sensor to see any objects nearby
+  double a;
+  a = readUltrasonicSensor(); // Read the ultrsound sensor to see any objects nearby
+  ledCommands(RingLEDsGreen);
   delay(1000);
 }
 
 // Listens to Wire for a request event and then reads the sensor value and sends it back on the I2C Wire.
-void requestEvent(){
+void requestEvent() {
   double dist;
   String data;
-  
-  dist = readSensor();
+
+  dist = readUltrasonicSensor();
   data = String(dist, 2);
 
   // Write to the wire
-   Wire.beginTransmission(DEV_ADDRESS);
-   Wire.write(data.c_str());
-   Wire.endTransmission();     // stop transmitting
+  Wire.beginTransmission(DEV_ADDRESS);
+  Wire.write(data.c_str());
+  Wire.endTransmission();     // stop transmitting
 }
 
-// Function to read sensor value and convert it to distance in inches.
-double readSensor() {
-  double distance = sr04.Distance()/ 2.54; // Distance read is in cm. convert it to Inches
+// Function to read ultrasonic sensor value to measure distance in cm.
+double readUltrasonicSensor() {
+  double distance = sr04.Distance(); // Distance read is in cm. 
   Serial.print(distance);
-  Serial.println(" - Inches");
+  Serial.println(" - Cms");
   return distance;
 }
 
@@ -108,34 +125,42 @@ void receiveEvent(int howMany)
   }
 
   Serial.println(LED.c_str());
-  ledCommands(LED);
+  ledCommands(LED.toInt());
 }
 
 // LED Control Section
 
-void ledCommands(String cmd)
+void ledCommands(int cmd)
 {
-  if (cmd == "1")
-  {
-    setAllLEDsColor(RED);
-    digitalWrite (13, HIGH);
-  }
-  else if (cmd == "2")
-  {
-    setAllLEDsColor(GREEN); 
-    digitalWrite (13, HIGH);
-  }
+  switch (cmd) {
+    case AllLEDsOff:
+      setAllLEDsColor(OFF);
+      break;
 
-  else if (cmd == "3")
-  {
-    setAllLEDsColor(YELLOW);
-    digitalWrite (13, HIGH);
-  }
+    case RingLEDsRed:
+      setAllLEDsColor(RED);
+      break;
 
-  else
-  {
-    setAllLEDsColor(OFF);
-    digitalWrite (13, LOW);
+    case RingLEDsGreen:
+      setAllLEDsColor(GREEN);
+      break;
+
+    case RingLEDsYellow:
+      setAllLEDsColor(YELLOW);
+      break;
+
+    case RingLEDsBlue:
+    case RingLEDsWhite:
+    case LEDStripGreen:
+    case LEDStripOrange:
+    case LEDStripRed:
+    case LEDStripBlue:
+    case LEDStripWhite:
+    case AllLEDsPattern:
+    default:
+      // Do nothing for now
+      break;
+
   }
   delay(1000);
 }

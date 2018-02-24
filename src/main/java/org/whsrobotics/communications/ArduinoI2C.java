@@ -42,6 +42,14 @@ public class ArduinoI2C {
         return failed;
     }
 
+    public boolean writeData(int data){
+        boolean failed;
+        RobotLogger.log(this.getClass(), "#### Writing message: " + data);
+
+        failed = wire.write(address, data);
+        return failed;
+    }
+
     public String readData() {
 
         byte[] data = new byte[MAX_BYTES];//create a byte array to hold the incoming data
