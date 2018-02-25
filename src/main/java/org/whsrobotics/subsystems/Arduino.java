@@ -25,10 +25,11 @@ public class Arduino extends Subsystem {
         AllLEDsOff(0), RingLEDsRed(1),
         RingLEDsGreen(2), RingLEDsYellow(3),
         RingLEDsBlue(4), RingLEDsWhite(5),
-        UltrasonicSend(6), UltrasonicOff(7),
-        LEDStripGreen(8), LEDStripOrange(9),
-        LEDStripRed(10), LEDStripBlue(11),
-        LEDStripWhite(12), AllLEDsPattern(13);
+        LEDStrip20vHigh(6), LEDStrip20vMed(7),
+        LEDStrip20vLow(8),
+        LEDStripGreen(9), LEDStripOrange(10),
+        LEDStripRed(11), LEDStripBlue(12),
+        LEDStripWhite(13);
 
        public int value;
        Command (int value) {this.value = value;}
