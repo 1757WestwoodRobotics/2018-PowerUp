@@ -17,6 +17,16 @@ I2C Connectivity - Make sure to connect GND. If not communication will not work.
 |GND         |   GND        |
 
 
+Strip Lighting has 2 kinds of light. One can be programmed and the other is just white light 20V. 
+The 20V is controlled by a variable power supply.
+
+|Arduino     | Strip Light  |
+|-------     | ----------   |
+|Data Pin 5  |   DI         |
+|Data Pin 9  |   0-5 Controller |
+|VCC 5V      |   VCC        |
+|GND         |   GND        |
+
 |Arduino     |    Ultrasound Sensor |
 |-------     |    ----------------- |
 | Pin 12     |    Trigger           |
