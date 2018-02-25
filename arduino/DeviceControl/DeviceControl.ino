@@ -22,27 +22,31 @@
 #define RingLEDsYellow 3
 #define RingLEDsBlue 4
 #define RingLEDsWhite 5
-#define UltrasonicSend 6
-#define UltrasonicOff 7
-#define LEDStripGreen 8
-#define LEDStripOrange 9
-#define LEDStripRed 10
-#define LEDStripBlue 11
-#define LEDStripWhite 12
-#define AllLEDsPattern 13
+#define LEDStrip20vHigh 6
+#define LEDStrip20vMed 7
+#define LEDStrip20vLow 8
+#define LEDStripGreen 9
+#define LEDStripOrange 10
+#define LEDStripRed 11
+#define LEDStripBlue 12
+#define LEDStripWhite 13
+#define AllLEDsPattern 14
 
-// SR04 Ultrsound Sensor section
-#define TRIG_PIN 12
-#define ECHO_PIN 11
 
-SR04 sr04 = SR04(ECHO_PIN, TRIG_PIN);
+#define TRIG_PIN          12    // SR04 Ultrsound Sensor
+#define ECHO_PIN          11    // SR04 Ultrsound Sensor
+#define RING_LIGHT_PIN     6    // Ring Light
+#define STRIP_LIGHT_PIN    5    // Strip Light
+#define STRIP_LIGHT_20V    9    // Strip Ligh 20V Lighting
 
 // Ring Light Section
-#define DATA_PIN    6
+SR04 sr04 = SR04(ECHO_PIN, TRIG_PIN);
+
 #define COLOR_ORDER GRB
 #define CHIPSET     WS2812B   // WS2812B has 4 pins/LED, WS2812 has 6 pins/LED
 #define NUM_LEDS    48
 #define DEV_ADDRESS 4
+
 
 CRGB leds[NUM_LEDS];
 
@@ -61,14 +65,25 @@ const CHSV BLUE(160, 255, 255);
 const CHSV YELLOW(64, 255, 255);
 const CHSV OFF(0, 0, 0);
 
+
+// Strip Light Intensity
+#define INTENSITY_HIGH 127
+#define INTENSITY_MED  65
+#define INTENSITY_LOW  0
+
+
 void setup() {
+  // Set up strip light PIN
+  pinMode (STRIP_LIGHT_PIN, OUTPUT);
 
   FastLED.delay(3000); // Sanity delay
-  FastLED.addLeds<CHIPSET, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS); // Initializes leds
+  FastLED.addLeds<CHIPSET, RING_LIGHT_PIN, COLOR_ORDER>(leds, NUM_LEDS); // Initializes leds
   setAllLEDsColor(OFF);
   updateLEDs();
 
   Serial.begin(9600);
+  
+  // Turn off Onboard LED
   pinMode (13, OUTPUT);
   digitalWrite (13, LOW);
 
@@ -83,7 +98,17 @@ void setup() {
 void loop() {
   double a;
   a = readUltrasonicSensor(); // Read the ultrsound sensor to see any objects nearby
+
+  // Test Ring Light Leds
   ledCommands(RingLEDsGreen);
+
+  // Test Strip Lights 20V
+   analogWrite(STRIP_LIGHT_20V, INTENSITY_HIGH);
+  delay(1000);
+  analogWrite(STRIP_LIGHT_20V, INTENSITY_MED);
+  delay(1000);
+  analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
+  
   delay(1000);
 }
 
@@ -156,13 +181,27 @@ void ledCommands(int cmd)
     case LEDStripRed:
     case LEDStripBlue:
     case LEDStripWhite:
+      break;
+    
+    case LEDStrip20vHigh:
+      analogWrite(STRIP_LIGHT_20V, INTENSITY_HIGH);
+      break;
+    
+    case LEDStrip20vMed:
+      analogWrite(STRIP_LIGHT_20V, INTENSITY_MED);
+      break;
+    
+    case LEDStrip20vLow:
+      analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW); 
+      break;
+    
     case AllLEDsPattern:
     default:
       // Do nothing for now
       break;
 
   }
-  delay(1000);
+  delay(300);// 300ms delay for command to complete.
 }
 
 
