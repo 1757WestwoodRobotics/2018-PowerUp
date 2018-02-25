@@ -1,5 +1,6 @@
 package org.whsrobotics.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -8,11 +9,18 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.commands.*;
+import org.whsrobotics.commands.commandgroups.CGDeployCubeToScale;
+import org.whsrobotics.commands.commandgroups.CGGrabCube;
 import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.CubeSpinner;
 import org.whsrobotics.subsystems.DriveTrain;
 import org.whsrobotics.subsystems.Elevator;
 import org.whsrobotics.triggers.ElevatorVelocityMode;
+import org.whsrobotics.utils.RobotLogger;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.lang.reflect.Field;
 
 import static org.whsrobotics.robot.RobotMap.XBOX_PORT;
 
@@ -20,6 +28,8 @@ public class OI {
 
     private static XboxController xboxController;
 
+    private static SendableChooser<Autonomous.FieldTarget> fieldTargetChooser;
+    private static SendableChooser<Autonomous.StartingPosition> startingPositionChooser;
     private static SendableChooser<Elevator.Position> elevatorPositionChooser;
     private static SendableChooser<CubeGripper.Position> cubeGripperModeChooser;
     private static SendableChooser<CubeSpinner.Mode> cubeSpinnerModeChooser;
@@ -30,30 +40,16 @@ public class OI {
         xboxController = new XboxController(XBOX_PORT);
         // (new JoystickButton(xboxController, 0)).whenPressed(new DefaultDrive());
 
-        (new JoystickButton(xboxController, XboxButton.kBumperRight.getValue())).whenPressed(new Command() {
-
-            @Override
-            protected void execute() {
-                DriveTrain.removeLimitedAccelerationDrive();
-            }
-
-            @Override
-            protected void end() {
-                DriveTrain.configLimitedAccelerationDrive();
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return xboxController.getBumperReleased(GenericHID.Hand.kRight);
-            }
-
-        });
-
+        (new JoystickButton(xboxController, XboxButton.kBumperRight.getValue())).whenPressed(DriveTrain.disableLimitedAcceleration);
         (new ElevatorVelocityMode()).whenActive(new MoveElevatorVelocity());
 
         publishElevator();
         publishCubeSpinner();
         publishCubeGripper();
+        publishAutonomous();
+
+        SmartDashboard.putData("CGGrabCube", new CGGrabCube());
+        SmartDashboard.putData("CGDeployCubeToScale", new CGDeployCubeToScale());
 
     }
 
@@ -122,6 +118,38 @@ public class OI {
 
     // ------------ AUTONOMOUS METHODS ------------- //
 
+    private void publishAutonomous() {
+
+        // Field Target (Manual)
+        fieldTargetChooser = new SendableChooser<>();
+        fieldTargetChooser.addDefault("Default - CODE_DECISION", Autonomous.FieldTarget.CODE_DECISION);
+
+        for (Autonomous.FieldTarget target : Autonomous.FieldTarget.values()) {
+            fieldTargetChooser.addObject(target.toString(), target);
+        }
+
+        SmartDashboard.putData("Manual Field Target Chooser", fieldTargetChooser);
+
+        // Robot Starting position
+        startingPositionChooser = new SendableChooser<>();
+        startingPositionChooser.addDefault("Default - LEFT", Autonomous.StartingPosition.LEFT);
+
+        for (Autonomous.StartingPosition position : Autonomous.StartingPosition.values()) {
+            startingPositionChooser.addObject(position.toString(), position);
+        }
+
+        SmartDashboard.putData("Starting Position Chooser", startingPositionChooser);
+
+    }
+
+    public static Autonomous.FieldTarget getSelectedAutoFieldTarget() {
+        return fieldTargetChooser.getSelected();
+    }
+
+    public static Autonomous.StartingPosition getSelectedAutoStartingPosition() {
+        return startingPositionChooser.getSelected();
+    }
+
 
     // ------------ ELEVATOR METHODS ------------- //
 
@@ -172,7 +200,7 @@ public class OI {
 
     private static void publishCubeGripper() {
         cubeGripperModeChooser = new SendableChooser<>();
-        cubeGripperModeChooser.addDefault("Default - MIDDLE", CubeGripper.Position.MIDDLE);
+        cubeGripperModeChooser.addDefault("Default - SWITCH", CubeGripper.Position.MIDDLE);
 
         for (CubeGripper.Position position : CubeGripper.Position.values()) {
             cubeGripperModeChooser.addObject(position.toString(), position);
@@ -189,6 +217,23 @@ public class OI {
 
     public static CubeGripper.Position getSelectedCubeGripperPosition() {
         return cubeGripperModeChooser.getSelected();
+    }
+
+
+    // ------------ DRIVER STATION / FMS ------------- //
+
+    private static DriverStation.Alliance alliance = DriverStation.Alliance.Invalid;
+
+    public static DriverStation.Alliance getAlliance() {
+        if (alliance == DriverStation.Alliance.Invalid) {
+            try {
+                alliance = DriverStation.getInstance().getAlliance();
+            } catch (Exception e) {
+                RobotLogger.err(instance.getClass(), "Error with getting the Alliance Data! " + e.getMessage());
+            }
+        }
+
+        return alliance;
     }
 
 }

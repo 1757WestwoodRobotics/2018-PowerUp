@@ -34,7 +34,7 @@ public class Elevator extends Subsystem {
     private static Elevator instance;
 
     public enum Position {
-        DOWN(4000), MIDDLE(10000), UP(25500);
+        DOWN(4000), SWITCH(10000), SCALE_TOP(25500);
 
         private double target;
 
@@ -54,8 +54,8 @@ public class Elevator extends Subsystem {
 
             // ------------ HARDWARE ------------- //
 
-            left = new TalonSRX(RobotMap.MotorControllerPort.ELEVATOR_LEFT.getPort());
-            right = new TalonSRX(RobotMap.MotorControllerPort.ELEVATOR_RIGHT.getPort());
+            left = new TalonSRX(RobotMap.MotorControllerPort.ELEVATOR_LEFT.port);
+            right = new TalonSRX(RobotMap.MotorControllerPort.ELEVATOR_RIGHT.port);
 
             left.setNeutralMode(NeutralMode.Brake);
             right.setNeutralMode(NeutralMode.Brake);
@@ -90,8 +90,8 @@ public class Elevator extends Subsystem {
 
             // ------------ LIMIT SWITCH ------------- //
 
-            topLimit = new LimitSwitch(RobotMap.LimitSwitchPort.ELEVATOR_TOP.getPort());
-            bottomLimit = new LimitSwitch(RobotMap.LimitSwitchPort.ELEVATOR_BOTTOM.getPort());
+            topLimit = new LimitSwitch(RobotMap.DigitalInputPort.ELEVATOR_TOP.port);
+            bottomLimit = new LimitSwitch(RobotMap.DigitalInputPort.ELEVATOR_BOTTOM.port);
 
         } catch (Exception e) {
             RobotLogger.err(instance.getClass(), "Error setting up / configuring Elevator hardware!" + e.getMessage());

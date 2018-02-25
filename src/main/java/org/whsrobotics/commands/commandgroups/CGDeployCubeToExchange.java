@@ -9,15 +9,12 @@ import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.CubeSpinner;
 import org.whsrobotics.subsystems.Elevator;
 
-public class CGDeployCubeToScale extends CommandGroup {
+public class CGDeployCubeToExchange extends CommandGroup {
 
-    public CGDeployCubeToScale(){
-
-        addSequential(new MoveElevatorPosition(Elevator.Position.SCALE_TOP));
-        // addSequential(new MoveCubeGripper(CubeGripper.Position.RECEIVE_CUBE));     TODO: Fix Later
-        addSequential(new TimedCommand(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS),3));  // TODO: Sensor based
+    public CGDeployCubeToExchange(){
         addSequential(new MoveElevatorPosition(Elevator.Position.DOWN));
-
+        addSequential (new TimedCommand(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS),3));
+        addSequential(new MoveCubeGripper(CubeGripper.Position.RECEIVE_CUBE));
+     //Elevator Down Spin Outwards Open Arms
     }
-
 }

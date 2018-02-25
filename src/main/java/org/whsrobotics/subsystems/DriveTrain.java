@@ -6,11 +6,13 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.commands.DefaultDrive;
 import org.whsrobotics.robot.OI;
+import org.whsrobotics.robot.Robot;
 import org.whsrobotics.robot.RobotMap;
 import org.whsrobotics.utils.RobotLogger;
 
@@ -27,8 +29,8 @@ public class DriveTrain extends Subsystem {
     private static DifferentialDrive differentialDrive;
 
     private static AHRS navX;
-//    private static Encoder leftEncoder;
-//    private static Encoder rightEncoder;
+    private static Encoder leftEncoder;
+    private static Encoder rightEncoder;
 
     private static PIDController rotationPIDController;
 
@@ -44,10 +46,10 @@ public class DriveTrain extends Subsystem {
     private DriveTrain() {
 
         try {
-            leftFront = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_LEFT_FRONT.getPort());
-            leftBack = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_LEFT_BACK.getPort());
-            rightFront = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_RIGHT_FRONT.getPort());
-            rightBack = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_RIGHT_BACK.getPort());
+            leftFront = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_LEFT_FRONT.port);
+            leftBack = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_LEFT_BACK.port);
+            rightFront = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_RIGHT_FRONT.port);
+            rightBack = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_RIGHT_BACK.port);
 
             leftFront.configPeakOutputForward(1, 0);
             leftBack.configPeakOutputForward(1, 0);
@@ -66,6 +68,16 @@ public class DriveTrain extends Subsystem {
 
             navX = new AHRS(RobotMap.NAVX_PORT);
             resetNavXYaw();
+
+            leftEncoder = new Encoder(RobotMap.DigitalInputPort.ENCODER_LEFT_A.port,
+                    RobotMap.DigitalInputPort.ENCODER_LEFT_B.port,
+                    RobotMap.DigitalInputPort.ENCODER_LEFT_INDEX.port);
+            leftEncoder.setDistancePerPulse(0);  // Circumference (in meters)/2048 (resolution of the encoder)
+            rightEncoder = new Encoder(RobotMap.DigitalInputPort.ENCODER_RIGHT_A.port,
+                    RobotMap.DigitalInputPort.ENCODER_RIGHT_B.port,
+                    RobotMap.DigitalInputPort.ENCODER_RIGHT_INDEX.port);
+            rightEncoder.setDistancePerPulse(0);
+            resetEncoders();
 
         } catch (NullPointerException e) {
             RobotLogger.err(this.getClass(), "Error instantiating the DriveTrain hardware!" + e.getMessage());
@@ -143,6 +155,29 @@ public class DriveTrain extends Subsystem {
         return navX.getYaw();
     }
 
+    // ------------ ENCODER METHODS ------------- //
+
+    private static void resetEncoders() {
+        leftEncoder.reset();
+        rightEncoder.reset();
+    }
+
+    private static int getLeftEncoderCount() {
+        return leftEncoder.get();
+    }
+
+    private static int getRightEncoderCount() {
+        return rightEncoder.get();
+    }
+
+    private static double getLeftEncoderDistance() {
+        return leftEncoder.getDistance();
+    }
+
+    private static double getRightEncoderDistance() {
+        return rightEncoder.getDistance();
+    }
+
     // ------------ ANGLE TURNING / ROTATION PID METHODS ------------- //
 
     public static boolean initializeRotationPIDController() {
@@ -193,5 +228,26 @@ public class DriveTrain extends Subsystem {
     }
 
     // ------------ PATHFINDER METHODS ------------- //
+
+    // ------------ AUXILIARY COMMANDS ------------- //
+
+    public static Command disableLimitedAcceleration = new Command() {
+
+        @Override
+        protected void execute() {
+            DriveTrain.removeLimitedAccelerationDrive();
+        }
+
+        @Override
+        protected void end() {
+            DriveTrain.configLimitedAccelerationDrive();
+        }
+
+        @Override
+        protected boolean isFinished() {
+            return OI.getXboxController().getBumperReleased(GenericHID.Hand.kRight);
+        }
+
+    };
 
 }
