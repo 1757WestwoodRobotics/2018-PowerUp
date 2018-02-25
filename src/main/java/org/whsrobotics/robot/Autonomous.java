@@ -18,8 +18,6 @@ public class Autonomous {
     private static FieldTarget fieldTarget = FieldTarget.CODE_DECISION;         // Default option
     private static StartingPosition startingPosition = StartingPosition.LEFT;   // Default option
 
-    private static Command autonomousCommand;
-
     public enum FieldTarget {
         CODE_DECISION, NONE, CROSS_LINE, PC_ZONE, EXCHANGE,
         LEFT_SWITCH, RIGHT_SWITCH, LEFT_SCALE, RIGHT_SCALE;
@@ -47,10 +45,17 @@ public class Autonomous {
     }
 
     public static void startInit() {
-        // get FMS switch/scale side data
-        decodeGameData(getGameData());
 
-        // get Shuffleboard choosers
+        // Try to get FMS switch/scale game data. If it fails, only cross the baseline and end.
+        try {
+            decodeGameData(getGameData());
+        } catch (IllegalArgumentException e) {
+            RobotLogger.err(instance.getClass(), "Error with decoding game data!");
+            new AutoCrossLine().start();    // queue AutoCrossLine
+            return;                         // exit out of the method
+        }
+
+        // get Shuffleboard selections
         fieldTarget = OI.getSelectedAutoFieldTarget();
         startingPosition = OI.getSelectedAutoStartingPosition();
 
@@ -65,7 +70,7 @@ public class Autonomous {
         }
         // Set arduino light strips to alliance color (it should be white or alternating at this point)
 
-        // choose commandgroup
+        // choose manual commandgroup
         decideAutoMode().start();
     }
 
@@ -74,14 +79,20 @@ public class Autonomous {
             try {
                 gameData = DriverStation.getInstance().getGameSpecificMessage();
             } catch (Exception e) {
-                RobotLogger.err(instance.getClass(), "Error with getting the Game Data! " + e.getMessage());
+                RobotLogger.err(instance.getClass(), "Error getting the Game Data! " + e.getMessage());
             }
         }
         return gameData;
     }
 
-    private static void decodeGameData(String s){
-        switch (s.charAt(0)) {
+    private static void decodeGameData(String data){
+
+        if (data.isEmpty() || data.length() != 3) {
+            throw new IllegalArgumentException("Error with game data!");
+        }
+
+        // data.charAt(0) returns the side of the closest switch
+        switch (data.charAt(0)) {
             case 'L':
                 switchSide = Ownership.LEFT;
                 break;
@@ -89,7 +100,9 @@ public class Autonomous {
                 switchSide = Ownership.RIGHT;
                 break;
         }
-        switch (s.charAt(1)){
+
+        // data.chatAt(1) returns the side of the scale
+        switch (data.charAt(1)) {
             case 'L':
                 scaleSide = Ownership.LEFT;
                 break;
@@ -97,6 +110,7 @@ public class Autonomous {
                 scaleSide = Ownership.RIGHT;
                 break;
         }
+        
     }
 
 
@@ -110,10 +124,10 @@ public class Autonomous {
                 }
             };
         } else if (fieldTarget == FieldTarget.CODE_DECISION) {
-            // TODO: Make crossField param a SmartDashboard boolean
+            // TODO: Make crossField param a SmartDashboard boolean?
             return new AutonomousCommand(startingPosition, switchSide, scaleSide, true);
         } else {
-            return manualAuto();    // MIGHT NOT IMPLEMENT
+            return manualAuto();    // MIGHT NOT IMPLEMENT. ONLY IF DRIVER SELECTS SOMETHING OTHER THAN NONE/CODE_DEC
         }
 
     }

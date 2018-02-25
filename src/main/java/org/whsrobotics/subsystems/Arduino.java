@@ -25,7 +25,7 @@ public class Arduino extends Subsystem {
         AllLEDsOff(0), RingLEDsRed(1),
         RingLEDsGreen(2), RingLEDsYellow(3),
         RingLEDsBlue(4), RingLEDsWhite(5),
-        UltrasonicSend(6), UltrasonicOff(7),
+        Ultrasonic1(6), Ultrasonic2(7),
         LEDStripGreen(8), LEDStripOrange(9),
         LEDStripRed(10), LEDStripBlue(11),
         LEDStripWhite(12), AllLEDsPattern(13);
