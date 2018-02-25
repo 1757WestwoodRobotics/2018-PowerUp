@@ -23,7 +23,7 @@ The 20V is controlled by a variable power supply.
 |Arduino     | Strip Light  |
 |-------     | ----------   |
 |Data Pin 5  |   DI         |
-|Data Pin 9  |   0-5 Controller |
+|Data Pin 9  |   0-5v Controller |
 |VCC 5V      |   VCC        |
 |GND         |   GND        |
 
