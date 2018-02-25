@@ -11,30 +11,22 @@ public class RobotMap {
         GRIPPER_LEFT(11), GRIPPER_RIGHT(13),
         SPINNER_LEFT(12), SPINNER_RIGHT(14);
 
-        private int port;
+        public int port;
 
         MotorControllerPort(int port) {
             this.port = port;
         }
-
-        public int getPort() {
-            return this.port;
-        }
-
     }
 
-    public enum LimitSwitchPort {
+    public enum DigitalInputPort {
         ELEVATOR_BOTTOM(0), ELEVATOR_TOP(1),
-        ARM_LEFT(2), ARM_RIGHT(3);
+        ENCODER_LEFT_A(2), ENCODER_LEFT_B(3), ENCODER_LEFT_INDEX(4),
+        ENCODER_RIGHT_A(5), ENCODER_RIGHT_B(6), ENCODER_RIGHT_INDEX(7);
 
-        private int port;
+        public int port;
 
-        LimitSwitchPort(int port) {
+        DigitalInputPort(int port) {
             this.port = port;
-        }
-
-        public int getPort() {
-            return this.port;
         }
     }
 
