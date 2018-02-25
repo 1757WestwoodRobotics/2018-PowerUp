@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.whsrobotics.commands.commandgroups.*;
 import org.whsrobotics.utils.RobotLogger;
-import sun.security.jca.GetInstance;
 
 /**
  * Code that runs at the beginning of Autonomous
