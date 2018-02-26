@@ -2,10 +2,7 @@ package org.whsrobotics.commands.commandgroups;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import org.whsrobotics.commands.MoveCubeGripper;
-import org.whsrobotics.commands.MoveElevatorPosition;
-import org.whsrobotics.commands.SpinCubeSpinner;
-import org.whsrobotics.commands.TimedCommand;
+import org.whsrobotics.commands.*;
 import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.CubeSpinner;
 import org.whsrobotics.subsystems.Elevator;
@@ -19,7 +16,7 @@ public class CGGrabCube extends CommandGroup {
 
         addSequential(new MoveElevatorPosition(Elevator.Position.DOWN));
 
-            // Move the CubeGripper arms to the RECEIVE_CUBE position
+            // Move the CubeGripper arms to a position
         addSequential(new MoveCubeGripper(CubeGripper.Position.MIDDLE));
         addSequential(new TimedCommand(0.5));
 
@@ -29,13 +26,7 @@ public class CGGrabCube extends CommandGroup {
         addSequential(new SpinCubeSpinner(CubeSpinner.Mode.INWARDS));
         addSequential(new TimedCommand(2));
 
-        addSequential(new Command() {
-            @Override
-            protected boolean isFinished() {
-                CubeGripper.applyConstantVoltage();
-                return true;
-            }
-        });
+        addSequential(new CubeGripperApplyConstantVoltage());
 
         addSequential(new TimedCommand(0.5));
         addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OFF));

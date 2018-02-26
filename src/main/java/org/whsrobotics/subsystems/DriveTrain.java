@@ -85,7 +85,7 @@ public class DriveTrain extends Subsystem {
             resetEncoders();
 
         } catch (NullPointerException e) {
-            RobotLogger.err(this.getClass(), "Error instantiating the DriveTrain hardware!" + e.getMessage());
+            RobotLogger.getInstance().err(this.getClass(), "Error instantiating the DriveTrain hardware!" + e.getMessage());
 
         }
 
@@ -114,7 +114,7 @@ public class DriveTrain extends Subsystem {
             SmartDashboard.putNumber("RB", rightBack.getMotorOutputVoltage());
             SmartDashboard.putNumber("Xbox", OI.checkXboxDeadzone(OI.getXboxController().getX(GenericHID.Hand.kRight)));
         } catch (Exception e) {
-            RobotLogger.err(instance.getClass(), "Error reading NavX data!" + e.getMessage());
+            RobotLogger.getInstance().err(instance.getClass(), "Error reading NavX data!" + e.getMessage());
         }
     }
 
@@ -199,7 +199,7 @@ public class DriveTrain extends Subsystem {
                 rotationPIDController.disable();
 
             } catch (Exception e) {
-                RobotLogger.err(instance.getClass(), "Error creating the DriveTrain Rotation PIDController!" + e.getMessage());
+                RobotLogger.getInstance().err(instance.getClass(), "Error creating the DriveTrain Rotation PIDController!" + e.getMessage());
                 return false;
             }
 
@@ -210,12 +210,12 @@ public class DriveTrain extends Subsystem {
     }
 
     public static void enableRotationPIDController() {
-        RobotLogger.log(instance.getClass(), "Enabling rotationPIDController");
+        RobotLogger.getInstance().log(instance.getClass(), "Enabling rotationPIDController");
         rotationPIDController.enable();
     }
 
     public static void disableRotationPIDController() {
-        RobotLogger.log(instance.getClass(), "Disabling rotationPIDController");
+        RobotLogger.getInstance().log(instance.getClass(), "Disabling rotationPIDController");
         rotationPIDController.disable();
     }
 
@@ -296,3 +296,4 @@ public class DriveTrain extends Subsystem {
     };
 
 }
+

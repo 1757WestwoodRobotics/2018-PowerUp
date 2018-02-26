@@ -167,7 +167,6 @@ public class OI {
 
         SmartDashboard.putData("Elevator Chooser", elevatorPositionChooser);
 
-        // SmartDashboard.putData("Elevator - Manual Entry", MoveElevatorDS.getInstance());
         SmartDashboard.putData("Elevator - Position", new MoveElevatorDS());
 
         SmartDashboard.putData("Reset Elevator Encoders", Elevator.resetEncoderPositionCommand);
@@ -177,10 +176,6 @@ public class OI {
     public static Elevator.Position getSelectedElevatorPosition() {
         System.out.println("getSelectedElevatorPosition");
         return elevatorPositionChooser.getSelected();
-    }
-
-    public static int getManualTargetElevatorPosition() {
-        return (int) SmartDashboard.getNumber("Elevator Target Position", Elevator.Position.DOWN.getTarget());
     }
 
 
@@ -218,18 +213,7 @@ public class OI {
 
         SmartDashboard.putData("Disable CubeGripper Mode", CubeGripper.disableOutputCommand);
         SmartDashboard.putData("Reset CubeGripper Encoders", CubeGripper.resetEncoderPositionCommand);
-        SmartDashboard.putData("CubeGripper Constant Voltage", new Command() {
-
-            @Override
-            protected void execute() {
-                CubeGripper.applyConstantVoltage();
-            }
-
-            @Override
-            protected boolean isFinished() {
-                return true;
-            }
-        });
+        SmartDashboard.putData("CubeGripper Constant Voltage", new CubeGripperApplyConstantVoltage());
 
     }
 
@@ -247,7 +231,7 @@ public class OI {
             try {
                 alliance = DriverStation.getInstance().getAlliance();
             } catch (Exception e) {
-                RobotLogger.err(instance.getClass(), "Error with getting the Alliance Data! " + e.getMessage());
+                RobotLogger.getInstance().err(instance.getClass(), "Error with getting the Alliance Data! " + e.getMessage());
             }
         }
 

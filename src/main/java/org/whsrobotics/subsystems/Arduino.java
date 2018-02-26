@@ -47,7 +47,7 @@ public class Arduino extends Subsystem {
             }
 
         } catch (NullPointerException e) {
-            RobotLogger.err(this.getClass(), "Error instantiating the Led control!" + e.getMessage());
+            RobotLogger.getInstance().err(this.getClass(), "Error instantiating the Led control!" + e.getMessage());
         }
 
     }
@@ -79,7 +79,7 @@ public class Arduino extends Subsystem {
         double distance = -1; // Error condition where sensor fails
 
 //        if (i2c.isNotAddressable()) {
-//            RobotLogger.err(this.getClass(), "Unable to address Arduino!");
+//            RobotLogger.getInstance().err(this.getClass(), "Unable to address Arduino!");
 //        } else {
             String data = i2c.readData();
             // convert this to a double and send it out.

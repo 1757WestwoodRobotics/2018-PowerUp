@@ -36,7 +36,7 @@ public class ArduinoI2C {
             WriteData[i] = (byte) charArray[i];
         }
 
-        RobotLogger.log(this.getClass(), "#### Writing message: " + new String(charArray));
+        RobotLogger.getInstance().log(this.getClass(), "#### Writing message: " + new String(charArray));
 
         failed = wire.writeBulk(WriteData, WriteData.length);
         return failed;
@@ -44,7 +44,7 @@ public class ArduinoI2C {
 
     public boolean writeData(int data){
         boolean failed;
-        RobotLogger.log(this.getClass(), "#### Writing message: " + data);
+        RobotLogger.getInstance().log(this.getClass(), "#### Writing message: " + data);
         System.out.println("#### Writing message: " + data);
 
         failed = wire.write(address, data);

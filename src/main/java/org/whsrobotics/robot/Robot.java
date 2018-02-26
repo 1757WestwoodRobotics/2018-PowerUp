@@ -21,7 +21,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        RobotLogger.log(this.getClass(), "Starting robot");
+        RobotLogger.getInstance().log(this.getClass(), "Starting robot");
 
         DriveTrain.getInstance();
         Elevator.getInstance();
@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        RobotLogger.log(this.getClass(), "Starting autonomous");
+        RobotLogger.getInstance().log(this.getClass(), "Starting autonomous");
         Autonomous.startInit();
     }
 
@@ -62,7 +62,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
-        RobotLogger.log(this.getClass(), "Starting teleop");
+        RobotLogger.getInstance().log(this.getClass(), "Starting teleop");
     }
 
     /**
@@ -90,7 +90,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         // Any time robot goes into disabled (run once)
-        RobotLogger.log(this.getClass(), "Entering disabled");
+        RobotLogger.getInstance().log(this.getClass(), "Entering disabled");
     }
 
 }
