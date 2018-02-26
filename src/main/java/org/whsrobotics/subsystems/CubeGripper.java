@@ -18,7 +18,7 @@ public class CubeGripper extends Subsystem {
     private static TalonSRX right;
 
     public enum Position {
-        MIDDLE(0), START_MATCH(-1024), RECEIVE_CUBE(1024);  // TODO: Reflect encoders, DEGREES conversion
+        START_MATCH(0), MIDDLE(1024), RECEIVE_CUBE(2048);  // Native Encoder Units TODO: Change REC_CUBE value to open more
 
         private int target;
 
@@ -65,14 +65,14 @@ public class CubeGripper extends Subsystem {
             left.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
             right.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
 
-            left.configReverseSoftLimitThreshold(-533,0);   // Native units
-            left.configForwardSoftLimitThreshold(1200,0);
+            left.configReverseSoftLimitThreshold(0,0);   // Native units
+            left.configForwardSoftLimitThreshold(2200,0);
 
             left.configReverseSoftLimitEnable(true, 0);
             left.configForwardSoftLimitEnable(true, 0);
 
-            right.configReverseSoftLimitThreshold(-533,0);   // Native units
-            right.configForwardSoftLimitThreshold(1200,0);
+            right.configReverseSoftLimitThreshold(0,0);   // Native units
+            right.configForwardSoftLimitThreshold(2200,0);
 
             right.configReverseSoftLimitEnable(true, 0);
             right.configForwardSoftLimitEnable(true, 0);
@@ -101,7 +101,7 @@ public class CubeGripper extends Subsystem {
             right.configMotionAcceleration(200, 0);
 
         } catch (Exception e) {
-            RobotLogger.err(this.getClass(), "Error instantiating CubeGripper hardware" + e.getMessage());
+            RobotLogger.getInstance().err(this.getClass(), "Error instantiating CubeGripper hardware" + e.getMessage());
 
         }
 
@@ -134,10 +134,10 @@ public class CubeGripper extends Subsystem {
             SmartDashboard.putNumber("CubeGripRightPos", getRightEncoderPosition());
             SmartDashboard.putNumber("CubeGripRightVel", getRightEncoderVelocity());
 
-            SmartDashboard.putNumber("CubeGripLeftPIDPosition", left.getClosedLoopTarget(0));
-            SmartDashboard.putNumber("CubeGripRightPIDPosition", right.getClosedLoopTarget(0));
+//            SmartDashboard.putNumber("CubeGripLeftPIDPosition", left.getClosedLoopTarget(0));
+//            SmartDashboard.putNumber("CubeGripRightPIDPosition", right.getClosedLoopTarget(0));
         } catch (Exception e) {
-            RobotLogger.err(instance.getClass(), "Can't get CubeGripper encoder data!" + e.getMessage());
+            RobotLogger.getInstance().err(instance.getClass(), "Can't get CubeGripper encoder data!" + e.getMessage());
         }
     }
 
@@ -210,20 +210,6 @@ public class CubeGripper extends Subsystem {
     }
 
     // ------------ AUXILIARY COMMANDS ------------- //
-
-    public static Command applyConstantVoltageCommand = new Command() {
-
-        @Override
-        protected void execute() {
-            applyConstantVoltage();
-        }
-
-        @Override
-        protected boolean isFinished() {
-            return true;
-        }
-
-    };
 
     public static Command resetEncoderPositionCommand = new Command() {
 

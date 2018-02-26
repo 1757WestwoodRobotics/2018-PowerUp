@@ -45,7 +45,7 @@ public class CubeSpinner extends Subsystem {
             right.follow(left);
 
         } catch (Exception e) {
-            RobotLogger.err(this.getClass(), "Error instantiating CubeSpinner hardware" + e.getMessage());
+            RobotLogger.getInstance().err(this.getClass(), "Error instantiating CubeSpinner hardware" + e.getMessage());
 
         }
 

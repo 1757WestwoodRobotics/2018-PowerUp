@@ -25,6 +25,11 @@ public class TimedCommand extends edu.wpi.first.wpilibj.command.TimedCommand {
     protected void end() {
         if (command != null)
             command.cancel();
+        System.out.println("Ending TimedCommand");
     }
 
+    @Override
+    protected boolean isFinished() {
+        return super.isFinished();
+    }
 }
