@@ -32,8 +32,8 @@ public class CubeSpinner extends Subsystem {
     private CubeSpinner() {
 
         try {
-            left = new TalonSRX(RobotMap.MotorControllerPort.SPINNER_LEFT.getPort());
-            right = new TalonSRX(RobotMap.MotorControllerPort.SPINNER_RIGHT.getPort());
+            left = new TalonSRX(RobotMap.MotorControllerPort.SPINNER_LEFT.port);
+            right = new TalonSRX(RobotMap.MotorControllerPort.SPINNER_RIGHT.port);
 
             left.setNeutralMode(NeutralMode.Coast);
             right.setNeutralMode(NeutralMode.Coast);

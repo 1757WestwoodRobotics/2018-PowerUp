@@ -46,8 +46,8 @@ public class CubeGripper extends Subsystem {
 
             // ------------ HARDWARE ------------- //
 
-            left = new TalonSRX(RobotMap.MotorControllerPort.GRIPPER_LEFT.getPort());
-            right = new TalonSRX(RobotMap.MotorControllerPort.GRIPPER_RIGHT.getPort());
+            left = new TalonSRX(RobotMap.MotorControllerPort.GRIPPER_LEFT.port);
+            right = new TalonSRX(RobotMap.MotorControllerPort.GRIPPER_RIGHT.port);
 
             left.setNeutralMode(NeutralMode.Brake);
             right.setNeutralMode(NeutralMode.Brake);
