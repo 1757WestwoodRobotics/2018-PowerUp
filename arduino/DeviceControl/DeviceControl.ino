@@ -44,9 +44,7 @@ SR04 sr04 = SR04(ECHO_PIN, TRIG_PIN);
 
 #define COLOR_ORDER GRB
 #define CHIPSET     WS2812B   // WS2812B has 4 pins/LED, WS2812 has 6 pins/LED
-#define NUM_LEDS    48
-#define DEV_ADDRESS 4
-
+#define NUM_LEDS    82
 
 CRGB leds[NUM_LEDS];
 
@@ -63,6 +61,7 @@ const CHSV GREEN(100, 255, 255);
 const CHSV RED(0, 255, 255);
 const CHSV BLUE(160, 255, 255);
 const CHSV YELLOW(64, 255, 255);
+const CHSV WHITE(0, 0, 255);
 const CHSV OFF(0, 0, 0);
 
 
@@ -82,7 +81,7 @@ void setup() {
   updateLEDs();
 
   Serial.begin(9600);
-  
+
   // Turn off Onboard LED
   pinMode (13, OUTPUT);
   digitalWrite (13, LOW);
@@ -97,18 +96,18 @@ void setup() {
 
 void loop() {
   double a;
-  a = readUltrasonicSensor(); // Read the ultrsound sensor to see any objects nearby
+  // a = readUltrasonicSensor(); // Read the ultrsound sensor to see any objects nearby
 
   // Test Ring Light Leds
-  ledCommands(RingLEDsGreen);
+  //ledCommands(RingLEDsGreen);
 
   // Test Strip Lights 20V
-   analogWrite(STRIP_LIGHT_20V, INTENSITY_HIGH);
+  analogWrite(STRIP_LIGHT_20V, INTENSITY_HIGH);
   delay(1000);
   analogWrite(STRIP_LIGHT_20V, INTENSITY_MED);
   delay(1000);
   analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
-  
+
   delay(1000);
 }
 
@@ -128,7 +127,7 @@ void requestEvent() {
 
 // Function to read ultrasonic sensor value to measure distance in cm.
 double readUltrasonicSensor() {
-  double distance = sr04.Distance(); // Distance read is in cm. 
+  double distance = sr04.Distance(); // Distance read is in cm.
   Serial.print(distance);
   Serial.println(" - Cms");
   return distance;
@@ -140,6 +139,7 @@ void receiveEvent(int howMany)
 {
   String LED = "";
 
+  Serial.print("Received - ");
   Serial.println(howMany);
 
   while ( Wire.available() > 0 )
@@ -148,7 +148,7 @@ void receiveEvent(int howMany)
     if (((int)n) > ((int)(' ')))
       LED += n;
   }
-
+  Serial.print("Value = ");
   Serial.println(LED.c_str());
   ledCommands(LED.toInt());
 }
@@ -157,6 +157,8 @@ void receiveEvent(int howMany)
 
 void ledCommands(int cmd)
 {
+  Serial.print("Led Command -");
+  Serial.println(cmd);
   switch (cmd) {
     case AllLEDsOff:
       setAllLEDsColor(OFF);
@@ -175,26 +177,32 @@ void ledCommands(int cmd)
       break;
 
     case RingLEDsBlue:
+      setAllLEDsColor(BLUE);
+      break;
+      
     case RingLEDsWhite:
+      setAllLEDsColor(WHITE);
+      break;
+      
     case LEDStripGreen:
     case LEDStripOrange:
     case LEDStripRed:
     case LEDStripBlue:
     case LEDStripWhite:
       break;
-    
+
     case LEDStrip20vHigh:
       analogWrite(STRIP_LIGHT_20V, INTENSITY_HIGH);
       break;
-    
+
     case LEDStrip20vMed:
       analogWrite(STRIP_LIGHT_20V, INTENSITY_MED);
       break;
-    
+
     case LEDStrip20vLow:
-      analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW); 
+      analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
       break;
-    
+
     case AllLEDsPattern:
     default:
       // Do nothing for now
