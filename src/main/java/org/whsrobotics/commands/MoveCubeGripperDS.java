@@ -8,7 +8,7 @@ import org.whsrobotics.subsystems.Elevator;
 public class MoveCubeGripperDS extends InstantCommand {
 
     public MoveCubeGripperDS() {
-
+        requires(CubeGripper.getInstance());
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.whsrobotics.utils;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,7 +12,7 @@ public class RobotLogger {
 
     static {
         try {
-            Logger.getLogger("").addHandler(new FileHandler("/home/lvuser/logs/frc1757-" + "%u"));
+            Logger.getLogger("").addHandler(new FileHandler("/home/lvuser/logs/frc1757-" + LocalDateTime.now()));
         } catch (IOException e) {
             System.err.println("Error adding file handler to Logger. Did you make a directory called 'logs' under '/home/lvuser'?");
         }

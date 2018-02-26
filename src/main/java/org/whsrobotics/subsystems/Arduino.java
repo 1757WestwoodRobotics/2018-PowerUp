@@ -22,17 +22,17 @@ public class Arduino extends Subsystem {
 
     // LED Control Commands ( We can add more based on need
     public enum Command{
-        AllLEDsOff(0), RingLEDsRed(1),
-        RingLEDsGreen(2), RingLEDsYellow(3),
-        RingLEDsBlue(4), RingLEDsWhite(5),
-        LEDStrip20vHigh(6), LEDStrip20vMed(7),
-        LEDStrip20vLow(8),
-        LEDStripGreen(9), LEDStripOrange(10),
-        LEDStripRed(11), LEDStripBlue(12),
-        LEDStripWhite(13);
+        AllLEDsOff("0"), RingLEDsRed("1"),
+        RingLEDsGreen("2"), RingLEDsYellow("3"),
+        RingLEDsBlue("4"), RingLEDsWhite("5"),
+        LEDStrip20vHigh("6"), LEDStrip20vMed("7"),
+        LEDStrip20vLow("8"),
+        LEDStripGreen("9"), LEDStripOrange("10"),
+        LEDStripRed("11"), LEDStripBlue("12"),
+        LEDStripWhite("13");
 
-       public int value;
-       Command (int value) {this.value = value;}
+       public String value;
+       Command (String value) {this.value = value;}
     }
 
     /*
@@ -65,7 +65,7 @@ public class Arduino extends Subsystem {
      */
     
     public void Send(Command cmd) {
-        i2c.writeData(cmd.value);
+        i2c.writeData(cmd.value.toCharArray());
     }
     
     /*
@@ -78,14 +78,14 @@ public class Arduino extends Subsystem {
 
         double distance = -1; // Error condition where sensor fails
 
-        if (i2c.isNotAddressable()) {
-            RobotLogger.err(this.getClass(), "Unable to address Arduino!");
-        } else {
+//        if (i2c.isNotAddressable()) {
+//            RobotLogger.err(this.getClass(), "Unable to address Arduino!");
+//        } else {
             String data = i2c.readData();
             // convert this to a double and send it out.
             distance = Double.valueOf(data);
-        }
-        return distance;
+//        }
+       return distance;
     }
 
     public void initDefaultCommand () {

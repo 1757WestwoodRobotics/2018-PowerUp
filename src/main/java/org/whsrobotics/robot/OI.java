@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.commands.*;
 import org.whsrobotics.commands.commandgroups.CGDeployCubeToScale;
+import org.whsrobotics.commands.commandgroups.CGDeployCubeToSwitch;
 import org.whsrobotics.commands.commandgroups.CGGrabCube;
 import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.CubeSpinner;
@@ -38,7 +39,9 @@ public class OI {
 
     private OI() {
         xboxController = new XboxController(XBOX_PORT);
-        // (new JoystickButton(xboxController, 0)).whenPressed(new DefaultDrive());
+        (new JoystickButton(xboxController, XboxButton.kA.value)).whenPressed(new CGGrabCube());
+        (new JoystickButton(xboxController, XboxButton.kB.value)).whenPressed(new CGDeployCubeToSwitch());
+        (new JoystickButton(xboxController, XboxButton.kX.value)).whenPressed(new CGDeployCubeToScale());
 
         (new JoystickButton(xboxController, XboxButton.kBumperRight.getValue())).whenPressed(DriveTrain.disableLimitedAcceleration);
         (new ElevatorVelocityMode()).whenActive(new MoveElevatorVelocity());
@@ -50,6 +53,7 @@ public class OI {
 
         SmartDashboard.putData("CGGrabCube", new CGGrabCube());
         SmartDashboard.putData("CGDeployCubeToScale", new CGDeployCubeToScale());
+        SmartDashboard.putData("CGDeployCubeToSwitch", new CGDeployCubeToSwitch());
 
     }
 
@@ -163,12 +167,15 @@ public class OI {
 
         SmartDashboard.putData("Elevator Chooser", elevatorPositionChooser);
 
-        SmartDashboard.putData("Elevator - Manual Entry", MoveElevatorDS.getInstance());
-        SmartDashboard.putData("Elevator - Position", new MoveElevatorPosition(getSelectedElevatorPosition()));
+        // SmartDashboard.putData("Elevator - Manual Entry", MoveElevatorDS.getInstance());
+        SmartDashboard.putData("Elevator - Position", new MoveElevatorDS());
+
+        SmartDashboard.putData("Reset Elevator Encoders", Elevator.resetEncoderPositionCommand);
 
     }
 
     public static Elevator.Position getSelectedElevatorPosition() {
+        System.out.println("getSelectedElevatorPosition");
         return elevatorPositionChooser.getSelected();
     }
 
@@ -211,7 +218,18 @@ public class OI {
 
         SmartDashboard.putData("Disable CubeGripper Mode", CubeGripper.disableOutputCommand);
         SmartDashboard.putData("Reset CubeGripper Encoders", CubeGripper.resetEncoderPositionCommand);
-        SmartDashboard.putData("CubeGripper Constant Voltage", CubeGripper.applyConstantVoltageCommand);
+        SmartDashboard.putData("CubeGripper Constant Voltage", new Command() {
+
+            @Override
+            protected void execute() {
+                CubeGripper.applyConstantVoltage();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return true;
+            }
+        });
 
     }
 

@@ -45,6 +45,7 @@ public class ArduinoI2C {
     public boolean writeData(int data){
         boolean failed;
         RobotLogger.log(this.getClass(), "#### Writing message: " + data);
+        System.out.println("#### Writing message: " + data);
 
         failed = wire.write(address, data);
         return failed;

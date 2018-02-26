@@ -15,10 +15,15 @@ public class CGDeployCubeToSwitch extends CommandGroup{
 
         //Brings Elevator to the Middle
         addSequential(new MoveElevatorPosition(Elevator.Position.SWITCH));
+        addSequential(new TimedCommand(2));
+
         //Spins Cube Outwards
-        addSequential (new TimedCommand(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS),3));
+        addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS));
+        addSequential(new TimedCommand(1));
+        addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
         //Release CubeGripper
-        addSequential(new MoveCubeGripper(CubeGripper.Position.RECEIVE_CUBE));
+        addSequential(new MoveCubeGripper(CubeGripper.Position.MIDDLE));
+        addSequential(new MoveElevatorPosition(Elevator.Position.DOWN));
 
     }
 }
