@@ -50,7 +50,7 @@ public class Autonomous {
         try {
             decodeGameData(getGameData());
         } catch (IllegalArgumentException e) {
-            RobotLogger.err(instance.getClass(), "Error with decoding game data!");
+            RobotLogger.getInstance().err(instance.getClass(), "Error with decoding game data!");
             new AutoCrossLine().start();    // queue AutoCrossLine
             return;                         // exit out of the method
         }
@@ -79,7 +79,7 @@ public class Autonomous {
             try {
                 gameData = DriverStation.getInstance().getGameSpecificMessage();
             } catch (Exception e) {
-                RobotLogger.err(instance.getClass(), "Error getting the Game Data! " + e.getMessage());
+                RobotLogger.getInstance().err(instance.getClass(), "Error getting the Game Data! " + e.getMessage());
             }
         }
         return gameData;

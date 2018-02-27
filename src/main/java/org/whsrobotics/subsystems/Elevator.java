@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.robot.RobotMap;
@@ -34,7 +35,7 @@ public class Elevator extends Subsystem {
     private static Elevator instance;
 
     public enum Position {
-        DOWN(4000), SWITCH(10000), SCALE_TOP(25500);
+        DOWN(0), SWITCH(10000), SCALE_TOP(23000);
 
         private double target;
 
@@ -60,18 +61,20 @@ public class Elevator extends Subsystem {
             left.setNeutralMode(NeutralMode.Brake);
             right.setNeutralMode(NeutralMode.Brake);
 
-            left.configPeakOutputForward(.50, 0);   // TODO: Raise?
+            left.configPeakOutputForward(.50, 0);   // TODO: Raise to full power?
             left.configPeakOutputReverse(-.50, 0);
 
+//            left.setSensorPhase(true);
+
             right.follow(left);
-            right.setInverted(true);
+            left.setInverted(true);
 
             // ------------ PID ------------- //
 
             left.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
 
-            left.configReverseSoftLimitThreshold(4000,0);   // Native units
-            left.configForwardSoftLimitThreshold(26000,0);
+            left.configReverseSoftLimitThreshold(0,0);   // Native units
+            left.configForwardSoftLimitThreshold(23000,0);
 
             left.configReverseSoftLimitEnable(true, 0);
             left.configForwardSoftLimitEnable(true, 0);
@@ -94,7 +97,7 @@ public class Elevator extends Subsystem {
             bottomLimit = new LimitSwitch(RobotMap.DigitalInputPort.ELEVATOR_BOTTOM.port);
 
         } catch (Exception e) {
-            RobotLogger.err(instance.getClass(), "Error setting up / configuring Elevator hardware!" + e.getMessage());
+            RobotLogger.getInstance().err(instance.getClass(), "Error setting up / configuring Elevator hardware!" + e.getMessage());
         }
 
         SmartDashboard.putNumber("KP", KP);
@@ -127,7 +130,7 @@ public class Elevator extends Subsystem {
             SmartDashboard.putBoolean("ElevatorTopLimit", Elevator.getTopLimitSwitch());
             SmartDashboard.putBoolean("ElevatorBottomLimit", Elevator.getBottomLimitSwitch());
         } catch (Exception e) {
-            RobotLogger.err(instance.getClass(), "Can't get Elevator encoder data!" + e.getMessage());
+            RobotLogger.getInstance().err(instance.getClass(), "Can't get Elevator encoder data!" + e.getMessage());
         }
     }
 
@@ -202,6 +205,10 @@ public class Elevator extends Subsystem {
         return left.getSelectedSensorVelocity(0);
     }
 
+    private static void resetEncoderPosition() {
+        left.setSelectedSensorPosition(0, 0, 0);
+    }
+
     // ------------ FINISHED METHODS ------------- //
 
     public static boolean getPIDFinished() {
@@ -219,4 +226,19 @@ public class Elevator extends Subsystem {
     public static boolean getBottomLimitSwitch() {
         return bottomLimit.get();
     }
+
+    // ------------ AUXILIARY COMMANDS ------------- //
+
+    public static Command resetEncoderPositionCommand = new Command() {
+
+        @Override
+        protected void execute() {
+            resetEncoderPosition();
+        }
+
+        @Override
+        protected boolean isFinished() {
+            return true;
+        }
+    };
 }

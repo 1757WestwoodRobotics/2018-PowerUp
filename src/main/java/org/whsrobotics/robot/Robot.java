@@ -1,7 +1,10 @@
 package org.whsrobotics.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import org.whsrobotics.commands.ArduinoSendCommand;
 import org.whsrobotics.subsystems.*;
 import org.whsrobotics.utils.RobotLogger;
 
@@ -18,7 +21,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        RobotLogger.log(this.getClass(), "Starting robot");
+        RobotLogger.getInstance().log(this.getClass(), "Starting robot");
 
         DriveTrain.getInstance();
         Elevator.getInstance();
@@ -30,6 +33,7 @@ public class Robot extends TimedRobot {
 
         Autonomous.getInstance();
         OI.getInstance();
+
     }
 
     // ------------ AUTONOMOUS METHODS ------------- //
@@ -39,7 +43,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        RobotLogger.log(this.getClass(), "Starting autonomous");
+        RobotLogger.getInstance().log(this.getClass(), "Starting autonomous");
         Autonomous.startInit();
     }
 
@@ -58,7 +62,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
-        RobotLogger.log(this.getClass(), "Starting teleop");
+        RobotLogger.getInstance().log(this.getClass(), "Starting teleop");
     }
 
     /**
@@ -67,6 +71,15 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
+
+//      Temporary code for testing Arduino communication
+//        for (Arduino.Command command : Arduino.Command.values()) {
+//            Arduino.getInstance().Send(command);
+//            Timer.delay(1);
+//        }
+//
+//        System.out.println(Arduino.getInstance().getDistance());
+
     }
 
     // ------------ DISABLED METHODS ------------- //
@@ -77,7 +90,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         // Any time robot goes into disabled (run once)
-        RobotLogger.log(this.getClass(), "Entering disabled");
+        RobotLogger.getInstance().log(this.getClass(), "Entering disabled");
     }
 
 }

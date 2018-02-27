@@ -22,27 +22,29 @@
 #define RingLEDsYellow 3
 #define RingLEDsBlue 4
 #define RingLEDsWhite 5
-#define UltrasonicSend 6
-#define UltrasonicOff 7
-#define LEDStripGreen 8
-#define LEDStripOrange 9
-#define LEDStripRed 10
-#define LEDStripBlue 11
-#define LEDStripWhite 12
-#define AllLEDsPattern 13
+#define LEDStrip20vHigh 6
+#define LEDStrip20vMed 7
+#define LEDStrip20vLow 8
+#define LEDStripGreen 9
+#define LEDStripOrange 10
+#define LEDStripRed 11
+#define LEDStripBlue 12
+#define LEDStripWhite 13
+#define AllLEDsPattern 14
 
-// SR04 Ultrsound Sensor section
-#define TRIG_PIN 12
-#define ECHO_PIN 11
 
-SR04 sr04 = SR04(ECHO_PIN, TRIG_PIN);
+#define TRIG_PIN          12    // SR04 Ultrsound Sensor
+#define ECHO_PIN          11    // SR04 Ultrsound Sensor
+#define RING_LIGHT_PIN     6    // Ring Light
+#define STRIP_LIGHT_PIN    5    // Strip Light
+#define STRIP_LIGHT_20V    9    // Strip Ligh 20V Lighting
 
 // Ring Light Section
-#define DATA_PIN    6
+SR04 sr04 = SR04(ECHO_PIN, TRIG_PIN);
+
 #define COLOR_ORDER GRB
 #define CHIPSET     WS2812B   // WS2812B has 4 pins/LED, WS2812 has 6 pins/LED
-#define NUM_LEDS    48
-#define DEV_ADDRESS 4
+#define NUM_LEDS    82
 
 CRGB leds[NUM_LEDS];
 
@@ -59,16 +61,30 @@ const CHSV GREEN(100, 255, 255);
 const CHSV RED(0, 255, 255);
 const CHSV BLUE(160, 255, 255);
 const CHSV YELLOW(64, 255, 255);
+const CHSV WHITE(0, 0, 255);
 const CHSV OFF(0, 0, 0);
 
+
+// Strip Light Intensity
+#define INTENSITY_HIGH 127
+#define INTENSITY_MED  65
+#define INTENSITY_LOW  0
+
+// Variable hold object distance as seen by the ultrasonic sensor
+double distance;
+
 void setup() {
+  // Set up strip light PIN
+  pinMode (STRIP_LIGHT_PIN, OUTPUT);
 
   FastLED.delay(3000); // Sanity delay
-  FastLED.addLeds<CHIPSET, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS); // Initializes leds
+  FastLED.addLeds<CHIPSET, RING_LIGHT_PIN, COLOR_ORDER>(leds, NUM_LEDS); // Initializes leds
   setAllLEDsColor(OFF);
   updateLEDs();
 
   Serial.begin(9600);
+
+  // Turn off Onboard LED
   pinMode (13, OUTPUT);
   digitalWrite (13, LOW);
 
@@ -81,32 +97,47 @@ void setup() {
 }
 
 void loop() {
-  double a;
-  a = readUltrasonicSensor(); // Read the ultrsound sensor to see any objects nearby
+ 
+  distance = readUltrasonicSensor(); // Read the ultrsound sensor to see any objects nearby and sore in global variable.
+
+/*
+ * LED Test section.
+  // Test Ring Light Leds
   ledCommands(RingLEDsGreen);
+
+  // Test Strip Lights 20V
+  analogWrite(STRIP_LIGHT_20V, INTENSITY_HIGH);
+  delay(1000);
+  analogWrite(STRIP_LIGHT_20V, INTENSITY_MED);
+  delay(1000);
+  analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
+*/
+
   delay(1000);
 }
 
-// Listens to Wire for a request event and then reads the sensor value and sends it back on the I2C Wire.
+// Listens to Wire for a request event and then reads the sensor distance value and sends it back on the I2C Wire.
 void requestEvent() {
-  double dist;
   String data;
 
-  dist = readUltrasonicSensor();
-  data = String(dist, 2);
+  Serial.println("requestEvent - Enter");
 
-  // Write to the wire
-  Wire.beginTransmission(DEV_ADDRESS);
+  data = String(distance, 2);
+
+  Serial.print("Ultrasonic sensor returned: ");
+  Serial.println(data);
+
+  // Write to the wire. Hope this works.
   Wire.write(data.c_str());
-  Wire.endTransmission();     // stop transmitting
+  Serial.println("requestEvent - Exit");
 }
 
 // Function to read ultrasonic sensor value to measure distance in cm.
 double readUltrasonicSensor() {
-  double distance = sr04.Distance(); // Distance read is in cm. 
-  Serial.print(distance);
+  double dist = sr04.Distance(); // Distance read is in cm.
+  Serial.print(dist);
   Serial.println(" - Cms");
-  return distance;
+  return dist;
 }
 
 
@@ -115,6 +146,7 @@ void receiveEvent(int howMany)
 {
   String LED = "";
 
+  Serial.print("Received - ");
   Serial.println(howMany);
 
   while ( Wire.available() > 0 )
@@ -123,7 +155,7 @@ void receiveEvent(int howMany)
     if (((int)n) > ((int)(' ')))
       LED += n;
   }
-
+  Serial.print("Value = ");
   Serial.println(LED.c_str());
   ledCommands(LED.toInt());
 }
@@ -132,6 +164,8 @@ void receiveEvent(int howMany)
 
 void ledCommands(int cmd)
 {
+  Serial.print("Led Command -");
+  Serial.println(cmd);
   switch (cmd) {
     case AllLEDsOff:
       setAllLEDsColor(OFF);
@@ -150,19 +184,39 @@ void ledCommands(int cmd)
       break;
 
     case RingLEDsBlue:
+      setAllLEDsColor(BLUE);
+      break;
+      
     case RingLEDsWhite:
+      setAllLEDsColor(WHITE);
+      break;
+      
     case LEDStripGreen:
     case LEDStripOrange:
     case LEDStripRed:
     case LEDStripBlue:
     case LEDStripWhite:
+      break;
+
+    case LEDStrip20vHigh:
+      analogWrite(STRIP_LIGHT_20V, INTENSITY_HIGH);
+      break;
+
+    case LEDStrip20vMed:
+      analogWrite(STRIP_LIGHT_20V, INTENSITY_MED);
+      break;
+
+    case LEDStrip20vLow:
+      analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
+      break;
+
     case AllLEDsPattern:
     default:
       // Do nothing for now
       break;
 
   }
-  delay(1000);
+  delay(300);// 300ms delay for command to complete.
 }
 
 

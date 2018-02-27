@@ -18,7 +18,7 @@ public class TurnToAngle extends Command {
     @Override
     protected void initialize() {
         if (!DriveTrain.initializeRotationPIDController()) {
-            RobotLogger.err(this.getClass(), "Error initializing rotationPIDController. Cannot TurnToAngle! Ending command.");
+            RobotLogger.getInstance().err(this.getClass(), "Error initializing rotationPIDController. Cannot TurnToAngle! Ending command.");
             end();
         }
 
@@ -37,7 +37,7 @@ public class TurnToAngle extends Command {
     @Override
     protected boolean isFinished() {
         if (DriveTrain.isRotationPIDControllerOnTarget()) {
-            RobotLogger.log(this.getClass(), "TurnToAngle has reached the target angle.");
+            RobotLogger.getInstance().log(this.getClass(), "TurnToAngle has reached the target angle.");
             return true;
         }
 

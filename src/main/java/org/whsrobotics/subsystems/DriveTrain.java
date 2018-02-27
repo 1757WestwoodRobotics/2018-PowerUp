@@ -10,9 +10,13 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import jaci.pathfinder.Pathfinder;
+import jaci.pathfinder.Trajectory;
+import jaci.pathfinder.Waypoint;
+import jaci.pathfinder.followers.EncoderFollower;
+import jaci.pathfinder.modifiers.TankModifier;
 import org.whsrobotics.commands.DefaultDrive;
 import org.whsrobotics.robot.OI;
-import org.whsrobotics.robot.Robot;
 import org.whsrobotics.robot.RobotMap;
 import org.whsrobotics.utils.RobotLogger;
 
@@ -33,6 +37,7 @@ public class DriveTrain extends Subsystem {
     private static Encoder rightEncoder;
 
     private static PIDController rotationPIDController;
+    private static PIDController encoderPIDController;
 
     private static final double KP = 0.05;   // Tuned values for the test robot (Pneumatic wheels)
     private static final double KI = 0;
@@ -80,7 +85,7 @@ public class DriveTrain extends Subsystem {
             resetEncoders();
 
         } catch (NullPointerException e) {
-            RobotLogger.err(this.getClass(), "Error instantiating the DriveTrain hardware!" + e.getMessage());
+            RobotLogger.getInstance().err(this.getClass(), "Error instantiating the DriveTrain hardware!" + e.getMessage());
 
         }
 
@@ -109,7 +114,7 @@ public class DriveTrain extends Subsystem {
             SmartDashboard.putNumber("RB", rightBack.getMotorOutputVoltage());
             SmartDashboard.putNumber("Xbox", OI.checkXboxDeadzone(OI.getXboxController().getX(GenericHID.Hand.kRight)));
         } catch (Exception e) {
-            RobotLogger.err(instance.getClass(), "Error reading NavX data!" + e.getMessage());
+            RobotLogger.getInstance().err(instance.getClass(), "Error reading NavX data!" + e.getMessage());
         }
     }
 
@@ -194,7 +199,7 @@ public class DriveTrain extends Subsystem {
                 rotationPIDController.disable();
 
             } catch (Exception e) {
-                RobotLogger.err(instance.getClass(), "Error creating the DriveTrain Rotation PIDController!" + e.getMessage());
+                RobotLogger.getInstance().err(instance.getClass(), "Error creating the DriveTrain Rotation PIDController!" + e.getMessage());
                 return false;
             }
 
@@ -205,12 +210,12 @@ public class DriveTrain extends Subsystem {
     }
 
     public static void enableRotationPIDController() {
-        RobotLogger.log(instance.getClass(), "Enabling rotationPIDController");
+        RobotLogger.getInstance().log(instance.getClass(), "Enabling rotationPIDController");
         rotationPIDController.enable();
     }
 
     public static void disableRotationPIDController() {
-        RobotLogger.log(instance.getClass(), "Disabling rotationPIDController");
+        RobotLogger.getInstance().log(instance.getClass(), "Disabling rotationPIDController");
         rotationPIDController.disable();
     }
 
@@ -227,7 +232,47 @@ public class DriveTrain extends Subsystem {
         return rotationPIDController.getSetpoint();
     }
 
-    // ------------ PATHFINDER METHODS ------------- //
+    // ------------ PATHFINDER CONFIG / METHODS ------------- //
+
+    private static Trajectory.Config config;
+    private static TankModifier tankModifier;
+    private static final Trajectory.FitMethod fitMethod = Trajectory.FitMethod.HERMITE_CUBIC;
+    private static final int samples = Trajectory.Config.SAMPLES_HIGH;
+    private static final double timeStep = 0.05;         // time delta between points
+    private static final double maxVelocity = 1.7;       // m/s // TODO: MEASURE
+    private static final double maxAcceleration = 2.0;   // m/s/s
+    private static final double maxJerk = 60.0;          // m/s/s/s
+
+    private static final double wheelbaseWidth = 0.0;   // TODO: MEASURE (width of robot from left wheel to right wheel)
+
+    private static void configPathfinder() {
+        config = new Trajectory.Config(fitMethod, samples, timeStep, maxVelocity, maxAcceleration, maxJerk);
+    }
+
+    // TODO: TankModifier
+
+    public static Trajectory generateTrajectory(Waypoint[] points) {
+        return Pathfinder.generate(points, config);
+    }
+
+    public static void applyTrajectory(Trajectory trajectory) {
+        tankModifier = new TankModifier(trajectory).modify(wheelbaseWidth);
+        Trajectory leftTrajectory = tankModifier.getLeftTrajectory();
+        Trajectory rightTrajectory = tankModifier.getRightTrajectory();
+
+        EncoderFollower leftEnc = new EncoderFollower(leftTrajectory);
+        EncoderFollower rightEnc = new EncoderFollower(rightTrajectory);
+
+        leftEnc.configureEncoder(leftEncoder.get(), 2048, wheelbaseWidth);
+        rightEnc.configureEncoder(rightEncoder.get(), 2048, wheelbaseWidth);
+
+        leftEnc.configurePIDVA(1.0, 0, 0, 1 / maxVelocity, 0);
+        rightEnc.configurePIDVA(1.0, 0, 0, 1 / maxVelocity, 0);
+
+        double leftOutput = leftEnc.calculate(leftEncoder.get());   // Put in PID Controller
+        double rightOutput = rightEnc.calculate(rightEncoder.get());
+
+    }
 
     // ------------ AUXILIARY COMMANDS ------------- //
 
@@ -251,3 +296,4 @@ public class DriveTrain extends Subsystem {
     };
 
 }
+
