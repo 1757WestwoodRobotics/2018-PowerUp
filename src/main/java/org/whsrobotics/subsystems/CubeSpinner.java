@@ -86,6 +86,11 @@ public class CubeSpinner extends Subsystem {
 
     public static int getIRSensor() {
         return right.getSensorCollection().getAnalogIn();
+      
+    }
+
+    public static Trigger getIRSensorValue() {
+        return irSensor;
 
     }
 
