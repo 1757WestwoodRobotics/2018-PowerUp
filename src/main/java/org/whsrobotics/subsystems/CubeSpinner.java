@@ -3,6 +3,8 @@ package org.whsrobotics.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.AnalogAccelerometer;
+import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.whsrobotics.robot.OI;
 import org.whsrobotics.robot.RobotMap;
@@ -75,9 +77,13 @@ public class CubeSpinner extends Subsystem {
 
     }
 
-    public static void spinWithMode(Mode mode){
+    public static void spinWithMode(Mode mode) {
         System.out.println(mode);
         spinWithSpeed(mode.getSpeed());
     }
 
+
+    public static int getIRSensor() {
+        return right.getSensorCollection().getAnalogIn();
+    }
 }
