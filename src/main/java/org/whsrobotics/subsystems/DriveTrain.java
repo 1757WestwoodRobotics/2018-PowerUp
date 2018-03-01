@@ -269,8 +269,11 @@ public class DriveTrain extends Subsystem {
         leftEnc.configurePIDVA(1.0, 0, 0, 1 / maxVelocity, 0);
         rightEnc.configurePIDVA(1.0, 0, 0, 1 / maxVelocity, 0);
 
-        double leftOutput = leftEnc.calculate(leftEncoder.get());   // Put in PID Controller
-        double rightOutput = rightEnc.calculate(rightEncoder.get());
+        double leftOutput = leftEnc.calculate(leftEncoder.get());   // Output directly to drive (or PID Controller?)
+        double rightOutput = rightEnc.calculate(rightEncoder.get());    // return array to command? or call drive()
+
+        leftDrive.set(leftOutput);  // Do this?
+        rightDrive.set(rightOutput);
 
     }
 

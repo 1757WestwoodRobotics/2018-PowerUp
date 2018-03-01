@@ -92,7 +92,6 @@ public class CubeGripper extends Subsystem {
             right.config_kF(0, KF, 0);
             right.selectProfileSlot(0, 0);
 
-
             // Motion Magic
             left.configMotionCruiseVelocity(200, 0);
             left.configMotionAcceleration(200, 0);
