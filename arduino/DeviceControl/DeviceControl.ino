@@ -107,6 +107,7 @@ void loop() {
 
 /*
  * LED Test section.
+ 
   // Test Ring Light Leds
   ledCommands(RingLEDsGreen);
 
@@ -116,8 +117,8 @@ void loop() {
   analogWrite(STRIP_LIGHT_20V, INTENSITY_MED);
   delay(1000);
   analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
-*/
 
+*/
   delay(1000);
 }
 
@@ -140,8 +141,8 @@ void requestEvent() {
 // Function to read ultrasonic sensor value to measure distance in cm.
 double readUltrasonicSensor() {
   double dist = sr04.Distance(); // Distance read is in cm.
-  Serial.print(dist);
-  Serial.println(" - Cms");
+  // Serial.print(dist);
+  // Serial.println(" - Cms");
   return dist;
 }
 
