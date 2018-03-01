@@ -35,9 +35,9 @@
 
 #define TRIG_PIN          12    // SR04 Ultrsound Sensor
 #define ECHO_PIN          11    // SR04 Ultrsound Sensor
-#define RING_LIGHT_PIN     6    // Ring Light
-#define STRIP_LIGHT_PIN    5    // Strip Light
-#define STRIP_LIGHT_20V    9    // Strip Ligh 20V Lighting
+#define RING_LIGHT_PIN     6    // Ring Light control
+#define STRIP_LIGHT_PIN    5    // Strip Light control
+#define STRIP_LIGHT_20V    9    // Strip Ligh 20V Lighting control
 
 // Ring Light Section
 SR04 sr04 = SR04(ECHO_PIN, TRIG_PIN);
@@ -74,20 +74,25 @@ const CHSV OFF(0, 0, 0);
 double distance;
 
 void setup() {
-  // Set up strip light PIN
+   
+   // set up console baud rate.
+   Serial.begin(9600);
+   
+  // Set up LED Control PIN
+  pinMode (RING_LIGHT_PIN, OUTPUT);
   pinMode (STRIP_LIGHT_PIN, OUTPUT);
+  pinMode (STRIP_LIGHT_20V, OUTPUT);
 
   FastLED.delay(3000); // Sanity delay
   FastLED.addLeds<CHIPSET, RING_LIGHT_PIN, COLOR_ORDER>(leds, NUM_LEDS); // Initializes leds
   setAllLEDsColor(OFF);
   updateLEDs();
 
-  Serial.begin(9600);
-
   // Turn off Onboard LED
   pinMode (13, OUTPUT);
   digitalWrite (13, LOW);
-
+   
+  // setup Ulrasonitsensor pins
   pinMode(TRIG_PIN, OUTPUT);     // Sets the trigPin as an Output
   pinMode(ECHO_PIN, INPUT);      // Sets the echoPin as an Input
 
@@ -98,7 +103,7 @@ void setup() {
 
 void loop() {
  
-  distance = readUltrasonicSensor(); // Read the ultrsound sensor to see any objects nearby and sore in global variable.
+  distance = readUltrasonicSensor(); // Read the ultrsound sensor to see any objects nearby and store in global variable.
 
 /*
  * LED Test section.
