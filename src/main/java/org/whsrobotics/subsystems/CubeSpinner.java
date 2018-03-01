@@ -3,15 +3,19 @@ package org.whsrobotics.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.whsrobotics.robot.OI;
 import org.whsrobotics.robot.RobotMap;
+import org.whsrobotics.triggers.CubeGripperIRSensor;
 import org.whsrobotics.utils.RobotLogger;
 
 public class CubeSpinner extends Subsystem {
 
     private static TalonSRX left;
     private static TalonSRX right;
+
+    private static CubeGripperIRSensor irSensor;
 
     public enum Mode {
         INWARDS(1), OUTWARDS(-1), OFF(0);
@@ -78,6 +82,16 @@ public class CubeSpinner extends Subsystem {
     public static void spinWithMode(Mode mode){
         System.out.println(mode);
         spinWithSpeed(mode.getSpeed());
+    }
+
+    public static int getIRSensor() {
+        return right.getSensorCollection().getAnalogIn();
+      
+    }
+
+    public static Trigger getIRSensorValue() {
+        return irSensor;
+
     }
 
 }
