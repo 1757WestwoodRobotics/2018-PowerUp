@@ -1,6 +1,7 @@
 package org.whsrobotics.triggers;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import org.whsrobotics.utils.RobotLogger;
 
 public class LimitSwitch {
 
@@ -11,7 +12,13 @@ public class LimitSwitch {
     }
 
     public boolean get() {
-        return !limitSwitch.get();
+        try {
+            return !limitSwitch.get();
+        } catch (Exception ex) {
+            RobotLogger.getInstance().err(this.getClass(), "Error getting a limit switch!");
+            throw ex;
+        }
+
     }
     
 }
