@@ -5,25 +5,26 @@ import org.whsrobotics.commands.*;
 import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.CubeSpinner;
 import org.whsrobotics.subsystems.Elevator;
-import org.whsrobotics.triggers.CubeGripperIRSensor;
+import org.whsrobotics.triggers.CubeNotInArms;
+import org.whsrobotics.triggers.ElevatorHasReachedSetpoint;
 
 public class CGDeployCubeToSwitch extends CommandGroup{
 
     public CGDeployCubeToSwitch(){
 
-        //Brings Elevator to the Middle
-        addSequential(new MoveElevatorPosition(Elevator.Position.SWITCH));
-        addSequential(new TimedCommand(2));
+        // addSequential(new MoveElevatorPosition(Elevator.Position.SWITCH));
 
-        //Spins Cube Outwards
-        addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS));
-        addSequential(new TimedCommand(1));
+        // Move the Elevator to the SWITCH position. If it can't do it in 5 seconds, stop it.
+        addSequential(new WaitForTriggerCommand(new MoveElevatorPosition(Elevator.Position.SWITCH), new ElevatorHasReachedSetpoint()), 5);
 
-        addSequential(new WaitForTriggerCommand(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS), CubeSpinner.getIRSensor()));
+        // Hard-coded time-based delay
+        addSequential(new TimedCommand(0.25));
+
+        // Spin the CubeSpinner motors in the OUTWARDS mode (until Cube has left the IR sensor), and open arms TODO: TEST
+        addParallel(new WaitForTriggerCommand(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS), new CubeNotInArms()));
+
+        addSequential(new MoveCubeGripper(CubeGripper.Position.RECEIVE));
         addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
-
-        //Release CubeGripper
-        addSequential(new MoveCubeGripper(CubeGripper.Position.MIDDLE));
         addSequential(new MoveElevatorPosition(Elevator.Position.DOWN));
 
     }

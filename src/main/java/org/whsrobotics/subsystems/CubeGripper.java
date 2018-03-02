@@ -18,7 +18,11 @@ public class CubeGripper extends Subsystem {
     private static TalonSRX right;
 
     public enum Position {
-        START_MATCH(0), MIDDLE(1024), RECEIVE_CUBE(2048);  // Native Encoder Units TODO: Change REC_CUBE value to open more
+        START_MATCH(0), RECEIVE(1550), CLOSE_ARMS(2048);  // Native Encoder Units // 1 complete rotation = 4096 ticks
+
+        // START_MATCH is folded back
+        // RECEIVE is at a ~45º angle, easier to drive up to a cube
+        // CLOSE_ARMS is where the arms are parallel [NOT NEEDED]
 
         private int target;
 

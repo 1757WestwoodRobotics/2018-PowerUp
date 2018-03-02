@@ -14,7 +14,7 @@ public class CGDeployCubeToExchange extends CommandGroup {
     public CGDeployCubeToExchange(){
         addSequential(new MoveElevatorPosition(Elevator.Position.DOWN));
         addSequential (new TimedCommand(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS),3));
-        addSequential(new MoveCubeGripper(CubeGripper.Position.RECEIVE_CUBE));
+        addSequential(new MoveCubeGripper(CubeGripper.Position.CLOSE_ARMS));
      //Elevator Down Spin Outwards Open Arms
     }
 }

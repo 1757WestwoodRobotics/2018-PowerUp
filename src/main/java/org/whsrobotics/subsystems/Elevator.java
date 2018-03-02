@@ -62,7 +62,7 @@ public class Elevator extends Subsystem {
             right.setNeutralMode(NeutralMode.Brake);
 
             left.configPeakOutputForward(.50, 0);   // TODO: Raise to full power?
-            left.configPeakOutputReverse(-.50, 0);
+            left.configPeakOutputReverse(-.50, 0);  // Keep downwards at half power
 
 //            left.setSensorPhase(true);
 
@@ -225,6 +225,10 @@ public class Elevator extends Subsystem {
 
     public static boolean getBottomLimitSwitch() {
         return bottomLimit.get();
+    }
+
+    public static boolean reachedTarget() {
+        return left.getClosedLoopError(0) < MAX_ERROR;
     }
 
     // ------------ AUXILIARY COMMANDS ------------- //

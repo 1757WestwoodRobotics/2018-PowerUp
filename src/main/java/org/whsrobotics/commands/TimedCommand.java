@@ -2,6 +2,9 @@ package org.whsrobotics.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 
+/**
+ * DO NOT USE WITH INSTANTCOMMANDS!!! (It times out immediately regardless of timeout)
+ */
 public class TimedCommand extends edu.wpi.first.wpilibj.command.TimedCommand {
 
     private Command command;

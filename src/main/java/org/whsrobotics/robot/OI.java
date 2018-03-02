@@ -1,11 +1,8 @@
 package org.whsrobotics.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.commands.*;
@@ -18,10 +15,6 @@ import org.whsrobotics.subsystems.DriveTrain;
 import org.whsrobotics.subsystems.Elevator;
 import org.whsrobotics.triggers.ElevatorVelocityMode;
 import org.whsrobotics.utils.RobotLogger;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.lang.reflect.Field;
 
 import static org.whsrobotics.robot.RobotMap.XBOX_PORT;
 
@@ -119,7 +112,6 @@ public class OI {
 
     }
 
-
     // ------------ AUTONOMOUS METHODS ------------- //
 
     private void publishAutonomous() {
@@ -202,7 +194,7 @@ public class OI {
 
     private static void publishCubeGripper() {
         cubeGripperModeChooser = new SendableChooser<>();
-        cubeGripperModeChooser.addDefault("Default - SWITCH", CubeGripper.Position.MIDDLE);
+        cubeGripperModeChooser.addDefault("Default - SWITCH", CubeGripper.Position.RECEIVE);
 
         for (CubeGripper.Position position : CubeGripper.Position.values()) {
             cubeGripperModeChooser.addObject(position.toString(), position);

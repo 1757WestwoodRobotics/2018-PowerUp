@@ -22,14 +22,12 @@ public class Arduino extends Subsystem {
 
     // LED Control Commands ( We can add more based on need
     public enum Command{
-        AllLEDsOff("0"), RingLEDsRed("1"),
-        RingLEDsGreen("2"), RingLEDsYellow("3"),
+        AllLEDsOff("0"),
+        RingLEDsRed("1"), RingLEDsGreen("2"), RingLEDsYellow("3"),
         RingLEDsBlue("4"), RingLEDsWhite("5"),
-        LEDStrip20vHigh("6"), LEDStrip20vMed("7"),
-        LEDStrip20vLow("8"),
-        LEDStripGreen("9"), LEDStripOrange("10"),
-        LEDStripRed("11"), LEDStripBlue("12"),
-        LEDStripWhite("13");
+        LEDStripWhiteHigh("6"), LEDStripWhiteMed("7"), LEDStripWhiteLow("8"),
+        LEDStripGreen("9"), LEDStripOrange("10"), LEDStripRed("11"),
+        LEDStripBlue("12"), LEDStripWhite("13");
 
        public String value;
        Command (String value) {this.value = value;}
@@ -44,10 +42,11 @@ public class Arduino extends Subsystem {
         try {
             if (i2c == null) {
                 i2c = new ArduinoI2C(deviceAddress);
+                Send(Command.LEDStripWhiteMed);    // Start with the command to make the LED Strips white --> Pulse?
             }
 
         } catch (NullPointerException e) {
-            RobotLogger.getInstance().err(this.getClass(), "Error instantiating the Led control!" + e.getMessage());
+            RobotLogger.getInstance().err(this.getClass(), "Error instantiating the Arduino control!" + e.getMessage());
         }
 
     }
@@ -61,7 +60,7 @@ public class Arduino extends Subsystem {
 
     /*
      * Method to control LED lights connected to Arduino. 
-     * Based on LED Control Commands control the LED Ring lights connected to Arduuno via I2C Wire.
+     * Based on LED Control Commands control the LED Ring lights connected to Arduino via I2C Wire.
      */
     
     public void Send(Command cmd) {
@@ -78,17 +77,19 @@ public class Arduino extends Subsystem {
 
         double distance = -1; // Error condition where sensor fails
 
-//        if (i2c.isNotAddressable()) {
-//            RobotLogger.getInstance().err(this.getClass(), "Unable to address Arduino!");
-//        } else {
+        if (i2c.isNotAddressable()) {
+            RobotLogger.getInstance().err(this.getClass(), "Unable to address Arduino!");
+        } else {
             String data = i2c.readData();
             // convert this to a double and send it out.
             distance = Double.valueOf(data);
-//        }
-       return distance;
+        }
+        return distance;
+
     }
 
     public void initDefaultCommand () {
             // Set the default command for a subsystem here.
     }
+
 }

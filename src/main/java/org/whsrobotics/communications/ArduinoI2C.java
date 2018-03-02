@@ -11,7 +11,7 @@ public class ArduinoI2C {
 
     private I2C wire;
     private int address;
-    private static final int MAX_BYTES = 32;
+    private static final int MAX_BYTES = 4;
 
     public ArduinoI2C(int deviceAddress) {
         address = deviceAddress;
