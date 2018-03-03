@@ -64,13 +64,13 @@ public class Autonomous {
         // set arduino light strips to alliance color (it should be white or alternating at this point)
         switch (OI.getAlliance()) {
             case Red:
-                Arduino.getInstance().Send(Arduino.Command.LEDStripRed);
+                Arduino.getInstance().Send(Arduino.Command.StripLEDsRed);
                 break;
             case Blue:
-                Arduino.getInstance().Send(Arduino.Command.LEDStripBlue);
+                Arduino.getInstance().Send(Arduino.Command.StripLEDsBlue);
                 break;
             case Invalid:
-                Arduino.getInstance().Send(Arduino.Command.LEDStripWhite);
+                Arduino.getInstance().Send(Arduino.Command.StripLEDsWhite);
                 break;
         }
 

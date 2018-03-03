@@ -23,11 +23,24 @@ public class Arduino extends Subsystem {
     // LED Control Commands ( We can add more based on need
     public enum Command{
         AllLEDsOff("0"),
-        RingLEDsRed("1"), RingLEDsGreen("2"), RingLEDsYellow("3"),
-        RingLEDsBlue("4"), RingLEDsWhite("5"),
-        LEDStripWhiteHigh("6"), LEDStripWhiteMed("7"), LEDStripWhiteLow("8"),
-        LEDStripGreen("9"), LEDStripOrange("10"), LEDStripRed("11"),
-        LEDStripBlue("12"), LEDStripWhite("13");
+        RingLEDsRed("1"),
+        RingLEDsGreen("2"),
+        RingLEDsOrange("3"),
+        RingLEDsYellow("4"),
+        RingLEDsBlue("5"),
+        RingLEDsWhite("6"),
+        RingLEDsOff("7"),
+        StripLED20vHigh("8"),
+        StripLEDs20vMed("9"),
+        StripLEDs20vLow("10"),
+        StripLEDs20vOff("11"),
+        StripLEDsRed("12"),
+        StripLEDsGreen("13"),
+        StripLEDsOrange("14"),
+        StripLEDsYellow("15"),
+        StripLEDsBlue("16"),
+        StripLEDsWhite("17"),
+        StripLEDsOff("18");
 
        public String value;
        Command (String value) {this.value = value;}
@@ -42,7 +55,7 @@ public class Arduino extends Subsystem {
         try {
             if (i2c == null) {
                 i2c = new ArduinoI2C(deviceAddress);
-                Send(Command.LEDStripWhiteMed);    // Start with the command to make the LED Strips white --> Pulse?
+                Send(Command.StripLEDs20vMed);    // Start with the command to make the LED Strips white --> Pulse?
             }
 
         } catch (NullPointerException e) {

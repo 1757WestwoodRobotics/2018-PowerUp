@@ -20,33 +20,44 @@
 #define RingLEDsRed 1
 #define RingLEDsGreen 2
 #define RingLEDsYellow 3
-#define RingLEDsBlue 4
-#define RingLEDsWhite 5
-#define LEDStrip20vHigh 6
-#define LEDStrip20vMed 7
-#define LEDStrip20vLow 8
-#define LEDStripGreen 9
-#define LEDStripOrange 10
-#define LEDStripRed 11
-#define LEDStripBlue 12
-#define LEDStripWhite 13
-#define AllLEDsPattern 14
+#define RingLEDsOrange 4
+#define RingLEDsBlue 5
+#define RingLEDsWhite 6
+#define RingLEDsOff 7
+
+#define StripLEDs20vHigh 8
+#define StripLEDs20vMed 9
+#define StripLEDs20vLow 10
+#define StripLEDs20vOff 11
+
+#define StripLEDsRed 12
+#define StripLEDsGreen 13
+#define StripLEDsYellow 14
+#define StripLEDsOrange 15
+#define StripLEDsBlue 16
+#define StripLEDsWhite 17
+#define StripLEDsOff 18
 
 
 #define TRIG_PIN          12    // SR04 Ultrsound Sensor
 #define ECHO_PIN          11    // SR04 Ultrsound Sensor
 #define RING_LIGHT_PIN     6    // Ring Light control
 #define STRIP_LIGHT_PIN    5    // Strip Light control
-#define STRIP_LIGHT_20V    9    // Strip Ligh 20V Lighting control
+#define STRIP_LIGHT_20V    9    // Strip Ligh 20V Lighting control PWM pin
 
-// Ring Light Section
+// Ultrasonic sensor
 SR04 sr04 = SR04(ECHO_PIN, TRIG_PIN);
+
+// LED Light section
 
 #define COLOR_ORDER GRB
 #define CHIPSET     WS2812B   // WS2812B has 4 pins/LED, WS2812 has 6 pins/LED
-#define NUM_LEDS    82
+#define NUM_LED_UNITS        2
+#define NUM_RING_LEDS        24
+#define NUM_STRIP_LEDS       128
+#define MAX_LEDS             128
 
-CRGB leds[NUM_LEDS];
+CRGB leds[NUM_LED_UNITS][MAX_LEDS];
 
 // Default led HSV configurations
 int led1_hue = 100;
@@ -62,36 +73,41 @@ const CHSV RED(0, 255, 255);
 const CHSV BLUE(160, 255, 255);
 const CHSV YELLOW(64, 255, 255);
 const CHSV WHITE(0, 0, 255);
+const CHSV ORANGE(32, 255, 255);
 const CHSV OFF(0, 0, 0);
 
 
 // Strip Light Intensity
-#define INTENSITY_HIGH 127
-#define INTENSITY_MED  65
-#define INTENSITY_LOW  0
+#define INTENSITY_HIGH 255
+#define INTENSITY_MED  170
+#define INTENSITY_LOW  85
+#define INTENSITY_OFF  0
 
 // Variable hold object distance as seen by the ultrasonic sensor
 double distance;
 
 void setup() {
-   
-   // set up console baud rate.
-   Serial.begin(9600);
-   
+
+  // set up console baud rate.
+  Serial.begin(9600);
+
   // Set up LED Control PIN
   pinMode (RING_LIGHT_PIN, OUTPUT);
   pinMode (STRIP_LIGHT_PIN, OUTPUT);
   pinMode (STRIP_LIGHT_20V, OUTPUT);
 
   FastLED.delay(3000); // Sanity delay
-  FastLED.addLeds<CHIPSET, RING_LIGHT_PIN, COLOR_ORDER>(leds, NUM_LEDS); // Initializes leds
-  setAllLEDsColor(OFF);
-  updateLEDs();
+  FastLED.addLeds<CHIPSET, RING_LIGHT_PIN, COLOR_ORDER>(leds[0], NUM_RING_LEDS); // Initializes Ring leds
+  FastLED.addLeds<CHIPSET, STRIP_LIGHT_PIN, COLOR_ORDER>(leds[1], NUM_STRIP_LEDS); // Initializes Strip leds
+
+  // Turn off all LEDs
+  ledCommands(AllLEDsOff);
+
 
   // Turn off Onboard LED
   pinMode (13, OUTPUT);
   digitalWrite (13, LOW);
-   
+
   // setup Ulrasonitsensor pins
   pinMode(TRIG_PIN, OUTPUT);     // Sets the trigPin as an Output
   pinMode(ECHO_PIN, INPUT);      // Sets the echoPin as an Input
@@ -102,23 +118,23 @@ void setup() {
 }
 
 void loop() {
- 
+
   distance = readUltrasonicSensor(); // Read the ultrsound sensor to see any objects nearby and store in global variable.
 
-/*
- * LED Test section.
- 
-  // Test Ring Light Leds
-  ledCommands(RingLEDsGreen);
+  /*
+     LED Test section.
 
-  // Test Strip Lights 20V
-  analogWrite(STRIP_LIGHT_20V, INTENSITY_HIGH);
-  delay(1000);
-  analogWrite(STRIP_LIGHT_20V, INTENSITY_MED);
-  delay(1000);
-  analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
+    // Test Ring Light Leds
+    ledCommands(RingLEDsGreen);
 
-*/
+    // Test Strip Lights 20V
+    analogWrite(STRIP_LIGHT_20V, INTENSITY_HIGH);
+    delay(1000);
+    analogWrite(STRIP_LIGHT_20V, INTENSITY_MED);
+    delay(1000);
+    analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
+
+  */
   delay(1000);
 }
 
@@ -174,49 +190,82 @@ void ledCommands(int cmd)
   Serial.println(cmd);
   switch (cmd) {
     case AllLEDsOff:
-      setAllLEDsColor(OFF);
+      setRingLEDsColor(OFF);
+      setStripLEDsColor(OFF);
       break;
 
     case RingLEDsRed:
-      setAllLEDsColor(RED);
+      setRingLEDsColor(RED);
       break;
 
     case RingLEDsGreen:
-      setAllLEDsColor(GREEN);
+      setRingLEDsColor(GREEN);
+      break;
+
+    case RingLEDsOrange:
+      setRingLEDsColor(ORANGE);
       break;
 
     case RingLEDsYellow:
-      setAllLEDsColor(YELLOW);
+      setRingLEDsColor(YELLOW);
       break;
 
     case RingLEDsBlue:
-      setAllLEDsColor(BLUE);
-      break;
-      
-    case RingLEDsWhite:
-      setAllLEDsColor(WHITE);
-      break;
-      
-    case LEDStripGreen:
-    case LEDStripOrange:
-    case LEDStripRed:
-    case LEDStripBlue:
-    case LEDStripWhite:
+      setRingLEDsColor(BLUE);
       break;
 
-    case LEDStrip20vHigh:
+    case RingLEDsWhite:
+      setRingLEDsColor(WHITE);
+      break;
+
+    case RingLEDsOff:
+      setRingLEDsColor(OFF);
+      break;
+
+    case StripLEDsRed:
+      setStripLEDsColor(RED);
+      break;
+
+    case StripLEDsGreen:
+      setStripLEDsColor(GREEN);
+      break;
+
+    case StripLEDsOrange:
+      setStripLEDsColor(ORANGE);
+      break;
+
+    case StripLEDsYellow:
+      setStripLEDsColor(YELLOW);
+      break;
+
+    case StripLEDsBlue:
+      setStripLEDsColor(BLUE);
+      break;
+
+    case StripLEDsWhite:
+      setStripLEDsColor(WHITE);
+      break;
+
+    case StripLEDsOff:
+      setStripLEDsColor(OFF);
+      break;
+
+    case StripLEDs20vHigh:
       analogWrite(STRIP_LIGHT_20V, INTENSITY_HIGH);
       break;
 
-    case LEDStrip20vMed:
+    case StripLEDs20vMed:
       analogWrite(STRIP_LIGHT_20V, INTENSITY_MED);
       break;
 
-    case LEDStrip20vLow:
+    case StripLEDs20vLow:
       analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
       break;
 
-    case AllLEDsPattern:
+    case StripLEDs20vOff:
+      analogWrite(STRIP_LIGHT_20V, INTENSITY_OFF);
+      break;
+
     default:
       // Do nothing for now
       break;
@@ -233,92 +282,17 @@ void updateLEDs() {
   FastLED.delay(30);
 }
 
-void setAllLEDsColor(CHSV color) {
-  fill_solid(leds, NUM_LEDS, color);
+// Control Ring LED color
+void setRingLEDsColor(CHSV color) {
+  fill_solid(leds[0], NUM_RING_LEDS, color);
   updateLEDs();
 }
 
-void setAllLEDsRainbow(uint8_t initialhue, uint8_t deltahue) {
-  fill_rainbow(leds, NUM_LEDS, initialhue, deltahue);
+// Control Strip LED Color
+void setStripLEDsColor(CHSV color) {
+  fill_solid(leds[1], NUM_STRIP_LEDS, color);
   updateLEDs();
 }
 
-void sequentialRainbow(uint8_t initialhue, uint8_t deltahue, int msDelay) {
-  uint8_t hue = initialhue + deltahue;
-  for (int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = CHSV(hue, 255, 255);
-    updateLEDs();
-    delay(msDelay);
-    hue += deltahue;
-  }
-}
 
-void chaseTheLED(int startingLED, int msDelay, int howManyTimes, CHSV color) {    // howManyTimes isn't implemented yet.
-  for (int i = startingLED; i < NUM_LEDS; i++) {
-    setIndividualLED(i, color);
-    FastLED.delay(msDelay);
-    leds[i] = OFF;
-  }
-}
-
-// Individual LED functions
-void setIndividualLED(int led, CHSV color) {
-  leds[led] = color;
-  updateLEDs();
-}
-
-// Individual ringlight functions
-void setRingLightHue(int whichLight, int hue) {
-  switch (whichLight) {
-    case 1:
-      for (int i = 0; i < 24; i++) {
-        leds[i] = CHSV(hue, led1_sat, led1_val);
-      }
-      led1_hue = hue;
-      break;
-    case 2:
-      for (int i = 24; i < 48; i++) {
-        leds[i] = CHSV(hue, led2_sat, led2_val);
-      }
-      led2_hue = hue;
-      break;
-  }
-  updateLEDs();
-}
-
-void setRingLightSaturation(int whichLight, int saturation) {
-  switch (whichLight) {
-    case 1:
-      for (int i = 0; i < 24; i++) {
-        leds[i] = CHSV(led1_hue, saturation, led1_val);
-      }
-      led1_sat = saturation;
-      break;
-    case 2:
-      for (int i = 24; i < 48; i++) {
-        leds[i] = CHSV(led2_hue, saturation, led2_val);
-      }
-      led2_sat = saturation;
-      break;
-  }
-  updateLEDs();
-}
-
-void setRingLightValue(int whichLight, int value) {
-  switch (whichLight) {
-    case 1:
-      for (int i = 0; i < 24; i++) {
-        leds[i] = CHSV(led1_hue, led1_sat, value);
-      }
-      led1_val = value;
-      break;
-    case 2:
-      for (int i = 24; i < 48; i++) {
-        leds[i] = CHSV(led2_hue, led2_sat, value);
-      }
-      led2_val = value;
-      break;
-  }
-  updateLEDs();
-}
 

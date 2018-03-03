@@ -50,8 +50,8 @@ public class CubeSpinner extends Subsystem {
             right.follow(left);
 
             // TODO: TEST THIS CODE!!!
-            getIRSensor().whenActive(new ArduinoSendCommand(Arduino.Command.LEDStripOrange));
-            getIRSensor().whenInactive(new ArduinoSendCommand(Arduino.Command.LEDStripWhiteLow));   // LED Strip Off
+            getIRSensor().whenActive(new ArduinoSendCommand(Arduino.Command.StripLEDsOrange));
+            getIRSensor().whenInactive(new ArduinoSendCommand(Arduino.Command.StripLEDsOff));   // LED Strip Off
 
         } catch (Exception e) {
             RobotLogger.getInstance().err(this.getClass(), "Error instantiating CubeSpinner hardware" + e.getMessage());
