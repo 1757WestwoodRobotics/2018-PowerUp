@@ -1,6 +1,7 @@
 package org.whsrobotics.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -16,11 +17,13 @@ import org.whsrobotics.subsystems.Elevator;
 import org.whsrobotics.triggers.ElevatorVelocityMode;
 import org.whsrobotics.utils.RobotLogger;
 
+import static org.whsrobotics.robot.RobotMap.BUTTONBOX_PORT;
 import static org.whsrobotics.robot.RobotMap.XBOX_PORT;
 
 public class OI {
 
     private static XboxController xboxController;
+    private static Joystick buttonBox;
 
     private static SendableChooser<Autonomous.FieldTarget> fieldTargetChooser;
     private static SendableChooser<Autonomous.StartingPosition> startingPositionChooser;
@@ -32,11 +35,12 @@ public class OI {
 
     private OI() {
         xboxController = new XboxController(XBOX_PORT);
-        (new JoystickButton(xboxController, XboxButton.kA.value)).whenPressed(new CGGrabCube());
-        (new JoystickButton(xboxController, XboxButton.kB.value)).whenPressed(new CGDeployCubeToSwitch());
-        (new JoystickButton(xboxController, XboxButton.kX.value)).whenPressed(new CGDeployCubeToScale());
+        buttonBox = new Joystick(BUTTONBOX_PORT);
 
-        (new JoystickButton(xboxController, XboxButton.kBumperRight.getValue())).whenPressed(DriveTrain.disableLimitedAcceleration);
+        (new JoystickButton(buttonBox, 1)).whenPressed(new CGGrabCube());
+        (new JoystickButton(buttonBox, 2)).whenPressed(new CGDeployCubeToSwitch());
+        (new JoystickButton(buttonBox, 3)).whenPressed(new CGDeployCubeToScale());
+
         (new ElevatorVelocityMode()).whenActive(new MoveElevatorVelocity());
 
         publishElevator();
@@ -62,7 +66,6 @@ public class OI {
     // ------------ XBOX CONTROLLER ------------- //
 
     private static final double XBOX_DEADZONE = 0.05;
-    private static final double XBOX_RIGHT_DEADZONE = 0.1;
 
     private enum XboxButton {
         kBumperLeft(5),
@@ -95,17 +98,7 @@ public class OI {
     public static double checkXboxDeadzone(double value) {
 
         if (Math.abs(value) >= XBOX_DEADZONE) {
-            return value;
-        }
-
-        return 0;
-
-    }
-
-    public static double checkXboxRightDeadzone(double value) {
-
-        if (Math.abs(value) >= XBOX_RIGHT_DEADZONE) {
-            return value;
+            return Math.copySign(Math.pow(value, 3), value);
         }
 
         return 0;
@@ -194,7 +187,7 @@ public class OI {
 
     private static void publishCubeGripper() {
         cubeGripperModeChooser = new SendableChooser<>();
-        cubeGripperModeChooser.addDefault("Default - SWITCH", CubeGripper.Position.RECEIVE);
+        cubeGripperModeChooser.addDefault("Default - SWITCH", CubeGripper.Position.GRAB_CUBE);
 
         for (CubeGripper.Position position : CubeGripper.Position.values()) {
             cubeGripperModeChooser.addObject(position.toString(), position);
@@ -223,7 +216,7 @@ public class OI {
             try {
                 alliance = DriverStation.getInstance().getAlliance();
             } catch (Exception e) {
-                RobotLogger.getInstance().err(instance.getClass(), "Error with getting the Alliance Data! " + e.getMessage());
+                RobotLogger.getInstance().err(instance.getClass(), "Error with getting the Alliance Data! " + e.getMessage(), false);
             }
         }
 

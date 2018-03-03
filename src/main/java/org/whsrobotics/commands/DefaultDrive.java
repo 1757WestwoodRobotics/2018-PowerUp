@@ -12,11 +12,6 @@ public class DefaultDrive extends Command {
     }
 
     @Override
-    protected void initialize() {
-        DriveTrain.configLimitedAccelerationDrive();
-    }
-
-    @Override
     protected void execute() {
         DriveTrain.defaultDrive(-OI.getXboxController().getY(GenericHID.Hand.kLeft),
                 OI.getXboxController().getX(GenericHID.Hand.kRight));

@@ -33,6 +33,7 @@ public class RobotMap {
     public static final SPI.Port NAVX_PORT = SPI.Port.kMXP;
 
     public static final int XBOX_PORT = 0;
+    public static final int BUTTONBOX_PORT = 1;
 
     public static void init() {
 

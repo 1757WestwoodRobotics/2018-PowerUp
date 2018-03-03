@@ -85,7 +85,7 @@ public class DriveTrain extends Subsystem {
             resetEncoders();
 
         } catch (NullPointerException e) {
-            RobotLogger.getInstance().err(this.getClass(), "Error instantiating the DriveTrain hardware!" + e.getMessage());
+            RobotLogger.getInstance().err(this.getClass(), "Error instantiating the DriveTrain hardware!" + e.getMessage(), true);
 
         }
 
@@ -108,13 +108,8 @@ public class DriveTrain extends Subsystem {
     public void periodic() {
         try {
             SmartDashboard.putNumber("NavX - Yaw", getYawAngle());
-            SmartDashboard.putNumber("LF", leftFront.getMotorOutputVoltage());
-            SmartDashboard.putNumber("LB", leftBack.getMotorOutputVoltage());
-            SmartDashboard.putNumber("RF", rightFront.getMotorOutputVoltage());
-            SmartDashboard.putNumber("RB", rightBack.getMotorOutputVoltage());
-            SmartDashboard.putNumber("Xbox", OI.checkXboxDeadzone(OI.getXboxController().getX(GenericHID.Hand.kRight)));
         } catch (Exception e) {
-            RobotLogger.getInstance().err(instance.getClass(), "Error reading NavX data!" + e.getMessage());
+            RobotLogger.getInstance().err(instance.getClass(), "Error reading NavX data!" + e.getMessage(), true);
         }
     }
 
@@ -125,25 +120,10 @@ public class DriveTrain extends Subsystem {
     }
 
     /**
-     * Arcade drive with acceleration-limiting, input ramping, and deadzone implementation
+     * Arcade drive with input ramping, and deadzone implementation
      */
     public static void defaultDrive(double x, double y) {
-        drive(OI.checkXboxDeadzone(x), OI.checkXboxRightDeadzone(y), true);
-    }
-
-    // TODO: Different acceleration values for accel/decel/elevator position. Side-to-side different?
-    public static void configLimitedAccelerationDrive() {
-        leftFront.configOpenloopRamp(3, 0);
-        leftBack.configOpenloopRamp(3, 0);
-        rightFront.configOpenloopRamp(3, 0);
-        rightBack.configOpenloopRamp(3, 0);
-    }
-
-    public static void removeLimitedAccelerationDrive() {
-        leftFront.configOpenloopRamp(0, 0);
-        leftBack.configOpenloopRamp(0, 0);
-        rightFront.configOpenloopRamp(0, 0);
-        rightBack.configOpenloopRamp(0, 0);
+        drive(OI.checkXboxDeadzone(x), OI.checkXboxDeadzone(y), true);
     }
 
     public static void stopDrive() {
@@ -199,7 +179,7 @@ public class DriveTrain extends Subsystem {
                 rotationPIDController.disable();
 
             } catch (Exception e) {
-                RobotLogger.getInstance().err(instance.getClass(), "Error creating the DriveTrain Rotation PIDController!" + e.getMessage());
+                RobotLogger.getInstance().err(instance.getClass(), "Error creating the DriveTrain Rotation PIDController!" + e.getMessage(), true);
                 return false;
             }
 
@@ -278,25 +258,6 @@ public class DriveTrain extends Subsystem {
     }
 
     // ------------ AUXILIARY COMMANDS ------------- //
-
-    public static Command disableLimitedAcceleration = new Command() {
-
-        @Override
-        protected void execute() {
-            DriveTrain.removeLimitedAccelerationDrive();
-        }
-
-        @Override
-        protected void end() {
-            DriveTrain.configLimitedAccelerationDrive();
-        }
-
-        @Override
-        protected boolean isFinished() {
-            return OI.getXboxController().getBumperReleased(GenericHID.Hand.kRight);
-        }
-
-    };
 
 }
 

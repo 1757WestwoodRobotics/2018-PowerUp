@@ -23,7 +23,7 @@ public class CGDeployCubeToSwitch extends CommandGroup{
         // Spin the CubeSpinner motors in the OUTWARDS mode (until Cube has left the IR sensor), and open arms TODO: TEST
         addSequential(new WaitForTriggerCommand(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS), new CubeNotInArms()), 3);
 
-        addSequential(new MoveCubeGripper(CubeGripper.Position.RECEIVE));
+        addSequential(new MoveCubeGripper(CubeGripper.Position.GRAB_CUBE));
         addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
         addSequential(new MoveElevatorPosition(Elevator.Position.DOWN));
 

@@ -59,7 +59,7 @@ public class Arduino extends Subsystem {
             }
 
         } catch (NullPointerException e) {
-            RobotLogger.getInstance().err(this.getClass(), "Error instantiating the Arduino control!" + e.getMessage());
+            RobotLogger.getInstance().err(this.getClass(), "Error instantiating the Arduino control!" + e.getMessage(), true);
         }
 
     }
@@ -91,7 +91,7 @@ public class Arduino extends Subsystem {
         double distance = -1; // Error condition where sensor fails
 
         if (i2c.isNotAddressable()) {
-            RobotLogger.getInstance().err(this.getClass(), "Unable to address Arduino!");
+            RobotLogger.getInstance().err(this.getClass(), "Unable to address Arduino!", false);
         } else {
             String data = i2c.readData();
             // convert this to a double and send it out.
@@ -103,6 +103,10 @@ public class Arduino extends Subsystem {
 
     public void initDefaultCommand () {
             // Set the default command for a subsystem here.
+    }
+
+    public void onDisabledInit() {
+        Send(Command.StripLEDs20vLow);
     }
 
 }

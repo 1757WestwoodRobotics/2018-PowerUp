@@ -43,18 +43,20 @@ public class CubeSpinner extends Subsystem {
             left.setNeutralMode(NeutralMode.Coast);
             right.setNeutralMode(NeutralMode.Coast);
 
-            left.configPeakOutputForward(.50, 0);
+            left.configPeakOutputForward(1, 0);     // May be too fast
             left.configPeakOutputReverse(-.50, 0);
 
             left.setInverted(true);
             right.follow(left);
+
+            irSensor = new CubeInArms();
 
             // TODO: TEST THIS CODE!!!
             getIRSensor().whenActive(new ArduinoSendCommand(Arduino.Command.StripLEDsOrange));
             getIRSensor().whenInactive(new ArduinoSendCommand(Arduino.Command.StripLEDsOff));   // LED Strip Off
 
         } catch (Exception e) {
-            RobotLogger.getInstance().err(this.getClass(), "Error instantiating CubeSpinner hardware" + e.getMessage());
+            RobotLogger.getInstance().err(this.getClass(), "Error instantiating CubeSpinner hardware" + e.getMessage(), true);
 
         }
 

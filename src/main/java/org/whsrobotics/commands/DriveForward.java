@@ -12,26 +12,18 @@ public class DriveForward extends Command {
     }
 
     @Override
-    protected void initialize() {
-
-        DriveTrain.configLimitedAccelerationDrive();
-    }
-
-    @Override
     protected void execute() {
-
         DriveTrain.defaultDrive(.5, 0);
     }
 
     @Override
     protected void end() {
         DriveTrain.stopDrive();
-        DriveTrain.removeLimitedAccelerationDrive();
     }
-
 
     @Override
     protected boolean isFinished() {
         return false;
     }
+
 }

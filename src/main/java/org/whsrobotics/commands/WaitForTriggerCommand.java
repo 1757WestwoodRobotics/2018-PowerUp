@@ -21,6 +21,7 @@ public class WaitForTriggerCommand extends Command {
 
     @Override
     protected void end() {
+        System.out.println("WaitForTriggerCommand has stopped");
         command.cancel();
     }
 
@@ -29,7 +30,7 @@ public class WaitForTriggerCommand extends Command {
         try {
             return trigger.get();
         } catch (Exception e) {
-            RobotLogger.getInstance().err(this.getClass(), "Error with getting trigger: " + trigger.getName());
+            RobotLogger.getInstance().err(this.getClass(), "Error with getting trigger for Wait", true);
             return false;
         }
     }

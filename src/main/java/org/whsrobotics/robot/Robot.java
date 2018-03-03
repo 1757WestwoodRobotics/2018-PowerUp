@@ -92,6 +92,7 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         // Any time robot goes into disabled (run once)
         RobotLogger.getInstance().log(this.getClass(), "Entering disabled");
+        Arduino.getInstance().onDisabledInit();
     }
 
 }
