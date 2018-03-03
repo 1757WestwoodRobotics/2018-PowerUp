@@ -1,11 +1,11 @@
 package org.whsrobotics.commands.commandgroups;
 
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import org.whsrobotics.commands.*;
 import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.CubeSpinner;
 import org.whsrobotics.subsystems.Elevator;
+import org.whsrobotics.triggers.ElevatorHasReachedSetpoint;
 
 /**
  * Sequence of commands to grab a Power Cube. Opens the robot arms and spins the intake wheels.
@@ -14,23 +14,25 @@ public class CGGrabCube extends CommandGroup {
 
     public CGGrabCube() {
 
-        addSequential(new MoveElevatorPosition(Elevator.Position.DOWN));
+//        addSequential(new MoveElevatorPosition(Elevator.Position.DOWN));
+        // Move the Elevator to the down position. If it can't do it in 5 seconds, stop it.
+        addSequential(new WaitForTriggerCommand(new MoveElevatorPosition(Elevator.Position.DOWN), new ElevatorHasReachedSetpoint()), 5);
 
-            // Move the CubeGripper arms to a position
-        addSequential(new MoveCubeGripper(CubeGripper.Position.MIDDLE));
-        addSequential(new TimedCommand(0.5));
+        // Move the CubeGripper arms to a position
+        addSequential(new MoveCubeGripper(CubeGripper.Position.RECEIVE));
 
-        addSequential(new MoveCubeGripper(CubeGripper.Position.RECEIVE_CUBE));
+        // hard-coded time-based delay before the arms close
+        addSequential(new TimedCommand(1));
 
-            // Spin the CubeSpinner motors in the INTAKE mode (for 2 seconds) // TODO: Until sensor triggered
-        addSequential(new SpinCubeSpinner(CubeSpinner.Mode.INWARDS));
-        addSequential(new TimedCommand(2));
+        // Spin the CubeSpinner motors in the INTAKE mode (until Cube is detected with the IR sensor), and bring arms closer
+        addParallel(new WaitForTriggerCommand(new SpinCubeSpinner(CubeSpinner.Mode.INWARDS), CubeSpinner.getIRSensor()));
+        addParallel(new MoveCubeGripper(CubeGripper.Position.CLOSE_ARMS));
 
-        addSequential(new CubeGripperApplyConstantVoltage());
-
-        addSequential(new TimedCommand(0.5));
+        // Turn off the spinner motors
         addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
 
+        // Grasp the Cube tightly (will timeout after 60s)
+        addSequential(new CubeGripperApplyConstantVoltage());
 
     }
 }

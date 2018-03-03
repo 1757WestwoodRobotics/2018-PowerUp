@@ -1,10 +1,7 @@
 package org.whsrobotics.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import org.whsrobotics.commands.ArduinoSendCommand;
 import org.whsrobotics.subsystems.*;
 import org.whsrobotics.utils.RobotLogger;
 
@@ -55,6 +52,7 @@ public class Robot extends TimedRobot {
         Scheduler.getInstance().run();
     }
 
+
     // ------------ TELEOPERATED METHODS ------------- //
 
     /**
@@ -72,13 +70,16 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
 
-//      Temporary code for testing Arduino communication
-//        for (Arduino.Command command : Arduino.Command.values()) {
+//      // Temporary code for testing Arduino communication
+//      for (Arduino.Command command : Arduino.Command.values()) {
 //            Arduino.getInstance().Send(command);
 //            Timer.delay(1);
 //        }
 //
-//        System.out.println(Arduino.getInstance().getDistance());
+//        System.out.println(new String("Ultrasonic sensor value - ") + Arduino.getInstance().getDistance());
+//        Timer.delay(1);
+
+//        System.out.println(CubeSpinner.getIRSensorValue());
 
     }
 

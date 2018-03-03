@@ -2,6 +2,7 @@ package org.whsrobotics.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.communications.JetsonLAN;
+import org.whsrobotics.utils.RobotLogger;
 
 import java.util.Arrays;
 
@@ -88,7 +89,11 @@ public class Vision {
 
     public static void receiveJcommand(int value) {
         jcommand = Jcommand.lookupJcommand(value);
+
         SmartDashboard.putString("Jetson Jcommand", jcommand.toString());
+        RobotLogger.getInstance().log(instance.getClass(), "##### Received Jetson Jcommand: " + value + " " + jcommand);
+
+        // TODO: Handle Jcommand
     }
 
 }

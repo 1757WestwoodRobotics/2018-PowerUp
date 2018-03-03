@@ -1,13 +1,13 @@
 package org.whsrobotics.triggers;
 
 import edu.wpi.first.wpilibj.buttons.Trigger;
+import org.whsrobotics.subsystems.CubeSpinner;
 
-public class CubeGripperIRSensor extends Trigger {
+public class CubeInArms extends Trigger {
 
     @Override
     public boolean get() {
-        return false;
-        // return if (CubeGripper.getIRSensor()) > ...
+        return CubeSpinner.isCubePresent();
     }
 
 }

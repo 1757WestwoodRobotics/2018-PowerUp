@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.whsrobotics.commands.commandgroups.*;
+import org.whsrobotics.subsystems.Arduino;
 import org.whsrobotics.utils.RobotLogger;
 
 /**
@@ -20,15 +21,15 @@ public class Autonomous {
 
     public enum FieldTarget {
         CODE_DECISION, NONE, CROSS_LINE, PC_ZONE, EXCHANGE,
-        LEFT_SWITCH, RIGHT_SWITCH, LEFT_SCALE, RIGHT_SCALE;
+        LEFT_SWITCH, RIGHT_SWITCH, LEFT_SCALE, RIGHT_SCALE
     }
 
     public enum StartingPosition {
-        LEFT, MIDDLE, RIGHT;
+        LEFT, MIDDLE, RIGHT
     }
 
     public enum Ownership {
-        LEFT, RIGHT;
+        LEFT, RIGHT
     }
 
     private static Autonomous instance;
@@ -60,15 +61,18 @@ public class Autonomous {
         startingPosition = OI.getSelectedAutoStartingPosition();
 
         // get alliance
+        // set arduino light strips to alliance color (it should be white or alternating at this point)
         switch (OI.getAlliance()) {
             case Red:
+                Arduino.getInstance().Send(Arduino.Command.StripLEDsRed);
                 break;
             case Blue:
+                Arduino.getInstance().Send(Arduino.Command.StripLEDsBlue);
                 break;
             case Invalid:
+                Arduino.getInstance().Send(Arduino.Command.StripLEDsWhite);
                 break;
         }
-        // Set arduino light strips to alliance color (it should be white or alternating at this point)
 
         // choose manual commandgroup
         decideAutoMode().start();
