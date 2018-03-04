@@ -123,7 +123,7 @@ public class DriveTrain extends Subsystem {
      * Arcade drive with input ramping, and deadzone implementation
      */
     public static void defaultDrive(double x, double y) {
-        drive(OI.checkXboxDeadzone(x), OI.checkXboxDeadzone(y), true);
+        drive(OI.checkXboxDeadzone(x), OI.checkXboxRightDeadzone(y), false);
     }
 
     public static void stopDrive() {

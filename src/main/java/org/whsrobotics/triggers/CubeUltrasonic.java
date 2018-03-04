@@ -8,7 +8,7 @@ public class CubeUltrasonic extends Trigger {
     @Override
     public boolean get() {
         double distance = Arduino.getInstance().getDistance();
-        return distance < 30 && distance != -1; // Constant for the distance to cube
+        return distance < 30; // Constant for the distance to cube
     }
 
 }

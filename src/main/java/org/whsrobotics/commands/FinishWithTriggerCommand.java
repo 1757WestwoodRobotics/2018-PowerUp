@@ -1,7 +1,10 @@
 package org.whsrobotics.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.Command;
+import org.whsrobotics.subsystems.Arduino;
+import org.whsrobotics.subsystems.CubeSpinner;
 import org.whsrobotics.utils.RobotLogger;
 
 /**
@@ -25,17 +28,34 @@ public class FinishWithTriggerCommand extends Command {
     @Override
     protected void end() {
         System.out.println("FinishWithTriggerCommand has stopped");
+        (new SpinCubeSpinner(CubeSpinner.Mode.OFF)).start();
         command.cancel();
     }
 
+    double lastTime = 0;
+    double currentTime;
+
     @Override
     protected boolean isFinished() {
+
+        currentTime = Timer.getFPGATimestamp();
+
         try {
-            return trigger.get();
+
+            if (currentTime > lastTime + 3) {
+                lastTime = currentTime;
+                double output = Arduino.getInstance().getDistance();
+                System.out.println(output);
+                return output < 30;
+            }
+
         } catch (Exception e) {
             RobotLogger.getInstance().err(this.getClass(), "Error with getting trigger for Wait", true);
             return false;
         }
+
+        return false;
+
     }
 
 }

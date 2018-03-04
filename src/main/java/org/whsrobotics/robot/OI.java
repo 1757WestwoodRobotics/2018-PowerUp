@@ -65,7 +65,8 @@ public class OI {
 
     // ------------ XBOX CONTROLLER ------------- //
 
-    private static final double XBOX_DEADZONE = 0.05;
+    private static final double XBOX_DEADZONE = 0.06;
+    private static final double XBOX_RIGHT_DEADZONE = 0.08;
 
     private enum XboxButton {
         kBumperLeft(5),
@@ -98,11 +99,19 @@ public class OI {
     public static double checkXboxDeadzone(double value) {
 
         if (Math.abs(value) >= XBOX_DEADZONE) {
+            // Raises the raw xbox input to the 3rd power and adds 10%
+            return Math.copySign(Math.pow(value, 3) + 0.10, value);
+        }
 
-            // Raises the raw xbox input to the 3rd power and adds 0.05%
-            double output = Math.copySign(Math.pow(value, 3) + 0.05, value);
-            System.out.println(output);
-            return output;
+        return 0;
+
+    }
+
+    public static double checkXboxRightDeadzone(double value) {
+
+        if (Math.abs(value) >= XBOX_RIGHT_DEADZONE) {
+            // Raises the raw xbox input to the 3rd power and adds 10%
+            return Math.copySign(Math.pow(value, 3) + 0.10, value);
         }
 
         return 0;

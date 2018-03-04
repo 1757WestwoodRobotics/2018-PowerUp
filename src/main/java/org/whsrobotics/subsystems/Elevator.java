@@ -30,7 +30,7 @@ public class Elevator extends Subsystem {
     private static double KD = 0.0;
     private static double KF = 0.0;
 
-    private static final int MAX_ERROR = 20;
+    private static final int MAX_ERROR = 50;
 
     private static Elevator instance;
 
@@ -62,7 +62,7 @@ public class Elevator extends Subsystem {
             right.setNeutralMode(NeutralMode.Brake);
 
             left.configPeakOutputForward(.80, 0);   // TODO: Raise to full power?
-            left.configPeakOutputReverse(-.30, 0);  // Keep downwards at half power
+            left.configPeakOutputReverse(-.60, 0);  // Keep downwards at half power
 
             right.follow(left);
             left.setInverted(true);
@@ -209,10 +209,6 @@ public class Elevator extends Subsystem {
 
     // ------------ FINISHED METHODS ------------- //
 
-    public static boolean getPIDFinished() {
-        return left.getClosedLoopError(0) <= MAX_ERROR;
-    }
-
     public static boolean reachedBoundaries() {
         return getTopLimitSwitch() || getBottomLimitSwitch();
     }
@@ -225,8 +221,17 @@ public class Elevator extends Subsystem {
         return bottomLimit.get();
     }
 
+    public static double getError() {
+        return left.getClosedLoopError(0);
+    }
+
     public static boolean reachedTarget() {
-        return left.getClosedLoopError(0) < MAX_ERROR;
+        System.out.println("Has reached Elevator target!");
+        return getError() < MAX_ERROR;
+    }
+
+    public static int getMaxError() {
+        return MAX_ERROR;
     }
 
     // ------------ AUXILIARY COMMANDS ------------- //

@@ -92,9 +92,12 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
-        // Any time robot goes into disabled (run once)
+        // Any time robot goes into disabled (run once) [And RobotInit finishes]
         RobotLogger.getInstance().log(this.getClass(), "Entering disabled");
-        Arduino.getInstance().onDisabledInit();
+        // Arduino.getInstance().onDisabledInit();
+        Scheduler.getInstance().removeAll();
+        CubeSpinner.spinWithMode(CubeSpinner.Mode.OFF);
+
     }
 
 }

@@ -49,7 +49,7 @@ public class RobotLogger {
      * @param message the message to log
      */
     private void log(Class name, Level level, String message) {
-        Logger.getLogger("Robot").log(level, "" + Timer.getFPGATimestamp() + name + ": " + message);
+        Logger.getLogger("Robot").log(level, " " + Timer.getFPGATimestamp() + name + ": " + message);
     }
 
     public void log(Class name, String message) {
@@ -60,7 +60,7 @@ public class RobotLogger {
         DriverStation.reportError(message, printTrace);
         log(name, Level.SEVERE, message);
 
-        Arduino.getInstance().Send(Arduino.Command.StripLEDsWhite); // Visual indicator for robot failure
+        // Arduino.getInstance().Send(Arduino.Command.StripLEDsWhite); // Visual indicator for robot failure
 
     }
 
