@@ -14,7 +14,7 @@
 
 // I2C Section
 #define DEV_ADDRESS 0X4
-#define FREQUENCY 400000
+#define FREQUENCY 400000  // Maximum I2C frequency
 
 // Device control commands
 #define AllLEDsOff  0
