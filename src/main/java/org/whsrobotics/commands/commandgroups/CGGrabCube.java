@@ -16,20 +16,19 @@ public class CGGrabCube extends CommandGroup {
     public CGGrabCube() {
 
         // Move the Elevator to the down position. If it can't do it in 5 seconds, stop it.
-        addSequential(new WaitForTriggerCommand(
+        addSequential(new FinishWithTriggerCommand(
                 new MoveElevatorPosition(Elevator.Position.DOWN),
                 new ElevatorHasReachedSetpoint()), 5);
 
         // Move the CubeGripper arms to the GRAB_CUBE position
-        addSequential(new WaitForTriggerCommand(
-                new MoveCubeGripper(CubeGripper.Position.GRAB_CUBE),
-                new CubeUltrasonic()), 5); // Maximum 5 seconds
+        addSequential(new MoveCubeGripper(CubeGripper.Position.GRAB_CUBE), 3); // Maximum 3 seconds
 
         // Spin the CubeSpinner motors in the INTAKE mode (until Cube is detected with the IR sensor), and bring arms closer
         addParallel(new MoveCubeGripper(CubeGripper.Position.CLOSE_ARMS));
-        addParallel(new WaitForTriggerCommand(
+
+        addParallel(new FinishWithTriggerCommand(
                 new SpinCubeSpinner(CubeSpinner.Mode.INWARDS),
-                CubeSpinner.getIRSensor()), 5);    // Maximum 5 seconds
+                new CubeUltrasonic()), 5);    // Maximum 5 seconds
 
         // Grasp the Cube tightly
         addSequential(new CubeGripperApplyConstantVoltage());

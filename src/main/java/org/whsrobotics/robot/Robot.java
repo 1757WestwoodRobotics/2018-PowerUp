@@ -1,6 +1,7 @@
 package org.whsrobotics.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.whsrobotics.subsystems.*;
 import org.whsrobotics.utils.RobotLogger;
@@ -76,8 +77,9 @@ public class Robot extends TimedRobot {
 //            Timer.delay(1);
 //        }
 //
-//        System.out.println(new String("Ultrasonic sensor value - ") + Arduino.getInstance().getDistance());
-//        Timer.delay(1);
+        // System.out.println(new String("Ultrasonic sensor value - ") + Arduino.getInstance().getDistance());
+
+//        System.out.println("left: " + DriveTrain.getLeftEncoderCount());
 
 //        System.out.println(CubeSpinner.getIRSensorValue());
 

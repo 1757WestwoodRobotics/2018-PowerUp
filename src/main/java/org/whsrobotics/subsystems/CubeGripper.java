@@ -158,10 +158,10 @@ public class CubeGripper extends Subsystem {
         right.config_kD(0, KD, 0);
         right.config_kF(0, KF, 0);
 
-        System.out.println("KP: " + KP);
-        System.out.println("KI: " + KI);
-        System.out.println("KD: " + KD);
-        System.out.println("KF: " + KF);
+        RobotLogger.getInstance().log(instance.getClass(), "KP: " + KP);
+        RobotLogger.getInstance().log(instance.getClass(), "KI: " + KI);
+        RobotLogger.getInstance().log(instance.getClass(), "KD: " + KD);
+        RobotLogger.getInstance().log(instance.getClass(), "KF: " + KF);
     }
 
     public static void moveToDS(int target) {

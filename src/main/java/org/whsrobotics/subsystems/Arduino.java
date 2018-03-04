@@ -1,5 +1,6 @@
 package org.whsrobotics.subsystems;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import org.whsrobotics.communications.ArduinoI2C;
 import org.whsrobotics.utils.RobotLogger;
@@ -84,19 +85,30 @@ public class Arduino extends Subsystem {
      * Method to retrieve distance of the near object the ultrasonic sensor
      * connected to Arduino can see.
      *
-     * Return: distance measured in inches.
+     * Return: distance measured in cm.
      */
-    public double getDistance() {
+    public synchronized double getDistance() {
 
         double distance = -1; // Error condition where sensor fails
 
-        if (i2c.isNotAddressable()) {
-            RobotLogger.getInstance().err(this.getClass(), "Unable to address Arduino!", false);
-        } else {
+//        if (i2c.isNotAddressable()) {
+//            RobotLogger.getInstance().err(this.getClass(), "Unable to address Arduino!", false);
+//        } else {
+
+        while (distance == -1) {
+
             String data = i2c.readData();
+
             // convert this to a double and send it out.
-            distance = Double.valueOf(data);
+            try {
+                distance = Double.valueOf(data);
+            } catch (Exception e) {
+                RobotLogger.getInstance().err(instance.getClass(), "#### Empty Ultrasonic String!", false);
+            }
+
         }
+
+//        }
         return distance;
 
     }
