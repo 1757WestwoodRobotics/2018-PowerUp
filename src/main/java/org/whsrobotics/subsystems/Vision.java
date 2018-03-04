@@ -1,5 +1,6 @@
 package org.whsrobotics.subsystems;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.communications.JetsonLAN;
 import org.whsrobotics.utils.RobotLogger;
@@ -66,7 +67,7 @@ public class Vision {
     }
 
     private Vision() {
-
+        CameraServer.getInstance().startAutomaticCapture();
     }
 
     public static Vision getInstance(){

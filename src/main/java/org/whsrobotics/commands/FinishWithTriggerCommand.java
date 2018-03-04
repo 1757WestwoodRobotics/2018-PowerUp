@@ -4,12 +4,15 @@ import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.command.Command;
 import org.whsrobotics.utils.RobotLogger;
 
-public class WaitForTriggerCommand extends Command {
+/**
+ * Runs something until the Trigger is true
+ */
+public class FinishWithTriggerCommand extends Command {
 
     private Command command;
     private Trigger trigger;
 
-    public WaitForTriggerCommand(Command command, Trigger trigger) {
+    public FinishWithTriggerCommand(Command command, Trigger trigger) {
         this.command = command;
         this.trigger = trigger;
     }
@@ -21,7 +24,7 @@ public class WaitForTriggerCommand extends Command {
 
     @Override
     protected void end() {
-        System.out.println("WaitForTriggerCommand has stopped");
+        System.out.println("FinishWithTriggerCommand has stopped");
         command.cancel();
     }
 

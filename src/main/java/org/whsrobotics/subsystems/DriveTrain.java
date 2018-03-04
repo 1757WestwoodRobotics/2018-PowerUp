@@ -147,11 +147,11 @@ public class DriveTrain extends Subsystem {
         rightEncoder.reset();
     }
 
-    private static int getLeftEncoderCount() {
+    public static int getLeftEncoderCount() {
         return leftEncoder.get();
     }
 
-    private static int getRightEncoderCount() {
+    public static int getRightEncoderCount() {
         return rightEncoder.get();
     }
 

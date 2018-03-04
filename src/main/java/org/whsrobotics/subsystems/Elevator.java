@@ -61,10 +61,8 @@ public class Elevator extends Subsystem {
             left.setNeutralMode(NeutralMode.Brake);
             right.setNeutralMode(NeutralMode.Brake);
 
-            left.configPeakOutputForward(.50, 0);   // TODO: Raise to full power?
-            left.configPeakOutputReverse(-.50, 0);  // Keep downwards at half power
-
-//            left.setSensorPhase(true);
+            left.configPeakOutputForward(.80, 0);   // TODO: Raise to full power?
+            left.configPeakOutputReverse(-.30, 0);  // Keep downwards at half power
 
             right.follow(left);
             left.setInverted(true);

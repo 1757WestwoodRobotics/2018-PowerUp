@@ -98,7 +98,11 @@ public class OI {
     public static double checkXboxDeadzone(double value) {
 
         if (Math.abs(value) >= XBOX_DEADZONE) {
-            return Math.copySign(Math.pow(value, 3), value);
+
+            // Raises the raw xbox input to the 3rd power and adds 0.05%
+            double output = Math.copySign(Math.pow(value, 3) + 0.05, value);
+            System.out.println(output);
+            return output;
         }
 
         return 0;
@@ -159,7 +163,7 @@ public class OI {
     }
 
     public static Elevator.Position getSelectedElevatorPosition() {
-        System.out.println("getSelectedElevatorPosition");
+        RobotLogger.getInstance().log(instance.getClass(), "getSelectedElevatorPosition");
         return elevatorPositionChooser.getSelected();
     }
 
