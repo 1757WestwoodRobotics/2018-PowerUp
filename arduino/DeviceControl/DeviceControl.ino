@@ -38,6 +38,9 @@
 #define StripLEDsWhite 17
 #define StripLEDsOff 18
 
+#define RingLEDsPulse 19
+#define StripLEDsPulse 20
+
 
 #define TRIG_PIN          12    // SR04 Ultrsound Sensor
 #define ECHO_PIN          11    // SR04 Ultrsound Sensor
@@ -59,14 +62,6 @@ SR04 sr04 = SR04(ECHO_PIN, TRIG_PIN);
 
 CRGB leds[NUM_LED_UNITS][MAX_LEDS];
 
-// Default led HSV configurations
-int led1_hue = 100;
-int led1_sat = 255;
-int led1_val = 255;
-int led2_hue = 255;
-int led2_sat = 255;
-int led2_val = 255;
-
 // Preset values
 const CHSV GREEN(100, 255, 255);
 const CHSV RED(0, 255, 255);
@@ -82,6 +77,13 @@ const CHSV OFF(0, 0, 0);
 #define INTENSITY_MED  170
 #define INTENSITY_LOW  85
 #define INTENSITY_OFF  0
+
+// LED Pulse Control
+boolean ring_pulse = false;
+boolean strip_pulse = false;
+
+CHSV last_ring_color = OFF;
+CHSV last_strip_color = OFF;
 
 // Variable hold object distance as seen by the ultrasonic sensor
 double distance;
@@ -135,6 +137,21 @@ void loop() {
     analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
 
   */
+  
+  if (ring_pulse) {
+    CHSV color = last_ring_color;
+    setRingLEDsColor(OFF);
+    delay(300); 
+    setRingLEDsColor(color); // revert back to the previous color
+  }
+  
+   if (strip_pulse) {
+    CHSV color = last_strip_color;
+    setStripLEDsColor(OFF);
+    delay(300); 
+    setStripLEDsColor(color); // revert back to the previous color
+  }
+  
   delay(1000);
 }
 
@@ -266,6 +283,14 @@ void ledCommands(int cmd)
       analogWrite(STRIP_LIGHT_20V, INTENSITY_OFF);
       break;
 
+    case RingLEDsPulse: // toggle ring pulse mode
+      ring_pulse = !ring_pulse;
+      break;
+
+    case StripLEDsPulse: // toggle strip pulse mode
+      strip_pulse = !strip_pulse;
+      break; 
+      
     default:
       // Do nothing for now
       break;
@@ -286,12 +311,16 @@ void updateLEDs() {
 void setRingLEDsColor(CHSV color) {
   fill_solid(leds[0], NUM_RING_LEDS, color);
   updateLEDs();
+  // save the last color
+  last_ring_color = color;
 }
 
 // Control Strip LED Color
 void setStripLEDsColor(CHSV color) {
   fill_solid(leds[1], NUM_STRIP_LEDS, color);
   updateLEDs();
+  // save the last color
+  last_strip_color = color;
 }
 
 

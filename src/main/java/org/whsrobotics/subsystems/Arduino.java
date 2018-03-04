@@ -41,7 +41,9 @@ public class Arduino extends Subsystem {
         StripLEDsYellow("15"),
         StripLEDsBlue("16"),
         StripLEDsWhite("17"),
-        StripLEDsOff("18");
+        StripLEDsOff("18"),
+        RingLEDSPulse("19"),
+        StripLEDsPulse("20");
 
        public String value;
        Command (String value) {this.value = value;}
