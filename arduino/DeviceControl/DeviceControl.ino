@@ -14,6 +14,7 @@
 
 // I2C Section
 #define DEV_ADDRESS 0X4
+#define FREQUENCY 400000
 
 // Device control commands
 #define AllLEDsOff  0
@@ -73,10 +74,10 @@ const CHSV OFF(0, 0, 0);
 
 
 // Strip Light Intensity
-#define INTENSITY_HIGH 255
-#define INTENSITY_MED  170
-#define INTENSITY_LOW  85
-#define INTENSITY_OFF  0
+#define INTENSITY_HIGH 0
+#define INTENSITY_MED  85
+#define INTENSITY_LOW  170
+#define INTENSITY_OFF  255
 
 // LED Pulse Control
 boolean ring_pulse = false;
@@ -87,7 +88,7 @@ CHSV last_strip_color = OFF;
 
 // Variable hold object distance as seen by the ultrasonic sensor
 double distance;
-
+ 
 void setup() {
 
   // set up console baud rate.
@@ -105,16 +106,12 @@ void setup() {
   // Turn off all LEDs
   ledCommands(AllLEDsOff);
 
-
-  // Turn off Onboard LED
-  pinMode (13, OUTPUT);
-  digitalWrite (13, LOW);
-
   // setup Ulrasonitsensor pins
   pinMode(TRIG_PIN, OUTPUT);     // Sets the trigPin as an Output
   pinMode(ECHO_PIN, INPUT);      // Sets the echoPin as an Input
 
   Wire.begin(DEV_ADDRESS);       // join i2c bus with address #4
+  Wire.setClock(FREQUENCY);      // Set the wire frequency fast mode
   Wire.onReceive(receiveEvent);  // register callback to recieve events
   Wire.onRequest(requestEvent);  // register callback to request events
 }
@@ -125,18 +122,21 @@ void loop() {
 
   /*
      LED Test section.
-
+   
     // Test Ring Light Leds
     ledCommands(RingLEDsGreen);
 
     // Test Strip Lights 20V
-    analogWrite(STRIP_LIGHT_20V, INTENSITY_HIGH);
+   analogWrite(STRIP_LIGHT_20V, INTENSITY_HIGH);
     delay(1000);
     analogWrite(STRIP_LIGHT_20V, INTENSITY_MED);
     delay(1000);
     analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
+    */
+   
+    // analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
 
-  */
+
   
   if (ring_pulse) {
     CHSV color = last_ring_color;
@@ -161,6 +161,9 @@ void requestEvent() {
 
   Serial.println("requestEvent - Enter");
 
+  Serial.print("Distance = ");
+  Serial.println(distance);
+  
   data = String(distance, 2);
 
   Serial.print("Ultrasonic sensor returned: ");
@@ -174,8 +177,13 @@ void requestEvent() {
 // Function to read ultrasonic sensor value to measure distance in cm.
 double readUltrasonicSensor() {
   double dist = sr04.Distance(); // Distance read is in cm.
-  // Serial.print(dist);
-  // Serial.println(" - Cms");
+
+  // if disstance is 0.0 send back -1
+  if (!dist)
+    dist = -1;  
+  
+  Serial.print(dist);
+  Serial.println(" - Cms");  
   return dist;
 }
 
@@ -209,6 +217,7 @@ void ledCommands(int cmd)
     case AllLEDsOff:
       setRingLEDsColor(OFF);
       setStripLEDsColor(OFF);
+      analogWrite(STRIP_LIGHT_20V, INTENSITY_OFF);
       break;
 
     case RingLEDsRed:
