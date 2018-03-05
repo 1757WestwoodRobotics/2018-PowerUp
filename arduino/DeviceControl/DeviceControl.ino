@@ -79,16 +79,18 @@ const CHSV OFF(0, 0, 0);
 #define INTENSITY_LOW  170
 #define INTENSITY_OFF  255
 
+// Global Variables hold object distance as seen by the ultrasonic sensor, led commands etc.
+double distance;
+int led_command = -1;
+boolean do_led_command = false;
+boolean debug = true;
+
 // LED Pulse Control
 boolean ring_pulse = false;
 boolean strip_pulse = false;
-
 CHSV last_ring_color = OFF;
 CHSV last_strip_color = OFF;
 
-// Variable hold object distance as seen by the ultrasonic sensor
-double distance;
- 
 void setup() {
 
   // set up console baud rate.
@@ -119,7 +121,11 @@ void setup() {
 void loop() {
 
   distance = readUltrasonicSensor(); // Read the ultrsound sensor to see any objects nearby and store in global variable.
-
+  // If we received an LED command event, then process the LED command.
+  if (do_led_command) {
+     ledCommands(led_command);
+     do_led_command = false;
+  }
   /*
      LED Test section.
    
@@ -159,19 +165,13 @@ void loop() {
 void requestEvent() {
   String data;
 
-  Serial.println("requestEvent - Enter");
-
   Serial.print("Distance = ");
   Serial.println(distance);
   
   data = String(distance, 2);
 
-  Serial.print("Ultrasonic sensor returned: ");
-  Serial.println(data);
-
-  // Write to the wire. Hope this works.
+  // Write to the wire.
   Wire.write(data.c_str());
-  Serial.println("requestEvent - Exit");
 }
 
 // Function to read ultrasonic sensor value to measure distance in cm.
@@ -182,8 +182,10 @@ double readUltrasonicSensor() {
   if (!dist)
     dist = -1;  
   
-  Serial.print(dist);
-  Serial.println(" - Cms");  
+  if (debug) {
+   Serial.print(dist);
+   Serial.println(" - Cms");
+  }
   return dist;
 }
 
@@ -194,18 +196,24 @@ void receiveEvent(int howMany)
   String LED = "";
   int bytes_to_read = howMany;
 
-  Serial.print("Received - ");
-  Serial.println(howMany);
-
+  if (debug) {
+     Serial.print("Received - ");
+     Serial.println(howMany);
+  }
+   
   while ( bytes_to_read > 0 )
   {
     char n = (char)Wire.read(); // Roborio is sending character commands
     LED += n;
     bytes_to_read++; // increment byte counter
   }
-  Serial.print("Value = ");
-  Serial.println(LED.c_str());
-  ledCommands(LED.toInt());
+  if (debug) {
+     Serial.print("Value = ");
+     Serial.println(LED.c_str());
+  }   
+  // Save the command and set the do_led_command flag to true and get out of the interrupt
+  led_command = LED.toInt();
+  do_led_command = true;
 }
 
 // LED Control Section
