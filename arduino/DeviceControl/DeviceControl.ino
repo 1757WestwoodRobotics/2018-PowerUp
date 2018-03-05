@@ -192,15 +192,16 @@ double readUltrasonicSensor() {
 void receiveEvent(int howMany)
 {
   String LED = "";
+  int bytes_to_read = howMany;
 
   Serial.print("Received - ");
   Serial.println(howMany);
 
-  while ( Wire.available() > 0 )
+  while ( bytes_to_read > 0 )
   {
-    char n = (char)Wire.read();
-    if (((int)n) > ((int)(' ')))
-      LED += n;
+    char n = (char)Wire.read(); // Roborio is sending character commands
+    LED += n;
+    bytes_to_read++; // increment byte counter
   }
   Serial.print("Value = ");
   Serial.println(LED.c_str());
@@ -301,11 +302,12 @@ void ledCommands(int cmd)
       break; 
       
     default:
-      // Do nothing for now
+      // Do nothing for invalid commands
+      Serial.print("Invalid command: ");
+      Serial.println(cmd);
       break;
 
   }
-  delay(300);// 300ms delay for command to complete.
 }
 
 
