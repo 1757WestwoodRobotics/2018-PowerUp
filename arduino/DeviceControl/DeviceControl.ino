@@ -83,7 +83,7 @@ const CHSV OFF(0, 0, 0);
 double distance;
 int led_command = -1;
 boolean do_led_command = false;
-boolean debug = true;
+boolean debug = false;
 
 // LED Pulse Control
 boolean ring_pulse = false;
@@ -126,30 +126,28 @@ void loop() {
      ledCommands(led_command);
      do_led_command = false;
   }
-  /*
-     LED Test section.
-   
-    // Test Ring Light Leds
-    ledCommands(RingLEDsGreen);
-
-    // Test Strip Lights 20V
-   analogWrite(STRIP_LIGHT_20V, INTENSITY_HIGH);
-    delay(1000);
-    analogWrite(STRIP_LIGHT_20V, INTENSITY_MED);
-    delay(1000);
-    analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
-    */
-   
-    // analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
-
-
   
-  if (ring_pulse) {
+   
+     // LED Test section.
+   
+    if (debug) {
+      // Test Ring Light Leds
+      ledCommands(RingLEDsGreen);
+
+      // Test Strip Lights 20V
+      analogWrite(STRIP_LIGHT_20V, INTENSITY_HIGH);
+      delay(1000);
+      analogWrite(STRIP_LIGHT_20V, INTENSITY_MED);
+      delay(1000);
+      analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
+   } 
+   
+   if (ring_pulse) {
     CHSV color = last_ring_color;
     setRingLEDsColor(OFF);
     delay(300); 
     setRingLEDsColor(color); // revert back to the previous color
-  }
+   }
   
    if (strip_pulse) {
     CHSV color = last_strip_color;
@@ -158,16 +156,17 @@ void loop() {
     setStripLEDsColor(color); // revert back to the previous color
   }
   
-  delay(1000);
+  delay(100);
 }
 
 // Listens to Wire for a request event and then reads the sensor distance value and sends it back on the I2C Wire.
 void requestEvent() {
   String data;
 
-  Serial.print("Distance = ");
-  Serial.println(distance);
-  
+  if(debug) { 
+   Serial.print("Distance = ");
+   Serial.println(distance);
+  }
   data = String(distance, 2);
 
   // Write to the wire.
@@ -220,8 +219,10 @@ void receiveEvent(int howMany)
 
 void ledCommands(int cmd)
 {
-  Serial.print("Led Command -");
-  Serial.println(cmd);
+  if (debug) {
+    Serial.print("Led Command -");
+    Serial.println(cmd);
+  }
   switch (cmd) {
     case AllLEDsOff:
       setRingLEDsColor(OFF);
@@ -311,8 +312,10 @@ void ledCommands(int cmd)
       
     default:
       // Do nothing for invalid commands
-      Serial.print("Invalid command: ");
-      Serial.println(cmd);
+      if (debug) {
+        Serial.print("Invalid command: ");
+        Serial.println(cmd);
+      }
       break;
 
   }
