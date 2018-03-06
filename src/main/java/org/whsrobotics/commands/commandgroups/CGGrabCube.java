@@ -48,7 +48,7 @@ public class CGGrabCube extends CommandGroup {
 
                     new Thread(() -> {
                         output.set(Arduino.getInstance().getDistance());
-                        System.out.println(output.get());
+                        System.out.println("Ultrasonic reading: " + output.get());
                     }).run();
 
                     return output.get() < 40;
@@ -77,11 +77,11 @@ public class CGGrabCube extends CommandGroup {
             protected boolean isFinished() {
                 currentTime = Timer.getFPGATimestamp();
 
-                if (currentTime > lastTime + 0.5) {
+                if (currentTime > lastTime) {
                     lastTime = currentTime;
                     double output = Arduino.getInstance().getDistance();
                     System.out.println(output);
-                    return output < 30;
+                    return output < 20;
                 } else {
                     return false;
                 }

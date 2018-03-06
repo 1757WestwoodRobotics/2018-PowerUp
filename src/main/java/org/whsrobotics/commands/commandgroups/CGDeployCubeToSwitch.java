@@ -1,15 +1,11 @@
 package org.whsrobotics.commands.commandgroups;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import org.whsrobotics.commands.*;
-import org.whsrobotics.subsystems.Arduino;
 import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.CubeSpinner;
 import org.whsrobotics.subsystems.Elevator;
-import org.whsrobotics.triggers.CubeNotInArms;
-import org.whsrobotics.triggers.ElevatorHasReachedSetpoint;
 
 public class CGDeployCubeToSwitch extends CommandGroup{
 

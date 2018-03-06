@@ -14,10 +14,10 @@ public class MoveElevatorVelocity extends Command {
     @Override
     protected void execute() {
 
-        if (OI.checkXboxDeadzone(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kRight)) > 0 && !Elevator.getTopLimitSwitch()) {
+        if (OI.leftXboxJoystickCurve(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kRight)) > 0 && !Elevator.getTopLimitSwitch()) {
             Elevator.moveWithVelocity(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kRight));
 
-        } else if (OI.checkXboxDeadzone(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kLeft)) > 0 && !Elevator.getBottomLimitSwitch()) {
+        } else if (OI.leftXboxJoystickCurve(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kLeft)) > 0 && !Elevator.getBottomLimitSwitch()) {
             Elevator.moveWithVelocity(-OI.getXboxController().getTriggerAxis(GenericHID.Hand.kLeft));
         }
 
@@ -31,8 +31,8 @@ public class MoveElevatorVelocity extends Command {
 
     @Override
     protected boolean isFinished() {
-        return OI.checkXboxDeadzone(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kLeft)) == 0 &&
-                OI.checkXboxDeadzone(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kRight)) == 0;
+        return OI.leftXboxJoystickCurve(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kLeft)) == 0 &&
+                OI.leftXboxJoystickCurve(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kRight)) == 0;
     }
 
 }

@@ -125,7 +125,7 @@ public class Arduino extends Subsystem {
                 RobotLogger.getInstance().err(instance.getClass(), "#### Empty Ultrasonic String!", false);
             }
 
-            Timer.delay(0.2);
+            // Timer.delay(0.2);
             --count; // decrement count
 
         }

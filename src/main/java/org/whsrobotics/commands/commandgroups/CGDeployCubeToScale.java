@@ -6,8 +6,6 @@ import org.whsrobotics.commands.*;
 import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.CubeSpinner;
 import org.whsrobotics.subsystems.Elevator;
-import org.whsrobotics.triggers.CubeNotInArms;
-import org.whsrobotics.triggers.ElevatorHasReachedSetpoint;
 
 public class CGDeployCubeToScale extends CommandGroup {
 

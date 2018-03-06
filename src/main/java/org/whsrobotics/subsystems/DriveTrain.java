@@ -3,10 +3,8 @@ package org.whsrobotics.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -123,7 +121,7 @@ public class DriveTrain extends Subsystem {
      * Arcade drive with input ramping, and deadzone implementation
      */
     public static void defaultDrive(double x, double y) {
-        drive(OI.checkXboxDeadzone(x), OI.checkXboxRightDeadzone(y), false);
+        drive(OI.leftXboxJoystickCurve(x), OI.rightXboxJoystickCurve(y), false);
     }
 
     public static void stopDrive() {

@@ -79,9 +79,7 @@ public class Robot extends TimedRobot {
 //
         // System.out.println(new String("Ultrasonic sensor value - ") + Arduino.getInstance().getDistance());
 
-//        System.out.println("left: " + DriveTrain.getLeftEncoderCount());
-
-//        System.out.println(CubeSpinner.getIRSensorValue());
+        // System.out.println("left: " + DriveTrain.getLeftEncoderCount());
 
     }
 
@@ -97,6 +95,7 @@ public class Robot extends TimedRobot {
         // Arduino.getInstance().onDisabledInit();
         Scheduler.getInstance().removeAll();
         CubeSpinner.spinWithMode(CubeSpinner.Mode.OFF);
+        CubeGripper.setTalonNeutral();
 
     }
 

@@ -5,7 +5,6 @@ import org.whsrobotics.commands.*;
 import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.CubeSpinner;
 import org.whsrobotics.subsystems.Elevator;
-import org.whsrobotics.triggers.CubeNotInArms;
 import org.whsrobotics.triggers.ElevatorHasReachedSetpoint;
 
 public class CGDeployCubeToExchange extends CommandGroup {
@@ -21,7 +20,7 @@ public class CGDeployCubeToExchange extends CommandGroup {
         addSequential(new TimedCommand(0.25));
 
         // Spin the CubeSpinner motors in the OUTWARDS mode (until Cube has left the IR sensor), and open arms TODO: TEST
-        addSequential(new FinishWithTriggerCommand(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS), new CubeNotInArms()), 3);
+        addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS), 3);
 
         addSequential(new MoveCubeGripper(CubeGripper.Position.CLOSE_ARMS));
         addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OFF));

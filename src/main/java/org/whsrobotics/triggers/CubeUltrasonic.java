@@ -3,6 +3,9 @@ package org.whsrobotics.triggers;
 import edu.wpi.first.wpilibj.buttons.Trigger;
 import org.whsrobotics.subsystems.Arduino;
 
+/**
+ * @deprecated 
+ */
 public class CubeUltrasonic extends Trigger {
 
     @Override

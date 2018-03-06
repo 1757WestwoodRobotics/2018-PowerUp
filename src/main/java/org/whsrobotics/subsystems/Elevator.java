@@ -91,8 +91,8 @@ public class Elevator extends Subsystem {
 
             // ------------ LIMIT SWITCH ------------- //
 
-            topLimit = new LimitSwitch(RobotMap.DigitalInputPort.ELEVATOR_TOP.port);
-            bottomLimit = new LimitSwitch(RobotMap.DigitalInputPort.ELEVATOR_BOTTOM.port);
+//            topLimit = new LimitSwitch(RobotMap.DigitalInputPort.ELEVATOR_TOP.port);
+//            bottomLimit = new LimitSwitch(RobotMap.DigitalInputPort.ELEVATOR_BOTTOM.port);
 
         } catch (Exception e) {
             RobotLogger.getInstance().err(instance.getClass(), "Error setting up / configuring Elevator hardware!" + e.getMessage(), true);
@@ -125,8 +125,8 @@ public class Elevator extends Subsystem {
         try {
             SmartDashboard.putNumber("EncPos", Elevator.getEncoderPosition());
             SmartDashboard.putNumber("EncVel", Elevator.getEncoderVelocity());
-            SmartDashboard.putBoolean("ElevatorTopLimit", Elevator.getTopLimitSwitch());
-            SmartDashboard.putBoolean("ElevatorBottomLimit", Elevator.getBottomLimitSwitch());
+//            SmartDashboard.putBoolean("ElevatorTopLimit", Elevator.getTopLimitSwitch());
+//            SmartDashboard.putBoolean("ElevatorBottomLimit", Elevator.getBottomLimitSwitch());
         } catch (Exception e) {
             RobotLogger.getInstance().err(instance.getClass(), "Can't get Elevator encoder data!" + e.getMessage(), true);
         }

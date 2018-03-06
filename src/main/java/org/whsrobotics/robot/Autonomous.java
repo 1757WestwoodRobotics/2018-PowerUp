@@ -136,7 +136,8 @@ public class Autonomous {
                 }
             };
         } else {
-            return new AutonomousCommand(startingPosition, switchSide, scaleSide, true);
+            // Do not cross the field at the moment
+            return new AutonomousCommand(startingPosition, switchSide, scaleSide, false);
         }
 
     }
