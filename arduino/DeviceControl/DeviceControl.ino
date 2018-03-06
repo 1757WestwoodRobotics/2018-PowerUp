@@ -205,7 +205,7 @@ void receiveEvent(int howMany)
   {
     char n = (char)Wire.read(); // Roborio is sending character commands
     LED += n;
-    bytes_to_read++; // increment byte counter
+    bytes_to_read --; // decrement byte counter
   }
   if (debug) {
      Serial.print("Value = ");

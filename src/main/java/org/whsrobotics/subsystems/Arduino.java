@@ -1,5 +1,6 @@
 package org.whsrobotics.subsystems;
 
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import org.whsrobotics.communications.ArduinoI2C;
@@ -20,6 +21,7 @@ public class Arduino extends Subsystem {
     private static final int deviceAddress = 0X4;
     private static Arduino instance;
     private static ArduinoI2C i2c;
+    private static DigitalOutput resetButton;
 
     // LED Control Commands ( We can add more based on need
     public enum Command{
@@ -60,6 +62,10 @@ public class Arduino extends Subsystem {
                 i2c = new ArduinoI2C(deviceAddress);
                 Send(Command.StripLEDs20vMed);    // Start with the command to make the LED Strips white --> Pulse?
             }
+            if (resetButton == null) {
+                resetButton = new DigitalOutput(0); // use channel 0 to control Arduino reset
+                resetButton.set(true); // Keep the reset pin high
+            }
 
         } catch (NullPointerException e) {
             RobotLogger.getInstance().err(this.getClass(), "Error instantiating the Arduino control!" + e.getMessage(), true);
@@ -74,12 +80,20 @@ public class Arduino extends Subsystem {
         return instance;
     }
 
+    // Method to reset Arduino via DIO channel 0
+    public static void resetArduino() {
+        resetButton.set(false); // take the reset pin low
+        Timer.delay(0.2);
+        resetButton.set(true); // take the reset pin high
+    }
+
+
     /*
      * Method to control LED lights connected to Arduino. 
      * Based on LED Control Commands control the LED Ring lights connected to Arduino via I2C Wire.
      */
     
-    public void Send(Command cmd) {
+    public synchronized void Send(Command cmd) {
         i2c.writeData(cmd.value.toCharArray());
     }
     
@@ -92,14 +106,17 @@ public class Arduino extends Subsystem {
     public synchronized double getDistance() {
 
         double distance = -1; // Error condition where sensor fails
+        int count = 100; // Try 100 times and then abort
 
 //        if (i2c.isNotAddressable()) {
 //            RobotLogger.getInstance().err(this.getClass(), "Unable to address Arduino!", false);
 //        } else {
 
-        while (distance == -1) {
+        while ((distance == -1) && (count >0)) {
 
             String data = i2c.readData();
+
+            System.out.println( "Got distance - " + data);
 
             // convert this to a double and send it out.
             try {
@@ -109,6 +126,7 @@ public class Arduino extends Subsystem {
             }
 
             Timer.delay(0.2);
+            --count; // decrement count
 
         }
 
