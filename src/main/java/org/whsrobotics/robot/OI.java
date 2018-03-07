@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.commands.*;
+import org.whsrobotics.commands.commandgroups.CGDeployCubeToExchange;
 import org.whsrobotics.commands.commandgroups.CGDeployCubeToScale;
 import org.whsrobotics.commands.commandgroups.CGDeployCubeToSwitch;
 import org.whsrobotics.commands.commandgroups.CGGrabCube;
@@ -40,6 +41,20 @@ public class OI {
         (new JoystickButton(buttonBox, 1)).whenPressed(new CGGrabCube());
         (new JoystickButton(buttonBox, 2)).whenPressed(new CGDeployCubeToSwitch());
         (new JoystickButton(buttonBox, 3)).whenPressed(new CGDeployCubeToScale());
+        (new JoystickButton(buttonBox, 4)).whenPressed(new CGDeployCubeToExchange());
+        (new JoystickButton(buttonBox, 5));
+        (new JoystickButton(buttonBox, 6)).whenPressed(new MoveCubeGripper(CubeGripper.Position.GRAB_CUBE));
+        (new JoystickButton(buttonBox, 7)).whenPressed(new CubeGripperApplyConstantVoltage());
+        (new JoystickButton(buttonBox, 8)).whenPressed(new MoveCubeGripper(CubeGripper.Position.CLOSE_ARMS));
+        (new JoystickButton(buttonBox, 9)).whenPressed(new SpinCubeSpinner(CubeSpinner.Mode.INWARDS));
+        (new JoystickButton(buttonBox, 10)).whenPressed(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS));
+        (new JoystickButton(buttonBox, 11)).whenPressed(new CubeGripper.disableOutputCommand());
+        (new JoystickButton(buttonBox, 12)).whenPressed(new SpinCubeSpinner(CubeSpinner.Mode.INWARDS));
+        (new JoystickButton(buttonBox, 13)).whenPressed(new ());
+        (new JoystickButton(buttonBox, 14)).whenPressed(new MoveElevatorPosition(Elevator.Position.SCALE_TOP));
+        (new JoystickButton(buttonBox, 15)).whenPressed(new MoveElevatorPosition(Elevator.Position.DOWN));
+            //FORCE VOLTAGE IS APPLY CONSTANT VOLTAGE
+
 
         (new ElevatorVelocityMode()).whenActive(new MoveElevatorVelocity());
 
