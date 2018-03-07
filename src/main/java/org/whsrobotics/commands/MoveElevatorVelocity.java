@@ -14,10 +14,10 @@ public class MoveElevatorVelocity extends Command {
     @Override
     protected void execute() {
 
-        if (OI.leftXboxJoystickCurve(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kRight)) > 0 && !Elevator.getTopLimitSwitch()) {
+        if (OI.leftXboxJoystickCurve(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kRight)) > 0) {
             Elevator.moveWithVelocity(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kRight));
 
-        } else if (OI.leftXboxJoystickCurve(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kLeft)) > 0 && !Elevator.getBottomLimitSwitch()) {
+        } else if (OI.leftXboxJoystickCurve(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kLeft)) > 0) {
             Elevator.moveWithVelocity(-OI.getXboxController().getTriggerAxis(GenericHID.Hand.kLeft));
         }
 
@@ -26,7 +26,6 @@ public class MoveElevatorVelocity extends Command {
     @Override
     protected void end() {
         Elevator.moveToValue(Elevator.getEncoderPosition());   // Hold the current position
-        // Elevator.moveWithVelocity(0);
     }
 
     @Override

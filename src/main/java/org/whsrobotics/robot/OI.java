@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.commands.*;
@@ -13,9 +14,9 @@ import org.whsrobotics.commands.commandgroups.CGDeployCubeToSwitch;
 import org.whsrobotics.commands.commandgroups.CGGrabCube;
 import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.CubeSpinner;
-import org.whsrobotics.subsystems.DriveTrain;
 import org.whsrobotics.subsystems.Elevator;
 import org.whsrobotics.triggers.ElevatorVelocityMode;
+import org.whsrobotics.utils.AutomationCanceler;
 import org.whsrobotics.utils.RobotLogger;
 
 import static org.whsrobotics.robot.RobotMap.BUTTONBOX_PORT;
@@ -38,25 +39,52 @@ public class OI {
         xboxController = new XboxController(XBOX_PORT);
         buttonBox = new Joystick(BUTTONBOX_PORT);
 
+        (new JoystickButton(xboxController, XboxButton.kB.value)).whenPressed(new DriveForward());  // TODO: Change command
+
         (new JoystickButton(buttonBox, 1)).whenPressed(new CGGrabCube());
         (new JoystickButton(buttonBox, 2)).whenPressed(new CGDeployCubeToSwitch());
         (new JoystickButton(buttonBox, 3)).whenPressed(new CGDeployCubeToScale());
         (new JoystickButton(buttonBox, 4)).whenPressed(new CGDeployCubeToExchange());
-        (new JoystickButton(buttonBox, 5));
-        (new JoystickButton(buttonBox, 6)).whenPressed(new MoveCubeGripper(CubeGripper.Position.GRAB_CUBE));
+        (new JoystickButton(buttonBox, 5)).whenPressed(new AutomationCanceler());   // TODO: Does this even work?
+
+        (new JoystickButton(buttonBox, 6)).whenPressed(new MoveCubeGripper(CubeGripper.Position.OPEN_ARMS));
         (new JoystickButton(buttonBox, 7)).whenPressed(new CubeGripperApplyConstantVoltage());
-        (new JoystickButton(buttonBox, 8)).whenPressed(new MoveCubeGripper(CubeGripper.Position.CLOSE_ARMS));
-        (new JoystickButton(buttonBox, 9)).whenPressed(new SpinCubeSpinner(CubeSpinner.Mode.INWARDS));
-        (new JoystickButton(buttonBox, 10)).whenPressed(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS));
-        (new JoystickButton(buttonBox, 11)).whenPressed(new CubeGripper.disableOutputCommand());
-        (new JoystickButton(buttonBox, 12)).whenPressed(new SpinCubeSpinner(CubeSpinner.Mode.INWARDS));
-        (new JoystickButton(buttonBox, 13)).whenPressed(new ());
-        (new JoystickButton(buttonBox, 14)).whenPressed(new MoveElevatorPosition(Elevator.Position.SCALE_TOP));
-        (new JoystickButton(buttonBox, 15)).whenPressed(new MoveElevatorPosition(Elevator.Position.DOWN));
-            //FORCE VOLTAGE IS APPLY CONSTANT VOLTAGE
+        (new JoystickButton(buttonBox, 8)).whenPressed(new MoveCubeGripper(CubeGripper.Position.FOLD_BACK));
+
+        (new JoystickButton(buttonBox, 9)).whileHeld(new SpinCubeSpinner(CubeSpinner.Mode.INWARDS));
+        (new JoystickButton(buttonBox, 9)).whenReleased(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
+        (new JoystickButton(buttonBox, 10)).whileHeld(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS));
+        (new JoystickButton(buttonBox, 10)).whenReleased(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
+
+        (new JoystickButton(buttonBox, 11)).whenPressed(CubeGripper.disableOutputCommand);  // TODO: May not work! Put in its own command.
+        (new JoystickButton(buttonBox, 12)).whileHeld(new Command() {
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+        }); // Open Arms
+        (new JoystickButton(buttonBox, 13)).whileHeld(new Command() {
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+        }); // Close Arms
+
+        (new JoystickButton(buttonBox, 14)).whileHeld(new Command() {
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+        }); // Elevator Up
+        (new JoystickButton(buttonBox, 15)).whileHeld(new Command() {
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+        }); // Elevator Down
 
 
-        (new ElevatorVelocityMode()).whenActive(new MoveElevatorVelocity());
+        (new ElevatorVelocityMode()).whenActive(new MoveElevatorVelocity());    // Convert to LT/RT?
 
         publishElevator();
         publishCubeSpinner();
@@ -227,7 +255,7 @@ public class OI {
 
     private static void publishCubeGripper() {
         cubeGripperModeChooser = new SendableChooser<>();
-        cubeGripperModeChooser.addDefault("Default - SWITCH", CubeGripper.Position.GRAB_CUBE);
+        cubeGripperModeChooser.addDefault("Default - SWITCH", CubeGripper.Position.OPEN_ARMS);
 
         for (CubeGripper.Position position : CubeGripper.Position.values()) {
             cubeGripperModeChooser.addObject(position.toString(), position);
