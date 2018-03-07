@@ -83,7 +83,7 @@ const CHSV OFF(0, 0, 0);
 double distance;
 int led_command = -1;
 boolean do_led_command = false;
-boolean debug = true;
+boolean debug = false;
 
 // LED Pulse Control
 boolean ring_pulse = false;
@@ -123,51 +123,48 @@ void loop() {
   distance = readUltrasonicSensor(); // Read the ultrsound sensor to see any objects nearby and store in global variable.
   // If we received an LED command event, then process the LED command.
   if (do_led_command) {
-     ledCommands(led_command);
-     do_led_command = false;
+    ledCommands(led_command);
+    do_led_command = false;
   }
-  /*
-     LED Test section.
-   
+  
+  // LED Test section.
+  if (debug) {
     // Test Ring Light Leds
     ledCommands(RingLEDsGreen);
 
     // Test Strip Lights 20V
-   analogWrite(STRIP_LIGHT_20V, INTENSITY_HIGH);
+    analogWrite(STRIP_LIGHT_20V, INTENSITY_HIGH);
     delay(1000);
     analogWrite(STRIP_LIGHT_20V, INTENSITY_MED);
     delay(1000);
     analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
-    */
-   
-    // analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
+  }
 
-
-  
   if (ring_pulse) {
     CHSV color = last_ring_color;
     setRingLEDsColor(OFF);
-    delay(300); 
+    delay(300);
     setRingLEDsColor(color); // revert back to the previous color
   }
-  
-   if (strip_pulse) {
+
+  if (strip_pulse) {
     CHSV color = last_strip_color;
     setStripLEDsColor(OFF);
-    delay(300); 
+    delay(300);
     setStripLEDsColor(color); // revert back to the previous color
   }
-  
-  delay(1000);
+
+  delay(100);
 }
 
 // Listens to Wire for a request event and then reads the sensor distance value and sends it back on the I2C Wire.
 void requestEvent() {
   String data;
 
-  Serial.print("Distance = ");
-  Serial.println(distance);
-  
+  if (debug) {
+    Serial.print("Distance = ");
+    Serial.println(distance);
+  }
   data = String(distance, 2);
 
   // Write to the wire.
@@ -180,11 +177,11 @@ double readUltrasonicSensor() {
 
   // if disstance is 0.0 send back -1
   if (!dist)
-    dist = -1;  
-  
+    dist = -1;
+
   if (debug) {
-   Serial.print(dist);
-   Serial.println(" - Cms");
+    Serial.print(dist);
+    Serial.println(" - Cms");
   }
   return dist;
 }
@@ -197,10 +194,10 @@ void receiveEvent(int howMany)
   int bytes_to_read = howMany;
 
   if (debug) {
-     Serial.print("Received - ");
-     Serial.println(howMany);
+    Serial.print("Received - ");
+    Serial.println(howMany);
   }
-   
+
   while ( bytes_to_read > 0 )
   {
     char n = (char)Wire.read(); // Roborio is sending character commands
@@ -208,9 +205,9 @@ void receiveEvent(int howMany)
     bytes_to_read --; // decrement byte counter
   }
   if (debug) {
-     Serial.print("Value = ");
-     Serial.println(LED.c_str());
-  }   
+    Serial.print("Value = ");
+    Serial.println(LED.c_str());
+  }
   // Save the command and set the do_led_command flag to true and get out of the interrupt
   led_command = LED.toInt();
   do_led_command = true;
@@ -220,8 +217,10 @@ void receiveEvent(int howMany)
 
 void ledCommands(int cmd)
 {
-  Serial.print("Led Command -");
-  Serial.println(cmd);
+  if (debug) {
+    Serial.print("Led Command -");
+    Serial.println(cmd);
+  }
   switch (cmd) {
     case AllLEDsOff:
       setRingLEDsColor(OFF);
@@ -307,12 +306,14 @@ void ledCommands(int cmd)
 
     case StripLEDsPulse: // toggle strip pulse mode
       strip_pulse = !strip_pulse;
-      break; 
-      
+      break;
+
     default:
       // Do nothing for invalid commands
-      Serial.print("Invalid command: ");
-      Serial.println(cmd);
+      if (debug) {
+        Serial.print("Invalid command: ");
+        Serial.println(cmd);
+      }
       break;
 
   }
