@@ -25,7 +25,7 @@ public class MoveElevatorVelocity extends Command {
 
     @Override
     protected void end() {
-        Elevator.moveToDS(Elevator.getEncoderPosition());   // Hold the current position
+        Elevator.moveToValue(Elevator.getEncoderPosition());   // Hold the current position
         // Elevator.moveWithVelocity(0);
     }
 

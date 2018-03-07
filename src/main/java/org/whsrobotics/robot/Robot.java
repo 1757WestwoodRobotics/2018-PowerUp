@@ -79,7 +79,9 @@ public class Robot extends TimedRobot {
 //
         // System.out.println(new String("Ultrasonic sensor value - ") + Arduino.getInstance().getDistance());
 
-        // System.out.println("left: " + DriveTrain.getLeftEncoderCount());
+        System.out.println("left count: " + DriveTrain.getLeftEncoderCount() +
+                " distance (cm): " + DriveTrain.getLeftEncoderDistance() +
+                " rate (cm/s): " + DriveTrain.getLeftEncoderRate());
 
     }
 
@@ -92,11 +94,12 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         // Any time robot goes into disabled (run once) [And RobotInit finishes]
         RobotLogger.getInstance().log(this.getClass(), "Entering disabled");
-        // Arduino.getInstance().onDisabledInit();
         Scheduler.getInstance().removeAll();
 
         CubeSpinner.spinWithMode(CubeSpinner.Mode.OFF);
         CubeGripper.setTalonNeutral();
+
+        Arduino.getInstance().onDisabledInit();
 
     }
 

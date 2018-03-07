@@ -142,6 +142,7 @@ public class Arduino extends Subsystem {
 
     public void onDisabledInit() {
         Send(Command.StripLEDsWhite);
+        Send(Command.StripLEDsPulse);
     }
 
 }

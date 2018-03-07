@@ -3,8 +3,7 @@ package org.whsrobotics.robot;
 import edu.wpi.first.wpilibj.SPI;
 
 public class RobotMap {
-
-    // TODO: Fix port numbers
+    
     public enum MotorControllerPort {
         DRIVE_LEFT_FRONT(5), DRIVE_LEFT_BACK(6), DRIVE_RIGHT_FRONT(7), DRIVE_RIGHT_BACK(8),
         ELEVATOR_LEFT(9), ELEVATOR_RIGHT(10),

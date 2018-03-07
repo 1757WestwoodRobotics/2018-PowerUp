@@ -34,7 +34,7 @@ public class Elevator extends Subsystem {
     private static Elevator instance;
 
     public enum Position {
-        DOWN(0), SWITCH(10000), SCALE_TOP(23000);
+        DOWN(0), RAISE_UP(1000), SWITCH(10000), SCALE_TOP(23000);
 
         private double target;
 
@@ -175,7 +175,7 @@ public class Elevator extends Subsystem {
      *
      * @param target The target elevator position defined in absolute encoder ticks
      */
-    public static void moveToDS(int target) {
+    public static void moveToValue(int target) {
         System.out.println(target); // TEMP
         left.set(ControlMode.Position, target); // TODO: Switch to MotionMagic?
     }
