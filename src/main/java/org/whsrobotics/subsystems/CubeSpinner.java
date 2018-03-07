@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import org.whsrobotics.commands.SpinCubeSpinner;
 import org.whsrobotics.robot.RobotMap;
 import org.whsrobotics.utils.RobotLogger;
 
@@ -37,8 +38,8 @@ public class CubeSpinner extends Subsystem {
             left.setNeutralMode(NeutralMode.Coast);
             right.setNeutralMode(NeutralMode.Coast);
 
-            left.configPeakOutputForward(1, 0);     // May be too fast
-            left.configPeakOutputReverse(-.50, 0);
+            left.configPeakOutputForward(0.5, 0);
+            left.configPeakOutputReverse(-0.5, 0);
 
             left.setInverted(true);
             right.follow(left);
@@ -60,12 +61,12 @@ public class CubeSpinner extends Subsystem {
 
     @Override
     protected void initDefaultCommand() {
-        // setDefaultCommand(new SpinCubeSpinner(Mode.OFF));
+
     }
 
     @Override
     public void periodic() {
-        // System.out.println(OI.getSelectedCubeSpinnerMode());
+
     }
 
     public static void spinWithSpeed(double speed) {
@@ -79,8 +80,8 @@ public class CubeSpinner extends Subsystem {
         spinWithSpeed(mode.getSpeed());
     }
 
-    // ------------ IR SENSOR METHODS ------------- //
-
+//    // ------------ IR SENSOR METHODS ------------- //
+//
 //    /**
 //     * Gets the Trigger object for the IR sensor
 //     *

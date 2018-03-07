@@ -24,7 +24,6 @@ public class Elevator extends Subsystem {
     private static LimitSwitch topLimit;
     private static LimitSwitch bottomLimit;
 
-    // TODO: Retune! and zero out sensor at bottom, put PID setting code at bottom [commented out]
     private static double KP = 0.8;
     private static double KI = 0.0;
     private static double KD = 0.0;
@@ -61,8 +60,14 @@ public class Elevator extends Subsystem {
             left.setNeutralMode(NeutralMode.Brake);
             right.setNeutralMode(NeutralMode.Brake);
 
-            left.configPeakOutputForward(.80, 0);   // TODO: Raise to full power?
-            left.configPeakOutputReverse(-.60, 0);  // Keep downwards at half power
+            left.configPeakOutputForward(.80, 0);
+            left.configPeakOutputReverse(-.20, 0);
+
+            //
+            //          Normal      Lift
+            // FWD:     0.8         0.1
+            // REV:     -0.2        -0.8
+            //
 
             right.follow(left);
             left.setInverted(true);
@@ -72,7 +77,7 @@ public class Elevator extends Subsystem {
             left.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
 
             left.configReverseSoftLimitThreshold(0,0);   // Native units
-            left.configForwardSoftLimitThreshold(23000,0);
+            left.configForwardSoftLimitThreshold(23000,0);  // TODO: Retune with real robot
 
             left.configReverseSoftLimitEnable(true, 0);
             left.configForwardSoftLimitEnable(true, 0);
@@ -89,6 +94,9 @@ public class Elevator extends Subsystem {
             left.configMotionCruiseVelocity(1000, 0);
             left.configMotionAcceleration(500, 0);
 
+            // TODO: Hopefully this resets the encoder, so fingers crossed...
+            left.setSelectedSensorPosition(0, 0, 0);
+
             // ------------ LIMIT SWITCH ------------- //
 
 //            topLimit = new LimitSwitch(RobotMap.DigitalInputPort.ELEVATOR_TOP.port);
@@ -98,10 +106,10 @@ public class Elevator extends Subsystem {
             RobotLogger.getInstance().err(instance.getClass(), "Error setting up / configuring Elevator hardware!" + e.getMessage(), true);
         }
 
-        SmartDashboard.putNumber("KP", KP);
-        SmartDashboard.putNumber("KI", KI);
-        SmartDashboard.putNumber("KD", KD);
-        SmartDashboard.putNumber("KF", KF);
+//        SmartDashboard.putNumber("KP", KP);
+//        SmartDashboard.putNumber("KI", KI);
+//        SmartDashboard.putNumber("KD", KD);
+//        SmartDashboard.putNumber("KF", KF);
 
         SmartDashboard.putNumber("Elevator Target Position", 0);
 
@@ -125,33 +133,31 @@ public class Elevator extends Subsystem {
         try {
             SmartDashboard.putNumber("EncPos", Elevator.getEncoderPosition());
             SmartDashboard.putNumber("EncVel", Elevator.getEncoderVelocity());
-//            SmartDashboard.putBoolean("ElevatorTopLimit", Elevator.getTopLimitSwitch());
-//            SmartDashboard.putBoolean("ElevatorBottomLimit", Elevator.getBottomLimitSwitch());
         } catch (Exception e) {
-            RobotLogger.getInstance().err(instance.getClass(), "Can't get Elevator encoder data!" + e.getMessage(), true);
+            RobotLogger.getInstance().err(instance.getClass(), "Can't get Elevator encoder data!" + e.getMessage(), false);
         }
     }
 
-    /**
-     * Testing code to easily set PID constants
-     */
-    public static void setPID() {
-        KP = SmartDashboard.getNumber("KP", KP);
-        KI = SmartDashboard.getNumber("KI", KI);
-        KD = SmartDashboard.getNumber("KD", KD);
-        KF = SmartDashboard.getNumber("KD", KF);
-
-        left.config_kP(0, KP, 0);
-        left.config_kI(0, KI, 0);
-        left.config_kD(0, KD, 0);
-        left.config_kF(0, KF, 0);
-
-
-        System.out.println("KP: " + KP);
-        System.out.println("KI: " + KI);
-        System.out.println("KD: " + KD);
-        System.out.println("KF: " + KF);
-    }
+//    /**
+//     * Testing code to easily set PID constants
+//     */
+//    public static void setPID() {
+//        KP = SmartDashboard.getNumber("KP", KP);
+//        KI = SmartDashboard.getNumber("KI", KI);
+//        KD = SmartDashboard.getNumber("KD", KD);
+//        KF = SmartDashboard.getNumber("KD", KF);
+//
+//        left.config_kP(0, KP, 0);
+//        left.config_kI(0, KI, 0);
+//        left.config_kD(0, KD, 0);
+//        left.config_kF(0, KF, 0);
+//
+//
+//        System.out.println("KP: " + KP);
+//        System.out.println("KI: " + KI);
+//        System.out.println("KD: " + KD);
+//        System.out.println("KF: " + KF);
+//    }
 
     /**
      * Moves the elevator to a specified elevator position using PID and MotionMagic.
@@ -160,7 +166,6 @@ public class Elevator extends Subsystem {
      * @param position The target elevator position
      */
     public static void moveToPosition(Position position) {
-        setPID();   // TEMP
         System.out.println(position.getTarget());
         left.set(ControlMode.MotionMagic, position.getTarget());       // ControlMode.MotionMagic or ControlMode.Position
     }
@@ -171,7 +176,6 @@ public class Elevator extends Subsystem {
      * @param target The target elevator position defined in absolute encoder ticks
      */
     public static void moveToDS(int target) {
-        setPID();   // TEMP
         System.out.println(target); // TEMP
         left.set(ControlMode.Position, target); // TODO: Switch to MotionMagic?
     }

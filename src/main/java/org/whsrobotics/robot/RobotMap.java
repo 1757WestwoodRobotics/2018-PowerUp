@@ -19,7 +19,7 @@ public class RobotMap {
     }
 
     public enum DigitalInputPort {
-        ELEVATOR_BOTTOM(0), ELEVATOR_TOP(1),
+        ARDUINO_RESET(0),
         ENCODER_LEFT_A(2), ENCODER_LEFT_B(3), ENCODER_LEFT_INDEX(4),
         ENCODER_RIGHT_A(5), ENCODER_RIGHT_B(6), ENCODER_RIGHT_INDEX(7);
 

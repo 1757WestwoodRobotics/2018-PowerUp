@@ -1,4 +1,4 @@
-# Folder contains code to controll LED lights and Ultrosound Sensor connect to Ardino. Comminicaiton is via I2C
+# Folder contains code to control LED lights and Ultrasound Sensor connected to Arduino. Communication is via I2C
 
 PIN Connections on Arduino (Digital Connector Side)
 

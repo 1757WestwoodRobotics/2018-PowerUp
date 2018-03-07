@@ -43,11 +43,11 @@
 #define StripLEDsPulse 20
 
 
-#define TRIG_PIN          12    // SR04 Ultrsound Sensor
-#define ECHO_PIN          11    // SR04 Ultrsound Sensor
+#define TRIG_PIN          12    // SR04 Ultrasound Sensor
+#define ECHO_PIN          11    // SR04 Ultrasound Sensor
 #define RING_LIGHT_PIN     6    // Ring Light control
 #define STRIP_LIGHT_PIN    5    // Strip Light control
-#define STRIP_LIGHT_20V    9    // Strip Ligh 20V Lighting control PWM pin
+#define STRIP_LIGHT_20V    9    // Strip Light 20V Lighting control PWM pin
 
 // Ultrasonic sensor
 SR04 sr04 = SR04(ECHO_PIN, TRIG_PIN);

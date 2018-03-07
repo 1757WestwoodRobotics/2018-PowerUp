@@ -13,8 +13,6 @@ import org.whsrobotics.utils.RobotLogger;
 
 public class CubeGripper extends Subsystem {
 
-    // TODO: Reset encoder with homing mode (limit switch detector)?
-
     private static TalonSRX left;
     private static TalonSRX right;
 

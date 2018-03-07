@@ -94,6 +94,7 @@ public class Robot extends TimedRobot {
         RobotLogger.getInstance().log(this.getClass(), "Entering disabled");
         // Arduino.getInstance().onDisabledInit();
         Scheduler.getInstance().removeAll();
+
         CubeSpinner.spinWithMode(CubeSpinner.Mode.OFF);
         CubeGripper.setTalonNeutral();
 

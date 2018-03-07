@@ -4,18 +4,16 @@ import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import org.whsrobotics.communications.ArduinoI2C;
+import org.whsrobotics.robot.RobotMap;
 import org.whsrobotics.utils.RobotLogger;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-/*
-    This subsystem controls all functions on Arduino controlled connect to the robot.
-    Functions controlled by Arduino are:
-        1. LED Controls
-        2. Read distance from the Ultrasonic sensor
+/**
+ * This subsystem controls all functions on an Arduino connect to the robot.
+ * Functions controlled by Arduino are:
+ *  1. LED Controls
+ *  2. Read distance from the Ultrasonic sensor
  */
-
-
-
 public class Arduino extends Subsystem {
     // this is the address we will use to communicate on the i2c wire between Rio and Arduino
     private static final int deviceAddress = 0X4;
@@ -60,10 +58,10 @@ public class Arduino extends Subsystem {
         try {
             if (i2c == null) {
                 i2c = new ArduinoI2C(deviceAddress);
-                Send(Command.StripLEDs20vMed);    // Start with the command to make the LED Strips white --> Pulse?
+                Send(Command.StripLEDsWhite);    // Start with the command to make the LED Strips white --> Pulse?
             }
             if (resetButton == null) {
-                resetButton = new DigitalOutput(0); // use channel 0 to control Arduino reset
+                resetButton = new DigitalOutput(RobotMap.DigitalInputPort.ARDUINO_RESET.port); // use channel 0 to control Arduino reset
                 resetButton.set(true); // Keep the reset pin high
             }
 
@@ -105,24 +103,28 @@ public class Arduino extends Subsystem {
      */
     public synchronized double getDistance() {
 
-        double distance = -1; // Error condition where sensor fails
-        int count = 100; // Try 100 times and then abort
+        double distance = -1;   // Error condition where sensor fails
+        int count = 100;        // Try 100 times and then abort
+        boolean printErrMsg = true; // Only prints the error message once per call (doesn't loop)
 
 //        if (i2c.isNotAddressable()) {
 //            RobotLogger.getInstance().err(this.getClass(), "Unable to address Arduino!", false);
 //        } else {
 
-        while ((distance == -1) && (count >0)) {
+        while ((distance == -1) && (count > 0)) {
 
             String data = i2c.readData();
 
             System.out.println( "Got distance - " + data);
 
-            // convert this to a double and send it out.
+            // convert this to a double
             try {
                 distance = Double.valueOf(data);
             } catch (Exception e) {
-                RobotLogger.getInstance().err(instance.getClass(), "#### Empty Ultrasonic String!", false);
+                if (printErrMsg) {
+                    RobotLogger.getInstance().err(instance.getClass(), "#### Empty/Bad Ultrasonic String!", false);
+                    printErrMsg = false;
+                }
             }
 
             // Timer.delay(0.2);
@@ -130,8 +132,7 @@ public class Arduino extends Subsystem {
 
         }
 
-//        }
-        return distance;
+        return distance;    // returns -1 if fails
 
     }
 
@@ -140,7 +141,7 @@ public class Arduino extends Subsystem {
     }
 
     public void onDisabledInit() {
-        Send(Command.StripLEDs20vLow);
+        Send(Command.StripLEDsWhite);
     }
 
 }

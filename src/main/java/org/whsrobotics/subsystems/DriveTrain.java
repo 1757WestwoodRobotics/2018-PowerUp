@@ -1,5 +1,6 @@
 package org.whsrobotics.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.Encoder;
@@ -37,7 +38,7 @@ public class DriveTrain extends Subsystem {
     private static PIDController rotationPIDController;
     private static PIDController encoderPIDController;
 
-    private static final double KP = 0.05;   // Tuned values for the test robot (Pneumatic wheels)
+    private static final double KP = 0.05;
     private static final double KI = 0;
     private static final double KD = 0.125;
 
@@ -53,6 +54,11 @@ public class DriveTrain extends Subsystem {
             leftBack = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_LEFT_BACK.port);
             rightFront = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_RIGHT_FRONT.port);
             rightBack = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_RIGHT_BACK.port);
+
+            leftFront.setNeutralMode(NeutralMode.Coast);
+            leftBack.setNeutralMode(NeutralMode.Coast);
+            rightFront.setNeutralMode(NeutralMode.Coast);
+            rightBack.setNeutralMode(NeutralMode.Coast);
 
             leftFront.configPeakOutputForward(1, 0);
             leftBack.configPeakOutputForward(1, 0);
