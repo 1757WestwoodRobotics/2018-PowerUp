@@ -243,11 +243,11 @@ public class DriveTrain extends Subsystem {
         config = new Trajectory.Config(fitMethod, samples, timeStep, maxVelocity, maxAcceleration, maxJerk);
     }
 
-    public Trajectory generateTrajectory(Waypoint[] points) {
+    public static Trajectory generateTrajectory(Waypoint[] points) {
         return Pathfinder.generate(points, config);
     }
 
-    public void applyTrajectory(Trajectory trajectory) {
+    public static void applyTrajectory(Trajectory trajectory) {
         TankModifier tankModifier = new TankModifier(trajectory).modify(wheelbaseWidth);
 
         Trajectory leftTrajectory = tankModifier.getLeftTrajectory();
