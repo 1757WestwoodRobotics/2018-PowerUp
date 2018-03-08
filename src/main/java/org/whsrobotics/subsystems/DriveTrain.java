@@ -1,5 +1,6 @@
 package org.whsrobotics.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.Encoder;
@@ -35,9 +36,8 @@ public class DriveTrain extends Subsystem {
     private static Encoder rightEncoder;
 
     private static PIDController rotationPIDController;
-    private static PIDController encoderPIDController;
 
-    private static final double KP = 0.05;   // Tuned values for the test robot (Pneumatic wheels)
+    private static final double KP = 0.05;
     private static final double KI = 0;
     private static final double KD = 0.125;
 
@@ -53,6 +53,11 @@ public class DriveTrain extends Subsystem {
             leftBack = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_LEFT_BACK.port);
             rightFront = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_RIGHT_FRONT.port);
             rightBack = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_RIGHT_BACK.port);
+
+            leftFront.setNeutralMode(NeutralMode.Coast);
+            leftBack.setNeutralMode(NeutralMode.Coast);
+            rightFront.setNeutralMode(NeutralMode.Coast);
+            rightBack.setNeutralMode(NeutralMode.Coast);
 
             leftFront.configPeakOutputForward(1, 0);
             leftBack.configPeakOutputForward(1, 0);
@@ -75,11 +80,11 @@ public class DriveTrain extends Subsystem {
             leftEncoder = new Encoder(RobotMap.DigitalInputPort.ENCODER_LEFT_A.port,
                     RobotMap.DigitalInputPort.ENCODER_LEFT_B.port,
                     RobotMap.DigitalInputPort.ENCODER_LEFT_INDEX.port);
-            leftEncoder.setDistancePerPulse(0);  // Circumference (in meters)/2048 (resolution of the encoder)
+            leftEncoder.setDistancePerPulse(0.0335);  // 68.612 cm / 2048 (resolution of the encoder)
             rightEncoder = new Encoder(RobotMap.DigitalInputPort.ENCODER_RIGHT_A.port,
                     RobotMap.DigitalInputPort.ENCODER_RIGHT_B.port,
                     RobotMap.DigitalInputPort.ENCODER_RIGHT_INDEX.port);
-            rightEncoder.setDistancePerPulse(0);
+            rightEncoder.setDistancePerPulse(0.0335);
             resetEncoders();
 
         } catch (NullPointerException e) {
@@ -113,15 +118,15 @@ public class DriveTrain extends Subsystem {
 
     // ------------ DRIVETRAIN METHODS ------------- //
 
-    private static void drive(double x, double y, boolean squaredInputs) {
-        differentialDrive.arcadeDrive(x, y, squaredInputs);
+    private static void drive(double speed, double rotation, boolean squaredInputs) {
+        differentialDrive.arcadeDrive(speed, rotation, squaredInputs);
     }
 
     /**
      * Arcade drive with input ramping, and deadzone implementation
      */
-    public static void defaultDrive(double x, double y) {
-        drive(OI.leftXboxJoystickCurve(x), OI.rightXboxJoystickCurve(y), false);
+    public static void defaultDrive(double speed, double rotation) {
+        drive(OI.leftXboxJoystickCurve(speed), OI.rightXboxJoystickCurve(rotation), false);
     }
 
     public static void stopDrive() {
@@ -153,12 +158,24 @@ public class DriveTrain extends Subsystem {
         return rightEncoder.get();
     }
 
-    private static double getLeftEncoderDistance() {
+    /**
+     *
+     * @return accumulated encoder distance (in cm)
+     */
+    public static double getLeftEncoderDistance() {
         return leftEncoder.getDistance();
     }
 
-    private static double getRightEncoderDistance() {
+    public static double getRightEncoderDistance() {
         return rightEncoder.getDistance();
+    }
+
+    public static double getLeftEncoderRate() {
+        return leftEncoder.getRate();
+    }
+
+    public static double getRightEncoderRate() {
+        return rightEncoder.getRate();
     }
 
     // ------------ ANGLE TURNING / ROTATION PID METHODS ------------- //
@@ -213,11 +230,10 @@ public class DriveTrain extends Subsystem {
     // ------------ PATHFINDER CONFIG / METHODS ------------- //
 
     private static Trajectory.Config config;
-    private static TankModifier tankModifier;
     private static final Trajectory.FitMethod fitMethod = Trajectory.FitMethod.HERMITE_CUBIC;
     private static final int samples = Trajectory.Config.SAMPLES_HIGH;
     private static final double timeStep = 0.05;         // time delta between points
-    private static final double maxVelocity = 1.7;       // m/s // TODO: MEASURE
+    private static final double maxVelocity = 1.7;       // m/s // TODO: MEASURE & CALCULATE
     private static final double maxAcceleration = 2.0;   // m/s/s
     private static final double maxJerk = 60.0;          // m/s/s/s
 
@@ -227,14 +243,13 @@ public class DriveTrain extends Subsystem {
         config = new Trajectory.Config(fitMethod, samples, timeStep, maxVelocity, maxAcceleration, maxJerk);
     }
 
-    // TODO: TankModifier
-
     public static Trajectory generateTrajectory(Waypoint[] points) {
         return Pathfinder.generate(points, config);
     }
 
     public static void applyTrajectory(Trajectory trajectory) {
-        tankModifier = new TankModifier(trajectory).modify(wheelbaseWidth);
+        TankModifier tankModifier = new TankModifier(trajectory).modify(wheelbaseWidth);
+
         Trajectory leftTrajectory = tankModifier.getLeftTrajectory();
         Trajectory rightTrajectory = tankModifier.getRightTrajectory();
 
@@ -250,12 +265,12 @@ public class DriveTrain extends Subsystem {
         double leftOutput = leftEnc.calculate(leftEncoder.get());   // Output directly to drive (or PID Controller?)
         double rightOutput = rightEnc.calculate(rightEncoder.get());    // return array to command? or call drive()
 
-        leftDrive.set(leftOutput);  // Do this?
+        // TODO: turn? or use TurnToAngle
+
+        leftDrive.set(leftOutput);
         rightDrive.set(rightOutput);
 
     }
-
-    // ------------ AUXILIARY COMMANDS ------------- //
 
 }
 

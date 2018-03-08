@@ -60,7 +60,7 @@ public class RobotLogger {
         DriverStation.reportError(message, printTrace);
         log(name, Level.SEVERE, message);
 
-        // Arduino.getInstance().Send(Arduino.Command.StripLEDsWhite); // Visual indicator for robot failure
+        Arduino.getInstance().Send(Arduino.Command.StripLEDsWhite); // Visual indicator for robot failure
 
     }
 

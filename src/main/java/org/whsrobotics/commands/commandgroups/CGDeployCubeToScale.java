@@ -28,7 +28,7 @@ public class CGDeployCubeToScale extends CommandGroup {
 
         addSequential(new TimedCommand(2));
 
-        addSequential(new MoveCubeGripper(CubeGripper.Position.GRAB_CUBE));
+        addSequential(new MoveCubeGripper(CubeGripper.Position.OPEN_ARMS));
         addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
         addSequential(new MoveElevatorPosition(Elevator.Position.DOWN));
 

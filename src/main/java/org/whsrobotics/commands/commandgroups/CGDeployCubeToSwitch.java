@@ -6,10 +6,13 @@ import org.whsrobotics.commands.*;
 import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.CubeSpinner;
 import org.whsrobotics.subsystems.Elevator;
+import org.whsrobotics.utils.AutomationCancelerHelper;
 
-public class CGDeployCubeToSwitch extends CommandGroup{
+public class CGDeployCubeToSwitch extends CommandGroup {
 
     public CGDeployCubeToSwitch(){
+
+        requires(new AutomationCancelerHelper());
 
         addSequential(new MoveElevatorPosition(Elevator.Position.SWITCH));
 
@@ -28,7 +31,7 @@ public class CGDeployCubeToSwitch extends CommandGroup{
 
         addSequential(new TimedCommand(2));
 
-        addSequential(new MoveCubeGripper(CubeGripper.Position.GRAB_CUBE));
+        addSequential(new MoveCubeGripper(CubeGripper.Position.OPEN_ARMS));
         addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
         addSequential(new MoveElevatorPosition(Elevator.Position.DOWN));
 

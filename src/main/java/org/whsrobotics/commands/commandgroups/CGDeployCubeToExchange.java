@@ -22,7 +22,7 @@ public class CGDeployCubeToExchange extends CommandGroup {
         // Spin the CubeSpinner motors in the OUTWARDS mode (until Cube has left the IR sensor), and open arms TODO: TEST
         addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS), 3);
 
-        addSequential(new MoveCubeGripper(CubeGripper.Position.CLOSE_ARMS));
+        addSequential(new MoveCubeGripper(CubeGripper.Position.GRAB_CUBE));
         addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
 
     }
