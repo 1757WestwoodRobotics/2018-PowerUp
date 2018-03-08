@@ -39,8 +39,8 @@
 #define StripLEDsWhite 17
 #define StripLEDsOff 18
 
-#define RingLEDsPulse 19
-#define StripLEDsPulse 20
+#define RingLEDsFade 19
+#define StripLEDsFade 20
 
 
 #define TRIG_PIN          12    // SR04 Ultrsound Sensor
@@ -81,15 +81,10 @@ const CHSV OFF(0, 0, 0);
 
 // Global Variables hold object distance as seen by the ultrasonic sensor, led commands etc.
 double distance;
-int led_command = -1;
+int led_command = AllLEDsOff;
+int last_strip_command = StripLEDsOff;
 boolean do_led_command = false;
 boolean debug = false;
-
-// LED Pulse Control
-boolean ring_pulse = false;
-boolean strip_pulse = false;
-CHSV last_ring_color = OFF;
-CHSV last_strip_color = OFF;
 
 void setup() {
 
@@ -121,12 +116,20 @@ void setup() {
 void loop() {
 
   distance = readUltrasonicSensor(); // Read the ultrsound sensor to see any objects nearby and store in global variable.
+
+  // if disstance is 0.0 send back -1; if dist is > 0 and <= 30 we have an object proably a cube.
+  if ((distance > 0) && (distance <= 30)) {
+    do_led_command = StripLEDsOrange;
+  }
+  else {
+    do_led_command = last_strip_command;
+  }
+
   // If we received an LED command event, then process the LED command.
   if (do_led_command) {
     ledCommands(led_command);
     do_led_command = false;
   }
-  
   // LED Test section.
   if (debug) {
     // Test Ring Light Leds
@@ -138,20 +141,6 @@ void loop() {
     analogWrite(STRIP_LIGHT_20V, INTENSITY_MED);
     delay(1000);
     analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
-  }
-
-  if (ring_pulse) {
-    CHSV color = last_ring_color;
-    setRingLEDsColor(OFF);
-    delay(300);
-    setRingLEDsColor(color); // revert back to the previous color
-  }
-
-  if (strip_pulse) {
-    CHSV color = last_strip_color;
-    setStripLEDsColor(OFF);
-    delay(300);
-    setStripLEDsColor(color); // revert back to the previous color
   }
 
   delay(100);
@@ -173,11 +162,12 @@ void requestEvent() {
 
 // Function to read ultrasonic sensor value to measure distance in cm.
 double readUltrasonicSensor() {
+
   double dist = sr04.Distance(); // Distance read is in cm.
 
-  // if disstance is 0.0 send back -1
-  if (!dist)
+  if (!dist) {
     dist = -1;
+  }
 
   if (debug) {
     Serial.print(dist);
@@ -210,6 +200,11 @@ void receiveEvent(int howMany)
   }
   // Save the command and set the do_led_command flag to true and get out of the interrupt
   led_command = LED.toInt();
+  
+  // Save last Strip LED Command
+  if ((led_command >= StripLEDsRed) && (led_command <= StripLEDsOff))
+    last_strip_command = led_command;
+    
   do_led_command = true;
 }
 
@@ -300,12 +295,11 @@ void ledCommands(int cmd)
       analogWrite(STRIP_LIGHT_20V, INTENSITY_OFF);
       break;
 
-    case RingLEDsPulse: // toggle ring pulse mode
-      ring_pulse = !ring_pulse;
+    case RingLEDsFade: // Fade String LEDs
       break;
 
-    case StripLEDsPulse: // toggle strip pulse mode
-      strip_pulse = !strip_pulse;
+    case StripLEDsFade: // Fade strip LEDs
+      fadeStripLEDs();
       break;
 
     default:
@@ -331,17 +325,17 @@ void updateLEDs() {
 void setRingLEDsColor(CHSV color) {
   fill_solid(leds[0], NUM_RING_LEDS, color);
   updateLEDs();
-  // save the last color
-  last_ring_color = color;
 }
 
 // Control Strip LED Color
 void setStripLEDsColor(CHSV color) {
   fill_solid(leds[1], NUM_STRIP_LEDS, color);
   updateLEDs();
-  // save the last color
-  last_strip_color = color;
 }
 
+// Function to fade Strip LEDs
+void fadeStripLEDs() {
+  
+}
 
 
