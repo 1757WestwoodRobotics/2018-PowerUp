@@ -42,8 +42,8 @@ public class Arduino extends Subsystem {
         StripLEDsBlue("16"),
         StripLEDsWhite("17"),
         StripLEDsOff("18"),
-        RingLEDSPulse("19"),
-        StripLEDsPulse("20");
+        RingLEDsFade("19"),
+        StripLEDsFade("20");
 
        public String value;
        Command (String value) {this.value = value;}
@@ -142,7 +142,7 @@ public class Arduino extends Subsystem {
 
     public void onDisabledInit() {
         Send(Command.StripLEDsWhite);
-        Send(Command.StripLEDsPulse);
+        Send(Command.StripLEDsFade);
     }
 
 }
