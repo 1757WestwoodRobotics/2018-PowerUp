@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.robot.RobotMap;
-import org.whsrobotics.triggers.LimitSwitch;
 import org.whsrobotics.utils.RobotLogger;
 
 /**
@@ -21,8 +20,8 @@ public class Elevator extends Subsystem {
     private static TalonSRX left;
     private static TalonSRX right;
 
-    private static LimitSwitch topLimit;
-    private static LimitSwitch bottomLimit;
+//    private static LimitSwitch topLimit;
+//    private static LimitSwitch bottomLimit;
 
     private static double KP = 0.8;
     private static double KI = 0.0;
@@ -36,13 +35,13 @@ public class Elevator extends Subsystem {
     public enum Position {
         DOWN(0), RAISE_UP(1000), SWITCH(10000), SCALE_TOP(23000);
 
-        private double target;
+        private int target;
 
-        Position(double target) {
+        Position(int target) {
             this.target = target;
         }
 
-        public double getTarget() {
+        public int getTarget() {
             return target;
         }
 
@@ -92,10 +91,9 @@ public class Elevator extends Subsystem {
 
             // Motion Magic //TODO: Retune
             left.configMotionCruiseVelocity(1000, 0);
-            left.configMotionAcceleration(500, 0);
+            left.configMotionAcceleration(800, 0);
 
-            // TODO: Hopefully this resets the encoder, so fingers crossed...
-            left.setSelectedSensorPosition(0, 0, 0);
+            resetEncoderPosition();
 
             // ------------ LIMIT SWITCH ------------- //
 
@@ -160,24 +158,25 @@ public class Elevator extends Subsystem {
 //    }
 
     /**
-     * Moves the elevator to a specified elevator position using PID and MotionMagic.
-     *
-     * @see Elevator.Position
-     * @param position The target elevator position
-     */
-    public static void moveToPosition(Position position) {
-        System.out.println(position.getTarget());
-        left.set(ControlMode.MotionMagic, position.getTarget());       // ControlMode.MotionMagic or ControlMode.Position
-    }
-
-    /**
-     * Moves the elevator to a specified elevator absolute encoder tick (4096 ticks per revolution).
+     * Moves the elevator to a specified elevator absolute encoder tick (4096 ticks per revolution)
+     * using PID and MotionMagic.
      *
      * @param target The target elevator position defined in absolute encoder ticks
      */
     public static void moveToValue(int target) {
-        System.out.println(target); // TEMP
-        left.set(ControlMode.Position, target); // TODO: Switch to MotionMagic?
+        RobotLogger.getInstance().log(instance.getClass(), "Setting Elevator to: " + target);
+        left.set(ControlMode.MotionMagic, target);
+    }
+
+    /**
+     * Moves the elevator to a specified elevator position.
+     *
+     * @see Elevator.Position
+     * @see #moveToValue(int)
+     * @param position The target elevator position
+     */
+    public static void moveToPosition(Position position) {
+        moveToValue(position.target);
     }
 
     /**
@@ -212,26 +211,36 @@ public class Elevator extends Subsystem {
     }
 
     // ------------ FINISHED METHODS ------------- //
-
-    public static boolean reachedBoundaries() {
-        return getTopLimitSwitch() || getBottomLimitSwitch();
-    }
-
-    public static boolean getTopLimitSwitch() {
-        return topLimit.get();
-    }
-
-    public static boolean getBottomLimitSwitch() {
-        return bottomLimit.get();
-    }
+//
+//    public static boolean reachedBoundaries() {
+//        return getTopLimitSwitch() || getBottomLimitSwitch();
+//    }
+//
+//    public static boolean getTopLimitSwitch() {
+//        return topLimit.get();
+//    }
+//
+//    public static boolean getBottomLimitSwitch() {
+//        return bottomLimit.get();
+//    }
 
     public static double getError() {
         return left.getClosedLoopError(0);
     }
 
-    public static boolean reachedTarget() {
-        System.out.println("Has reached Elevator target!");
-        return getError() < MAX_ERROR;
+    public static boolean reachedTarget(int value) {
+        double max = value + 600;
+        double min = value - 600;
+        double current = Elevator.getEncoderPosition();
+
+        if (current >= min && current <= max) {
+            System.out.println("Elevator has reached target!");
+            return true;
+        }
+
+        return false;
+
+        // return getError() < MAX_ERROR;
     }
 
     public static int getMaxError() {

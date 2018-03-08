@@ -12,14 +12,10 @@ public class CGDeployCubeToScale extends CommandGroup {
     public CGDeployCubeToScale(){
 
         addSequential(new MoveElevatorPosition(Elevator.Position.SCALE_TOP));
-
         addSequential(new Command() {
             @Override
             protected boolean isFinished() {
-                double max = Elevator.Position.SCALE_TOP.getTarget() + 600;
-                double min = Elevator.Position.SCALE_TOP.getTarget() - 600;
-                double current = Elevator.getEncoderPosition();
-                return current > min && current < max;
+                return Elevator.reachedTarget(Elevator.Position.SCALE_TOP.getTarget());
             }
         });
 

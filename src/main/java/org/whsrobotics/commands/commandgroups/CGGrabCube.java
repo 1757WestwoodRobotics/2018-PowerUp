@@ -20,13 +20,12 @@ public class CGGrabCube extends CommandGroup {
 
         // Move the Elevator to the down position. If it can't do it in 3 seconds, stop it.
         addSequential(new MoveElevatorPosition(Elevator.Position.DOWN));
-
         addSequential(new Command() {
             @Override
             protected boolean isFinished() {
-                return Elevator.reachedTarget();
+                return Elevator.reachedTarget(Elevator.Position.DOWN.getTarget());
             }
-        }, 3);
+        });
 
         // Move the CubeGripper arms to the OPEN_ARMS position
         addSequential(new MoveCubeGripper(CubeGripper.Position.OPEN_ARMS), 3); // Maximum 3 seconds
@@ -44,6 +43,7 @@ public class CGGrabCube extends CommandGroup {
         addSequential(new ArduinoUltrasonicDistance(25));   // TODO: Measure bumpers
         addSequential(new ArduinoSendCommand(Arduino.Command.StripLEDsOrange));
 
+//        // Revert to this if the thread separation doesn't work!!!!!
 //        addSequential(new Command() {
 //
 //            @Override

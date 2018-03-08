@@ -15,14 +15,10 @@ public class CGDeployCubeToSwitch extends CommandGroup {
         requires(new AutomationCancelerHelper());
 
         addSequential(new MoveElevatorPosition(Elevator.Position.SWITCH));
-
         addSequential(new Command() {
             @Override
             protected boolean isFinished() {
-                double max = Elevator.Position.SWITCH.getTarget() + 600;
-                double min = Elevator.Position.SWITCH.getTarget() - 600;
-                double current = Elevator.getEncoderPosition();
-                return current > min && current < max;
+                return Elevator.reachedTarget(Elevator.Position.SWITCH.getTarget());
             }
         });
 
