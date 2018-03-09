@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.command.Command;
 
 /**
  * DO NOT USE WITH INSTANTCOMMANDS!!! (It times out immediately regardless of timeout)
+ *
+ * Great for creating delays as a command
  */
 public class TimedCommand extends edu.wpi.first.wpilibj.command.TimedCommand {
 

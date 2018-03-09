@@ -13,7 +13,7 @@ public class DefaultDrive extends Command {
 
     @Override
     protected void execute() {
-        DriveTrain.defaultDrive(-OI.getXboxController().getY(GenericHID.Hand.kLeft),
+        DriveTrain.controllerDrive(-OI.getXboxController().getY(GenericHID.Hand.kLeft),
                 OI.getXboxController().getX(GenericHID.Hand.kRight));
     }
 

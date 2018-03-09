@@ -59,9 +59,7 @@ public class Elevator extends Subsystem {
             left.setNeutralMode(NeutralMode.Brake);
             right.setNeutralMode(NeutralMode.Brake);
 
-            left.configPeakOutputForward(.80, 0);
-            left.configPeakOutputReverse(-.20, 0);
-
+            setNormalVoltageLimits();
             //
             //          Normal      Lift
             // FWD:     0.8         0.1
@@ -188,6 +186,20 @@ public class Elevator extends Subsystem {
         left.set(ControlMode.PercentOutput, speed);
     }
 
+    // CONFIG STUFF //
+
+    public static void setNormalVoltageLimits() {
+        left.configPeakOutputForward(.80, 0);
+        left.configPeakOutputReverse(-.20, 0);
+    }
+
+    public static void setEndgameVoltageLimits() {
+        left.configPeakOutputForward(.20, 0);
+        left.configPeakOutputReverse(-.80, 0);
+    }
+
+    // ENCODER STUFF //
+
     /**
      * Gets the absolute position of the left talon's encoder
      *
@@ -241,6 +253,10 @@ public class Elevator extends Subsystem {
         return false;
 
         // return getError() < MAX_ERROR;
+    }
+
+    public static boolean reachedTarget(Position position) {
+        return reachedTarget(position.getTarget());
     }
 
     public static int getMaxError() {

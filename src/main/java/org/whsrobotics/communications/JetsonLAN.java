@@ -22,7 +22,7 @@ public class JetsonLAN {
         return table.getEntry(key).getValue();
     }
 
-    public static void writeData(String key, Object data) {
+    public static synchronized void writeData(String key, Object data) {
         table.getEntry(key).setValue(data);
     }
 

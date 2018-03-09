@@ -8,6 +8,11 @@ import org.whsrobotics.utils.RobotLogger;
 
 public class TurnToAngle extends Command {
 
+    // 0 = Forwards
+    // 90 = Right
+    // -90 = Left
+    // -180/180 = Behind
+
     private double angle = 0.0;
 
     public TurnToAngle(double angle) {
@@ -18,10 +23,9 @@ public class TurnToAngle extends Command {
     @Override
     protected void initialize() {
         if (!DriveTrain.initializeRotationPIDController()) {
-            RobotLogger.getInstance().err(this.getClass(), "Error initializing rotationPIDController. Cannot TurnToAngle! Ending command.", true);
+            DriveTrain.enableRotationPIDController();
             end();
         }
-
     }
 
     @Override
@@ -31,6 +35,7 @@ public class TurnToAngle extends Command {
 
     @Override
     protected void end() {
+        DriveTrain.disableRotationPIDController();
         DriveTrain.stopDrive();
     }
 

@@ -54,10 +54,7 @@ public class DriveTrain extends Subsystem {
             rightFront = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_RIGHT_FRONT.port);
             rightBack = new WPI_TalonSRX(RobotMap.MotorControllerPort.DRIVE_RIGHT_BACK.port);
 
-            leftFront.setNeutralMode(NeutralMode.Coast);
-            leftBack.setNeutralMode(NeutralMode.Coast);
-            rightFront.setNeutralMode(NeutralMode.Coast);
-            rightBack.setNeutralMode(NeutralMode.Coast);
+            setCoastMode();
 
             leftFront.configPeakOutputForward(1, 0);
             leftBack.configPeakOutputForward(1, 0);
@@ -68,6 +65,9 @@ public class DriveTrain extends Subsystem {
             leftBack.configPeakOutputReverse(-1, 0);
             rightFront.configPeakOutputReverse(-1, 0);
             rightBack.configPeakOutputReverse(-1, 0);
+
+            // ONLY if needed
+            // setDriveTrainAccelLimit();
 
             leftDrive = new SpeedControllerGroup(leftFront, leftBack);
             rightDrive = new SpeedControllerGroup(rightFront, rightBack);
@@ -80,11 +80,11 @@ public class DriveTrain extends Subsystem {
             leftEncoder = new Encoder(RobotMap.DigitalInputPort.ENCODER_LEFT_A.port,
                     RobotMap.DigitalInputPort.ENCODER_LEFT_B.port,
                     RobotMap.DigitalInputPort.ENCODER_LEFT_INDEX.port);
-            leftEncoder.setDistancePerPulse(0.0335);  // 68.612 cm / 2048 (resolution of the encoder)
+            leftEncoder.setDistancePerPulse(0.000335);  // 68.612 cm wheel circumference / 2048 (resolution of the encoder)
             rightEncoder = new Encoder(RobotMap.DigitalInputPort.ENCODER_RIGHT_A.port,
                     RobotMap.DigitalInputPort.ENCODER_RIGHT_B.port,
                     RobotMap.DigitalInputPort.ENCODER_RIGHT_INDEX.port);
-            rightEncoder.setDistancePerPulse(0.0335);
+            rightEncoder.setDistancePerPulse(0.000335);
             resetEncoders();
 
         } catch (NullPointerException e) {
@@ -123,11 +123,41 @@ public class DriveTrain extends Subsystem {
     }
 
     /**
-     * Arcade drive with input ramping, and deadzone implementation
+     * Arcade drive with input curving, and xbox controller deadzone implementation
      */
-    public static void defaultDrive(double speed, double rotation) {
+    public static void controllerDrive(double speed, double rotation) {
         drive(OI.leftXboxJoystickCurve(speed), OI.rightXboxJoystickCurve(rotation), false);
     }
+
+    public static void setDriveTrainAccelLimit() {
+        leftFront.configOpenloopRamp(1, 0);
+        leftBack.configOpenloopRamp(1, 0);
+        rightFront.configOpenloopRamp(1, 0);
+        rightBack.configOpenloopRamp(1, 0);
+    }
+
+    public static void removeDriveTrainAccelLimit() {
+        leftFront.configOpenloopRamp(0, 0);
+        leftBack.configOpenloopRamp(0, 0);
+        rightFront.configOpenloopRamp(0, 0);
+        rightBack.configOpenloopRamp(0, 0);
+    }
+
+    public static void setBrakeMode() {
+        leftFront.setNeutralMode(NeutralMode.Brake);
+        leftBack.setNeutralMode(NeutralMode.Brake);
+        rightFront.setNeutralMode(NeutralMode.Brake);
+        rightBack.setNeutralMode(NeutralMode.Brake);
+    }
+
+    public static void setCoastMode() {
+        leftFront.setNeutralMode(NeutralMode.Coast);
+        leftBack.setNeutralMode(NeutralMode.Coast);
+        rightFront.setNeutralMode(NeutralMode.Coast);
+        rightBack.setNeutralMode(NeutralMode.Coast);
+    }
+
+
 
     public static void stopDrive() {
         differentialDrive.stopMotor();
@@ -160,7 +190,7 @@ public class DriveTrain extends Subsystem {
 
     /**
      *
-     * @return accumulated encoder distance (in cm)
+     * @return accumulated encoder distance (in m)
      */
     public static double getLeftEncoderDistance() {
         return leftEncoder.getDistance();
@@ -261,6 +291,8 @@ public class DriveTrain extends Subsystem {
 
         leftEnc.configurePIDVA(1.0, 0, 0, 1 / maxVelocity, 0);
         rightEnc.configurePIDVA(1.0, 0, 0, 1 / maxVelocity, 0);
+
+        // TODO: encoder.get() or .getDistance???
 
         double leftOutput = leftEnc.calculate(leftEncoder.get());   // Output directly to drive (or PID Controller?)
         double rightOutput = rightEnc.calculate(rightEncoder.get());    // return array to command? or call drive()

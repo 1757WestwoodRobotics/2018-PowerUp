@@ -14,18 +14,24 @@ import org.whsrobotics.utils.AutomationCancelerHelper;
  */
 public class CGGrabCube extends CommandGroup {
 
+    private final Elevator.Position position = Elevator.Position.DOWN;
+
     public CGGrabCube() {
 
         requires(new AutomationCancelerHelper());
 
         // Move the Elevator to the down position. If it can't do it in 3 seconds, stop it.
-        addSequential(new MoveElevatorPosition(Elevator.Position.DOWN));
-        addSequential(new Command() {
-            @Override
-            protected boolean isFinished() {
-                return Elevator.reachedTarget(Elevator.Position.DOWN.getTarget());
-            }
-        });
+//        addSequential(new MoveElevatorPosition(Elevator.Position.DOWN));
+//        addSequential(new Command() {
+//            @Override
+//            protected boolean isFinished() {
+//                return Elevator.reachedTarget(Elevator.Position.DOWN.getTarget());
+//            }
+//        });
+
+        // TODO: TEST
+        addSequential(new ExecuteCommandWithFinishable(new MoveElevatorPosition(position),
+                () -> Elevator.reachedTarget(position)), 5);    // If it doesn't get there in 3 seconds, move on.
 
         // Move the CubeGripper arms to the OPEN_ARMS position
         addSequential(new MoveCubeGripper(CubeGripper.Position.OPEN_ARMS), 3); // Maximum 3 seconds
@@ -40,15 +46,15 @@ public class CGGrabCube extends CommandGroup {
         addSequential(new SpinCubeSpinner(CubeSpinner.Mode.INWARDS));
 
         // Wait until Cube is detected with the sensor (25 cm)
-        addSequential(new ArduinoUltrasonicDistance(25));   // TODO: Measure bumpers
-        addSequential(new ArduinoSendCommand(Arduino.Command.StripLEDsOrange));
+        addSequential(new ArduinoUltrasonicDistance(25));   // TODO: Measure bumpers AND test
+        addSequential(new ArduinoSendCommand(Arduino.Command.StripLEDsOrange)); // TODO: Pulse as well
 
 //        // Revert to this if the thread separation doesn't work!!!!!
 //        addSequential(new Command() {
 //
 //            @Override
 //            protected boolean isFinished() {
-//                double output = Arduino.getInstance().getDistance();
+//                double output = Arduino.getInstance().getDistance(); // --> replace ArduinoUltrasonicCommand
 //                return output < 20 && output != -1;
 //            }
 //

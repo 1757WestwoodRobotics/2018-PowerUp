@@ -1,6 +1,7 @@
 package org.whsrobotics.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -14,6 +15,7 @@ import org.whsrobotics.commands.commandgroups.CGDeployCubeToSwitch;
 import org.whsrobotics.commands.commandgroups.CGGrabCube;
 import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.CubeSpinner;
+import org.whsrobotics.subsystems.DriveTrain;
 import org.whsrobotics.subsystems.Elevator;
 import org.whsrobotics.triggers.ElevatorVelocityMode;
 import org.whsrobotics.utils.AutomationCanceler;
@@ -39,13 +41,50 @@ public class OI {
         xboxController = new XboxController(XBOX_PORT);
         buttonBox = new Joystick(BUTTONBOX_PORT);
 
-        (new JoystickButton(xboxController, XboxButton.kB.value)).whenPressed(new DriveForward());  // TODO: Change command
+        (new JoystickButton(xboxController, XboxButton.kB.value)).whenPressed(new DriveForward());  // TODO: Find Box
+        (new JoystickButton(xboxController, XboxButton.kY.value)).whenPressed(new DriveForward());  // TODO: Refl. Tape
+        (new JoystickButton(xboxController, XboxButton.kBumperLeft.value)).toggleWhenPressed(new Command() {
+
+            @Override
+            protected void initialize() {
+                DriveTrain.setBrakeMode();
+            }
+
+            @Override
+            protected void end() {
+                DriveTrain.setCoastMode();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+
+        }); // TODO: Test. Switch to whileHeld?
+        (new JoystickButton(xboxController, XboxButton.kBumperRight.value)).toggleWhenPressed(new Command() {
+
+            @Override
+            protected void initialize() {
+                DriveTrain.removeDriveTrainAccelLimit();
+            }
+
+            @Override
+            protected void end() {
+                DriveTrain.setDriveTrainAccelLimit();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+
+        }); // TODO: Test. Switch to whileHeld?
 
         (new JoystickButton(buttonBox, 1)).whenPressed(new CGGrabCube());
         (new JoystickButton(buttonBox, 2)).whenPressed(new CGDeployCubeToSwitch());
         (new JoystickButton(buttonBox, 3)).whenPressed(new CGDeployCubeToScale());
         (new JoystickButton(buttonBox, 4)).whenPressed(new CGDeployCubeToExchange());
-        (new JoystickButton(buttonBox, 5)).whenPressed(new AutomationCanceler());   // TODO: Does this even work?
+        (new JoystickButton(buttonBox, 5)).whenPressed(new AutomationCanceler());   // TODO: Test. Does this even work?
 
         (new JoystickButton(buttonBox, 6)).whenPressed(new MoveCubeGripper(CubeGripper.Position.OPEN_ARMS));
         (new JoystickButton(buttonBox, 7)).whenPressed(new CubeGripperApplyConstantVoltage());
@@ -56,7 +95,7 @@ public class OI {
         (new JoystickButton(buttonBox, 10)).whileHeld(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS));
         (new JoystickButton(buttonBox, 10)).whenReleased(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
 
-        (new JoystickButton(buttonBox, 11)).whenPressed(CubeGripper.disableOutputCommand);  // TODO: May not work! Put in its own command.
+        (new JoystickButton(buttonBox, 11)).whenPressed(CubeGripper.disableOutputCommand);  // TODO: May not work! Put in its own command?
         (new JoystickButton(buttonBox, 12)).whileHeld(new Command() {
             @Override
             protected boolean isFinished() {
@@ -82,7 +121,6 @@ public class OI {
                 return false;
             }
         }); // Elevator Down
-
 
         (new ElevatorVelocityMode()).whenActive(new MoveElevatorVelocity());    // Convert to LT/RT?
 
@@ -140,7 +178,7 @@ public class OI {
     }
 
     /**
-     * Curving and limiting for the left joystick (forwards/backwards)
+     * Curving for the left joystick (forwards/backwards)
      *
      * @param value
      * @return
@@ -157,7 +195,7 @@ public class OI {
     }
 
     /**
-     * Curving and limiting for the right joystick (used for turning)
+     * Curving for the right joystick (used for turning)
      *
      * @param value
      * @return
