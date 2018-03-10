@@ -41,6 +41,13 @@ public class DriveTrain extends Subsystem {
     private static final double KI = 0;
     private static final double KD = 0.125;
 
+    private static final double wheelDiameterInches = 4.3;
+    private static final double wheelDiameterInMM = wheelDiameterInches * 25.4;
+    private static final double wheelDiameterInMeters = wheelDiameterInMM / 1000.0;
+    private static final double wheelCircumference = wheelDiameterInMeters * Math.PI;
+    private static final double encoderResolution = 2048;
+    private static final double distancePerPulse = wheelCircumference / encoderResolution;
+
     private static double rotationPIDOutput;
     private static final double ROT_TOLERANCE_DEG = 0.5f;
 
@@ -80,11 +87,11 @@ public class DriveTrain extends Subsystem {
             leftEncoder = new Encoder(RobotMap.DigitalInputPort.ENCODER_LEFT_A.port,
                     RobotMap.DigitalInputPort.ENCODER_LEFT_B.port,
                     RobotMap.DigitalInputPort.ENCODER_LEFT_INDEX.port);
-            leftEncoder.setDistancePerPulse(0.000335);  // 68.612 cm wheel circumference / 2048 (resolution of the encoder)
+            leftEncoder.setDistancePerPulse(distancePerPulse);
             rightEncoder = new Encoder(RobotMap.DigitalInputPort.ENCODER_RIGHT_A.port,
                     RobotMap.DigitalInputPort.ENCODER_RIGHT_B.port,
                     RobotMap.DigitalInputPort.ENCODER_RIGHT_INDEX.port);
-            rightEncoder.setDistancePerPulse(0.000335);
+            rightEncoder.setDistancePerPulse(distancePerPulse);
             resetEncoders();
 
         } catch (NullPointerException e) {

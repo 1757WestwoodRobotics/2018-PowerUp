@@ -33,7 +33,7 @@ public class Elevator extends Subsystem {
     private static Elevator instance;
 
     public enum Position {
-        DOWN(0), RAISE_UP(1000), SWITCH(10000), SCALE_TOP(23000);
+        DOWN(0), RAISE_UP(1000), SWITCH(10000), SCALE_TOP(26000);
 
         private int target;
 
@@ -74,7 +74,7 @@ public class Elevator extends Subsystem {
             left.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
 
             left.configReverseSoftLimitThreshold(0,0);   // Native units
-            left.configForwardSoftLimitThreshold(23000,0);  // TODO: Retune with real robot
+            left.configForwardSoftLimitThreshold(26000,0);  // TODO: Retune with real robot
 
             left.configReverseSoftLimitEnable(true, 0);
             left.configForwardSoftLimitEnable(true, 0);
@@ -189,13 +189,13 @@ public class Elevator extends Subsystem {
     // CONFIG STUFF //
 
     public static void setNormalVoltageLimits() {
-        left.configPeakOutputForward(.80, 0);
-        left.configPeakOutputReverse(-.20, 0);
+        left.configPeakOutputForward((2.0/3.0), 0);
+        left.configPeakOutputReverse(-(1.0/3.0), 0);
     }
 
-    public static void setEndgameVoltageLimits() {
-        left.configPeakOutputForward(.20, 0);
-        left.configPeakOutputReverse(-.80, 0);
+    public static void setEndgameVoltageLimits() {  // TODO: FIX LATER
+        left.configPeakOutputForward((2.0/3.0), 0);
+        left.configPeakOutputReverse(-(1.0/3.0), 0);
     }
 
     // ENCODER STUFF //

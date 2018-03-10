@@ -293,7 +293,7 @@ public class OI {
 
     private static void publishCubeGripper() {
         cubeGripperModeChooser = new SendableChooser<>();
-        cubeGripperModeChooser.addDefault("Default - SWITCH", CubeGripper.Position.OPEN_ARMS);
+        cubeGripperModeChooser.addDefault("Default - OPEN_ARMS", CubeGripper.Position.OPEN_ARMS);
 
         for (CubeGripper.Position position : CubeGripper.Position.values()) {
             cubeGripperModeChooser.addObject(position.toString(), position);
