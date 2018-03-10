@@ -71,7 +71,7 @@ public class Vision {
     }
 
     private Vision() {
-       //  CameraServer.getInstance().startAutomaticCapture();  // Only if camera is connected to the RoboRIO!
+       CameraServer.getInstance().startAutomaticCapture();  // Only if camera is connected to the RoboRIO!
     }
 
     public static Vision getInstance(){

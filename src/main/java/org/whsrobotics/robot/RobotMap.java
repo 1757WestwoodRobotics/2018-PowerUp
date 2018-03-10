@@ -33,6 +33,7 @@ public class RobotMap {
 
     public static final int XBOX_PORT = 0;
     public static final int BUTTONBOX_PORT = 1;
+    public static final int BUTTONBOX_PORT1 = 2;
 
     public static void init() {
 

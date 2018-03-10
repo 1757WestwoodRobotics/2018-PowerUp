@@ -137,10 +137,10 @@ public class DriveTrain extends Subsystem {
     }
 
     public static void setDriveTrainAccelLimit() {
-        leftFront.configOpenloopRamp(1, 0);
-        leftBack.configOpenloopRamp(1, 0);
-        rightFront.configOpenloopRamp(1, 0);
-        rightBack.configOpenloopRamp(1, 0);
+        leftFront.configOpenloopRamp(0.5, 0);
+        leftBack.configOpenloopRamp(0.5, 0);
+        rightFront.configOpenloopRamp(0.5, 0);
+        rightBack.configOpenloopRamp(0.5, 0);
     }
 
     public static void removeDriveTrainAccelLimit() {

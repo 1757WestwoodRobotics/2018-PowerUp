@@ -1,6 +1,5 @@
 package org.whsrobotics.commands.commandgroups;
 
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import org.whsrobotics.commands.*;
 import org.whsrobotics.subsystems.Arduino;

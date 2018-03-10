@@ -24,7 +24,7 @@ public class AutonomousCommand extends CommandGroup {
             // DEPLOY CUBE IN LEFT SWITCH
             if (switchSide == Autonomous.Ownership.LEFT) {
                 // Drive up to Switch (using Vision or encoder)
-                addSequential(new DriveForward());  // TODO: Stop with sensor or time, or use Pathfinder
+                addSequential(new DriveForward(5));  // TODO: Stop with sensor or time, or use Pathfinder
                 // Deploy cube
                 addSequential(new CGDeployCubeToSwitch()); // TODO: Stop with sensor
                 numCubes--;
@@ -33,7 +33,7 @@ public class AutonomousCommand extends CommandGroup {
 
             } else {
                 // Drive to Point #2
-                addSequential(new DriveForward());
+                addSequential(new DriveForward(5));
             }
 
             if (scaleSide == Autonomous.Ownership.LEFT) {
@@ -42,17 +42,17 @@ public class AutonomousCommand extends CommandGroup {
                 if (numCubes == 0) {
                     // Turn and align to grab cube
                     addSequential(new TurnToAngle(10)); // TODO: Calculate
-                    addSequential(new DriveForward());  // TODO: Drive with Vision
+                    addSequential(new DriveForward(5));  // TODO: Drive with Vision
                     addSequential(new CGGrabCube());
                     numCubes++;
 
                     // Reorient to scale
                     addSequential(new TurnToAngle(0));    // TODO: Calculate
-                    addSequential(new DriveForward());
+                    addSequential(new DriveForward(5));
                 } else {
                     // Orient to scale
                     addSequential(new TurnToAngle(0));
-                    addSequential(new DriveForward());
+                    addSequential(new DriveForward(5));
                 }
 
                 // Deploy the cube

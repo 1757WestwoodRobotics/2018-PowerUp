@@ -22,12 +22,14 @@ import org.whsrobotics.utils.AutomationCanceler;
 import org.whsrobotics.utils.RobotLogger;
 
 import static org.whsrobotics.robot.RobotMap.BUTTONBOX_PORT;
+import static org.whsrobotics.robot.RobotMap.BUTTONBOX_PORT1;
 import static org.whsrobotics.robot.RobotMap.XBOX_PORT;
 
 public class OI {
 
     private static XboxController xboxController;
     private static Joystick buttonBox;
+    private static Joystick buttonBox1;
 
     private static SendableChooser<Autonomous.FieldTarget> fieldTargetChooser;
     private static SendableChooser<Autonomous.StartingPosition> startingPositionChooser;
@@ -40,10 +42,12 @@ public class OI {
     private OI() {
         xboxController = new XboxController(XBOX_PORT);
         buttonBox = new Joystick(BUTTONBOX_PORT);
+        buttonBox1 = new Joystick(BUTTONBOX_PORT1);
 
-        (new JoystickButton(xboxController, XboxButton.kB.value)).whenPressed(new DriveForward());  // TODO: Find Box
-        (new JoystickButton(xboxController, XboxButton.kY.value)).whenPressed(new DriveForward());  // TODO: Refl. Tape
-        (new JoystickButton(xboxController, XboxButton.kBumperLeft.value)).toggleWhenPressed(new Command() {
+
+        // (new JoystickButton(xboxController, XboxButton.kB.value)).whenPressed(new DriveForward());  // TODO: Find Box
+        // (new JoystickButton(xboxController, XboxButton.kY.value)).whenPressed(new DriveForward());  // TODO: Refl. Tape
+        (new JoystickButton(xboxController, XboxButton.kBumperLeft.value)).whileHeld(new Command() {
 
             @Override
             protected void initialize() {
@@ -61,7 +65,7 @@ public class OI {
             }
 
         }); // TODO: Test. Switch to whileHeld?
-        (new JoystickButton(xboxController, XboxButton.kBumperRight.value)).toggleWhenPressed(new Command() {
+        (new JoystickButton(xboxController, XboxButton.kBumperRight.value)).whileHeld(new Command() {
 
             @Override
             protected void initialize() {
@@ -79,6 +83,13 @@ public class OI {
             }
 
         }); // TODO: Test. Switch to whileHeld?
+        (new JoystickButton(xboxController, XboxButton.kX.value)).whileHeld(new Command() {
+            @Override
+            protected boolean isFinished() {
+                CubeGripper.resetEncoderPosition();
+                return true;
+            }
+        });
 
         (new JoystickButton(buttonBox, 1)).whenPressed(new CGGrabCube());
         (new JoystickButton(buttonBox, 2)).whenPressed(new CGDeployCubeToSwitch());
@@ -96,31 +107,27 @@ public class OI {
         (new JoystickButton(buttonBox, 10)).whenReleased(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
 
         (new JoystickButton(buttonBox, 11)).whenPressed(CubeGripper.disableOutputCommand);  // TODO: May not work! Put in its own command?
+
         (new JoystickButton(buttonBox, 12)).whileHeld(new Command() {
             @Override
             protected boolean isFinished() {
                 return false;
             }
         }); // Open Arms
-        (new JoystickButton(buttonBox, 13)).whileHeld(new Command() {
+        (new JoystickButton(buttonBox1, 1)).whileHeld(new Command() {
             @Override
             protected boolean isFinished() {
                 return false;
             }
         }); // Close Arms
 
-        (new JoystickButton(buttonBox, 14)).whileHeld(new Command() {
-            @Override
-            protected boolean isFinished() {
-                return false;
-            }
-        }); // Elevator Up
-        (new JoystickButton(buttonBox, 15)).whileHeld(new Command() {
-            @Override
-            protected boolean isFinished() {
-                return false;
-            }
-        }); // Elevator Down
+//        (new JoystickButton(buttonBox1, 2)).whileHeld(); // Elevator Up
+//        (new JoystickButton(buttonBox1, 3)).whileHeld(new Command() {
+//            @Override
+//            protected boolean isFinished() {
+//                return false;
+//            }
+//        }); // Elevator Down
 
         (new ElevatorVelocityMode()).whenActive(new MoveElevatorVelocity());    // Convert to LT/RT?
 

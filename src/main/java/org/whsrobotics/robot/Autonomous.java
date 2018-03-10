@@ -2,8 +2,7 @@ package org.whsrobotics.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.Scheduler;
+import org.whsrobotics.commands.DriveForward;
 import org.whsrobotics.commands.commandgroups.*;
 import org.whsrobotics.subsystems.Arduino;
 import org.whsrobotics.utils.RobotLogger;
@@ -129,15 +128,11 @@ public class Autonomous {
                 }
             };
         } else if (fieldTarget == FieldTarget.CROSS_LINE) {
-            return new Command() {
-                @Override
-                protected boolean isFinished() {
-                    return true;
-                }
-            };
+            return new DriveForward(5);
         } else {
             // Do not cross the field at the moment
-            return new AutonomousCommand(startingPosition, switchSide, scaleSide, false);
+            return new DriveForward(5);
+            // return new AutonomousCommand(startingPosition, switchSide, scaleSide, false);
         }
 
     }

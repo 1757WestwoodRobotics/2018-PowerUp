@@ -1,11 +1,13 @@
 package org.whsrobotics.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 import org.whsrobotics.subsystems.DriveTrain;
 
-public class DriveForward extends Command {
+public class DriveForward extends TimedCommand {
 
-    public DriveForward() {
+    public DriveForward(double timeout) {
+        super(timeout);
         requires(DriveTrain.getInstance());
     }
 
@@ -21,7 +23,7 @@ public class DriveForward extends Command {
 
     @Override
     protected boolean isFinished() {
-        return false;
+        return isTimedOut();
     }
 
 }

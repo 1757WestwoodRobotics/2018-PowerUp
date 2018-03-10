@@ -79,9 +79,9 @@ public class Robot extends TimedRobot {
 //
         // System.out.println(new String("Ultrasonic sensor value - ") + Arduino.getInstance().getDistance());
 //
-        System.out.println("left count: " + DriveTrain.getLeftEncoderCount() +
-                " distance (m): " + DriveTrain.getLeftEncoderDistance() +
-                " rate (m/s): " + DriveTrain.getLeftEncoderRate());
+//        System.out.println("left count: " + DriveTrain.getLeftEncoderCount() +
+//                " distance (m): " + DriveTrain.getLeftEncoderDistance() +
+//                " rate (m/s): " + DriveTrain.getLeftEncoderRate());
 
     }
 
