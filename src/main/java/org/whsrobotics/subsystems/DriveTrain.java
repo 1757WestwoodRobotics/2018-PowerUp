@@ -74,7 +74,7 @@ public class DriveTrain extends Subsystem {
             rightBack.configPeakOutputReverse(-1, 0);
 
             // ONLY if needed
-            // setDriveTrainAccelLimit();
+            setDriveTrainAccelLimit();
 
             leftDrive = new SpeedControllerGroup(leftFront, leftBack);
             rightDrive = new SpeedControllerGroup(rightFront, rightBack);

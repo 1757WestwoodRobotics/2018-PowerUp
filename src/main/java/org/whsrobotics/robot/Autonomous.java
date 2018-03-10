@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.command.Command;
 import org.whsrobotics.commands.DriveForward;
 import org.whsrobotics.commands.commandgroups.*;
 import org.whsrobotics.subsystems.Arduino;
+import org.whsrobotics.subsystems.CubeGripper;
+import org.whsrobotics.subsystems.Elevator;
 import org.whsrobotics.utils.RobotLogger;
 
 /**
@@ -44,6 +46,8 @@ public class Autonomous {
     }
 
     public static void startInit() {
+
+        CubeGripper.resetEncoderPosition();
 
         // Try to get FMS switch/scale game data. If it fails, only cross the baseline and end.
         try {

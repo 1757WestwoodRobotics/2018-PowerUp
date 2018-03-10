@@ -91,7 +91,7 @@ public class OI {
             }
         });
 
-        (new JoystickButton(buttonBox, 1)).whenPressed(new CGGrabCube());
+        // (new JoystickButton(buttonBox, 1)).whenPressed(new CGGrabCube());
         (new JoystickButton(buttonBox, 2)).whenPressed(new CGDeployCubeToSwitch());
         (new JoystickButton(buttonBox, 3)).whenPressed(new CGDeployCubeToScale());
         (new JoystickButton(buttonBox, 4)).whenPressed(new CGDeployCubeToExchange());
@@ -121,13 +121,40 @@ public class OI {
             }
         }); // Close Arms
 
-//        (new JoystickButton(buttonBox1, 2)).whileHeld(); // Elevator Up
-//        (new JoystickButton(buttonBox1, 3)).whileHeld(new Command() {
-//            @Override
-//            protected boolean isFinished() {
-//                return false;
-//            }
-//        }); // Elevator Down
+        (new JoystickButton(buttonBox1, 2)).whileHeld(new Command() {
+
+            @Override
+            protected void execute() {
+                Elevator.moveWithVelocity(0.7);
+            }
+
+            @Override
+            protected void end() {
+                Elevator.moveToValue(Elevator.getEncoderPosition());
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+
+        }); // Elevator Up
+        (new JoystickButton(buttonBox1, 3)).whileHeld(new Command() {
+            @Override
+            protected void execute() {
+                Elevator.moveWithVelocity(-0.1);
+            }
+
+            @Override
+            protected void end() {
+                Elevator.moveToValue(Elevator.getEncoderPosition());
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+        }); // Elevator Down
 
         (new ElevatorVelocityMode()).whenActive(new MoveElevatorVelocity());    // Convert to LT/RT?
 
@@ -153,7 +180,7 @@ public class OI {
 
     // ------------ XBOX CONTROLLER ------------- //
 
-    private static final double XBOX_DEADZONE = 0.06;
+    private static final double XBOX_DEADZONE = 0.07;
     private static final double XBOX_RIGHT_DEADZONE = 0.08;
 
     private enum XboxButton {
@@ -210,8 +237,8 @@ public class OI {
     public static double rightXboxJoystickCurve(double value) {
 
         if (Math.abs(value) >= XBOX_RIGHT_DEADZONE) {
-            // Raises the (xbox input / 2) to the 2nd power and adds 10%
-            return Math.copySign(Math.pow((value / 2), 2) + 0.10, value);
+            // Raises the (xbox input / 1.2) to the 2nd power and adds 10%. Full joystick = ~80%
+            return Math.copySign(Math.pow((value / 1.2), 2) + 0.10, value);
         }
 
         return 0;

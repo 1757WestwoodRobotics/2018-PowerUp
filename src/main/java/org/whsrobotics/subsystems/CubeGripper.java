@@ -102,6 +102,8 @@ public class CubeGripper extends Subsystem {
             right.configMotionCruiseVelocity(200, 0);
             right.configMotionAcceleration(200, 0);
 
+//            resetEncoderPosition();
+
         } catch (Exception e) {
             RobotLogger.getInstance().err(this.getClass(), "Error instantiating CubeGripper hardware" + e.getMessage(), true);
 
