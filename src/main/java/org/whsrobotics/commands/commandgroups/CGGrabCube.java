@@ -48,17 +48,6 @@ public class CGGrabCube extends CommandGroup {
         addSequential(new ArduinoUltrasonicDistance(25));   // TODO: Measure bumpers AND test
         addSequential(new ArduinoSendCommand(Arduino.Command.StripLEDsOrange)); // TODO: Pulse as well
 
-//        // Revert to this if the thread separation doesn't work!!!!!
-//        addSequential(new Command() {
-//
-//            @Override
-//            protected boolean isFinished() {
-//                double output = Arduino.getInstance().getDistance(); // --> replace ArduinoUltrasonicCommand
-//                return output < 20 && output != -1;
-//            }
-//
-//        });
-
         // Grasp the Cube tightly
         addParallel(new CubeGripperApplyConstantVoltage());
 

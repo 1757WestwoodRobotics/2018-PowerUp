@@ -91,7 +91,7 @@ public class OI {
             }
         });
 
-        // (new JoystickButton(buttonBox, 1)).whenPressed(new CGGrabCube());
+        (new JoystickButton(buttonBox, 1)).whenPressed(new CGGrabCube());
         (new JoystickButton(buttonBox, 2)).whenPressed(new CGDeployCubeToSwitch());
         (new JoystickButton(buttonBox, 3)).whenPressed(new CGDeployCubeToScale());
         (new JoystickButton(buttonBox, 4)).whenPressed(new CGDeployCubeToExchange());

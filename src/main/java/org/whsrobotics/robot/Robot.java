@@ -83,6 +83,8 @@ public class Robot extends TimedRobot {
 //                " distance (m): " + DriveTrain.getLeftEncoderDistance() +
 //                " rate (m/s): " + DriveTrain.getLeftEncoderRate());
 
+//        System.out.println(Arduino.getInstance().getDistance());
+
     }
 
     // ------------ DISABLED METHODS ------------- //
