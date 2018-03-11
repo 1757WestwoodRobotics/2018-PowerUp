@@ -12,12 +12,17 @@ public class MoveElevatorVelocity extends Command {
     }
 
     @Override
+    protected void initialize() {
+        Elevator.setEndgameVoltageLimits();
+    }
+
+    @Override
     protected void execute() {
 
-        if (OI.checkXboxDeadzone(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kRight)) > 0 && !Elevator.getTopLimitSwitch()) {
+        if (OI.getXboxController().getTriggerAxis(GenericHID.Hand.kRight) > 0.05) {
             Elevator.moveWithVelocity(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kRight));
 
-        } else if (OI.checkXboxDeadzone(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kLeft)) > 0 && !Elevator.getBottomLimitSwitch()) {
+        } else if (OI.getXboxController().getTriggerAxis(GenericHID.Hand.kLeft) > 0.05) {
             Elevator.moveWithVelocity(-OI.getXboxController().getTriggerAxis(GenericHID.Hand.kLeft));
         }
 
@@ -25,14 +30,14 @@ public class MoveElevatorVelocity extends Command {
 
     @Override
     protected void end() {
-        Elevator.moveToDS(Elevator.getEncoderPosition());   // Hold the current position
-        // Elevator.moveWithVelocity(0);
+        Elevator.setNormalVoltageLimits();
+        Elevator.moveToValue(Elevator.getEncoderPosition());   // Hold the current position
     }
 
     @Override
     protected boolean isFinished() {
-        return OI.checkXboxDeadzone(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kLeft)) == 0 &&
-                OI.checkXboxDeadzone(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kRight)) == 0;
+        return OI.getXboxController().getTriggerAxis(GenericHID.Hand.kLeft) < 0.05 &&
+                OI.getXboxController().getTriggerAxis(GenericHID.Hand.kRight) < 0.05;
     }
 
 }

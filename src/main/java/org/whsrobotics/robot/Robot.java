@@ -1,6 +1,7 @@
 package org.whsrobotics.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import org.whsrobotics.subsystems.*;
 import org.whsrobotics.utils.RobotLogger;
@@ -76,10 +77,11 @@ public class Robot extends TimedRobot {
 //            Timer.delay(1);
 //        }
 //
-//        System.out.println(new String("Ultrasonic sensor value - ") + Arduino.getInstance().getDistance());
-//        Timer.delay(1);
-
-//        System.out.println(CubeSpinner.getIRSensorValue());
+        // System.out.println(new String("Ultrasonic sensor value - ") + Arduino.getInstance().getDistance());
+//
+//        System.out.println("left count: " + DriveTrain.getLeftEncoderCount() +
+//                " distance (m): " + DriveTrain.getLeftEncoderDistance() +
+//                " rate (m/s): " + DriveTrain.getLeftEncoderRate());
 
     }
 
@@ -90,8 +92,15 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void disabledInit() {
-        // Any time robot goes into disabled (run once)
+        // Any time robot goes into disabled (run once) [And RobotInit finishes]
         RobotLogger.getInstance().log(this.getClass(), "Entering disabled");
+        Scheduler.getInstance().removeAll();
+
+        CubeSpinner.spinWithMode(CubeSpinner.Mode.OFF);
+        CubeGripper.setTalonNeutral();
+
+        Arduino.getInstance().onDisabledInit();
+
     }
 
 }

@@ -2,10 +2,11 @@ package org.whsrobotics.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.Scheduler;
+import org.whsrobotics.commands.DriveForward;
 import org.whsrobotics.commands.commandgroups.*;
 import org.whsrobotics.subsystems.Arduino;
+import org.whsrobotics.subsystems.CubeGripper;
+import org.whsrobotics.subsystems.Elevator;
 import org.whsrobotics.utils.RobotLogger;
 
 /**
@@ -20,8 +21,7 @@ public class Autonomous {
     private static StartingPosition startingPosition = StartingPosition.LEFT;   // Default option
 
     public enum FieldTarget {
-        CODE_DECISION, NONE, CROSS_LINE, PC_ZONE, EXCHANGE,
-        LEFT_SWITCH, RIGHT_SWITCH, LEFT_SCALE, RIGHT_SCALE
+        CODE_DECISION, NONE, CROSS_LINE
     }
 
     public enum StartingPosition {
@@ -47,11 +47,14 @@ public class Autonomous {
 
     public static void startInit() {
 
+        CubeGripper.resetEncoderPosition();
+
         // Try to get FMS switch/scale game data. If it fails, only cross the baseline and end.
         try {
             decodeGameData(getGameData());
+            RobotLogger.getInstance().log(instance.getClass(), "## Game Data: " + getGameData());
         } catch (IllegalArgumentException e) {
-            RobotLogger.getInstance().err(instance.getClass(), "Error with decoding game data!");
+            RobotLogger.getInstance().err(instance.getClass(), "Error with decoding game data!", false);
             new AutoCrossLine().start();    // queue AutoCrossLine
             return;                         // exit out of the method
         }
@@ -60,8 +63,9 @@ public class Autonomous {
         fieldTarget = OI.getSelectedAutoFieldTarget();
         startingPosition = OI.getSelectedAutoStartingPosition();
 
-        // get alliance
         // set arduino light strips to alliance color (it should be white or alternating at this point)
+        Arduino.getInstance().Send(Arduino.Command.StripLEDs20vOff);
+        RobotLogger.getInstance().log(instance.getClass(), "## Alliance: " + OI.getAlliance().toString());
         switch (OI.getAlliance()) {
             case Red:
                 Arduino.getInstance().Send(Arduino.Command.StripLEDsRed);
@@ -70,7 +74,7 @@ public class Autonomous {
                 Arduino.getInstance().Send(Arduino.Command.StripLEDsBlue);
                 break;
             case Invalid:
-                Arduino.getInstance().Send(Arduino.Command.StripLEDsWhite);
+                RobotLogger.getInstance().err(instance.getClass(), "Error with getting Alliance data!", false);
                 break;
         }
 
@@ -83,7 +87,7 @@ public class Autonomous {
             try {
                 gameData = DriverStation.getInstance().getGameSpecificMessage();
             } catch (Exception e) {
-                RobotLogger.getInstance().err(instance.getClass(), "Error getting the Game Data! " + e.getMessage());
+                RobotLogger.getInstance().err(instance.getClass(), "Error getting the Game Data! " + e.getMessage(), false);
             }
         }
         return gameData;
@@ -127,79 +131,13 @@ public class Autonomous {
                     return true;
                 }
             };
-        } else if (fieldTarget == FieldTarget.CODE_DECISION) {
-            // TODO: Make crossField param a SmartDashboard boolean?
-            return new AutonomousCommand(startingPosition, switchSide, scaleSide, true);
+        } else if (fieldTarget == FieldTarget.CROSS_LINE) {
+            return new DriveForward(5);
         } else {
-            return manualAuto();    // MIGHT NOT IMPLEMENT. ONLY IF DRIVER SELECTS SOMETHING OTHER THAN NONE/CODE_DEC
+            // Do not cross the field at the moment
+            return new DriveForward(5);
+            // return new AutonomousCommand(startingPosition, switchSide, scaleSide, false);
         }
-
-    }
-
-    // These commands start from the driver station wall TODO: REMOVE?
-    private static Command manualAuto() {
-
-        if (startingPosition == StartingPosition.LEFT) {
-
-            switch (fieldTarget) {
-                case CROSS_LINE:
-                    return new AutoCrossLine();
-                case PC_ZONE:
-                    return new AutoLeftPCZone();
-                case EXCHANGE:
-                    return new AutoLeftExchange();
-                case LEFT_SWITCH:
-                    return new AutoLeftSwitch();
-                case RIGHT_SWITCH:
-                    return new AutoLeftToRightSwitch();
-                case LEFT_SCALE:
-                    return new AutoLeftScale();
-                case RIGHT_SCALE:
-                    return new AutoLeftToRightScale();
-            }
-
-        } else if (startingPosition == StartingPosition.MIDDLE) {
-
-            switch (fieldTarget) {
-                case CROSS_LINE:
-                    return new AutoCrossLine();     // Maybe needs a specific Auto (else it crashes into PC Zone)
-                case PC_ZONE:
-                    return new AutoMiddlePCZone();
-                case EXCHANGE:
-                    return new AutoMiddleExchange();
-                case LEFT_SWITCH:
-                    return new AutoMiddleLeftSwitch();
-                case RIGHT_SWITCH:
-                    return new AutoMiddleRightSwitch();
-            }
-
-        } else if (startingPosition == StartingPosition.RIGHT) {
-
-            switch (fieldTarget) {
-                case CROSS_LINE:
-                    return new AutoCrossLine();
-                case PC_ZONE:
-                    return new AutoRightPCZone();
-                case LEFT_SWITCH:
-                    return new AutoRightToLeftSwitch();
-                case RIGHT_SWITCH:
-                    return new AutoRightSwitch();
-                case LEFT_SCALE:
-                    return new AutoRightToLeftScale();
-                case RIGHT_SCALE:
-                    return new AutoRightScale();
-            }
-
-        } else {
-            throw new IllegalStateException("No such StartingPosition or FieldTarget!");
-        }
-
-        return new Command() {
-            @Override
-            protected boolean isFinished() {
-                return true;
-            }
-        };
 
     }
 

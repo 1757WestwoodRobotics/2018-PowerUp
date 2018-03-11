@@ -1,37 +1,29 @@
 package org.whsrobotics.commands;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.command.Command;
-import org.whsrobotics.robot.OI;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 import org.whsrobotics.subsystems.DriveTrain;
 
-public class DriveForward extends Command {
+public class DriveForward extends TimedCommand {
 
-    public DriveForward() {
+    public DriveForward(double timeout) {
+        super(timeout);
         requires(DriveTrain.getInstance());
     }
 
     @Override
-    protected void initialize() {
-
-        DriveTrain.configLimitedAccelerationDrive();
-    }
-
-    @Override
     protected void execute() {
-
-        DriveTrain.defaultDrive(.5, 0);
+        DriveTrain.controllerDrive(.5, 0);
     }
 
     @Override
     protected void end() {
         DriveTrain.stopDrive();
-        DriveTrain.removeLimitedAccelerationDrive();
     }
-
 
     @Override
     protected boolean isFinished() {
-        return false;
+        return isTimedOut();
     }
+
 }

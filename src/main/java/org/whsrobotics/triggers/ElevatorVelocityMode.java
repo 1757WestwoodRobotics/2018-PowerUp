@@ -10,10 +10,10 @@ public class ElevatorVelocityMode extends Trigger {
     @Override
     public boolean get() {
         try {
-            return OI.checkXboxDeadzone(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kRight)) > 0 ||
-                    OI.checkXboxDeadzone(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kLeft)) > 0;
+            return OI.leftXboxJoystickCurve(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kRight)) > 0 ||
+                    OI.leftXboxJoystickCurve(OI.getXboxController().getTriggerAxis(GenericHID.Hand.kLeft)) > 0;
         } catch (Exception ex) {
-            RobotLogger.getInstance().err(this.getClass(), "Error getting the xbox controller!");
+            RobotLogger.getInstance().err(this.getClass(), "Error getting the xbox controller!", true);
             throw ex;
         }
 

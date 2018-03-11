@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.robot.RobotMap;
-import org.whsrobotics.triggers.LimitSwitch;
 import org.whsrobotics.utils.RobotLogger;
 
 /**
@@ -21,29 +20,28 @@ public class Elevator extends Subsystem {
     private static TalonSRX left;
     private static TalonSRX right;
 
-    private static LimitSwitch topLimit;
-    private static LimitSwitch bottomLimit;
+//    private static LimitSwitch topLimit;
+//    private static LimitSwitch bottomLimit;
 
-    // TODO: Retune! and zero out sensor at bottom, put PID setting code at bottom [commented out]
     private static double KP = 0.8;
     private static double KI = 0.0;
     private static double KD = 0.0;
     private static double KF = 0.0;
 
-    private static final int MAX_ERROR = 20;
+    private static final int MAX_ERROR = 50;
 
     private static Elevator instance;
 
     public enum Position {
-        DOWN(0), SWITCH(10000), SCALE_TOP(23000);
+        DOWN(0), RAISE_UP(1000), SWITCH(10000), SCALE_TOP(26000);
 
-        private double target;
+        private int target;
 
-        Position(double target) {
+        Position(int target) {
             this.target = target;
         }
 
-        public double getTarget() {
+        public int getTarget() {
             return target;
         }
 
@@ -61,10 +59,12 @@ public class Elevator extends Subsystem {
             left.setNeutralMode(NeutralMode.Brake);
             right.setNeutralMode(NeutralMode.Brake);
 
-            left.configPeakOutputForward(.50, 0);   // TODO: Raise to full power?
-            left.configPeakOutputReverse(-.50, 0);  // Keep downwards at half power
-
-//            left.setSensorPhase(true);
+            setNormalVoltageLimits();
+            //
+            //          Normal      Lift
+            // FWD:     0.8         0.1
+            // REV:     -0.2        -0.8
+            //
 
             right.follow(left);
             left.setInverted(true);
@@ -74,7 +74,7 @@ public class Elevator extends Subsystem {
             left.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 0);
 
             left.configReverseSoftLimitThreshold(0,0);   // Native units
-            left.configForwardSoftLimitThreshold(23000,0);
+            left.configForwardSoftLimitThreshold(26000,0);  // TODO: Retune with real robot
 
             left.configReverseSoftLimitEnable(true, 0);
             left.configForwardSoftLimitEnable(true, 0);
@@ -89,21 +89,23 @@ public class Elevator extends Subsystem {
 
             // Motion Magic //TODO: Retune
             left.configMotionCruiseVelocity(1000, 0);
-            left.configMotionAcceleration(500, 0);
+            left.configMotionAcceleration(800, 0);
+
+            resetEncoderPosition();
 
             // ------------ LIMIT SWITCH ------------- //
 
-            topLimit = new LimitSwitch(RobotMap.DigitalInputPort.ELEVATOR_TOP.port);
-            bottomLimit = new LimitSwitch(RobotMap.DigitalInputPort.ELEVATOR_BOTTOM.port);
+//            topLimit = new LimitSwitch(RobotMap.DigitalInputPort.ELEVATOR_TOP.port);
+//            bottomLimit = new LimitSwitch(RobotMap.DigitalInputPort.ELEVATOR_BOTTOM.port);
 
         } catch (Exception e) {
-            RobotLogger.getInstance().err(instance.getClass(), "Error setting up / configuring Elevator hardware!" + e.getMessage());
+            RobotLogger.getInstance().err(instance.getClass(), "Error setting up / configuring Elevator hardware!" + e.getMessage(), true);
         }
 
-        SmartDashboard.putNumber("KP", KP);
-        SmartDashboard.putNumber("KI", KI);
-        SmartDashboard.putNumber("KD", KD);
-        SmartDashboard.putNumber("KF", KF);
+//        SmartDashboard.putNumber("KP", KP);
+//        SmartDashboard.putNumber("KI", KI);
+//        SmartDashboard.putNumber("KD", KD);
+//        SmartDashboard.putNumber("KF", KF);
 
         SmartDashboard.putNumber("Elevator Target Position", 0);
 
@@ -127,55 +129,52 @@ public class Elevator extends Subsystem {
         try {
             SmartDashboard.putNumber("EncPos", Elevator.getEncoderPosition());
             SmartDashboard.putNumber("EncVel", Elevator.getEncoderVelocity());
-            SmartDashboard.putBoolean("ElevatorTopLimit", Elevator.getTopLimitSwitch());
-            SmartDashboard.putBoolean("ElevatorBottomLimit", Elevator.getBottomLimitSwitch());
         } catch (Exception e) {
-            RobotLogger.getInstance().err(instance.getClass(), "Can't get Elevator encoder data!" + e.getMessage());
+            RobotLogger.getInstance().err(instance.getClass(), "Can't get Elevator encoder data!" + e.getMessage(), false);
         }
     }
 
-    /**
-     * Testing code to easily set PID constants
-     */
-    public static void setPID() {
-        KP = SmartDashboard.getNumber("KP", KP);
-        KI = SmartDashboard.getNumber("KI", KI);
-        KD = SmartDashboard.getNumber("KD", KD);
-        KF = SmartDashboard.getNumber("KD", KF);
-
-        left.config_kP(0, KP, 0);
-        left.config_kI(0, KI, 0);
-        left.config_kD(0, KD, 0);
-        left.config_kF(0, KF, 0);
-
-
-        System.out.println("KP: " + KP);
-        System.out.println("KI: " + KI);
-        System.out.println("KD: " + KD);
-        System.out.println("KF: " + KF);
-    }
-
-    /**
-     * Moves the elevator to a specified elevator position using PID and MotionMagic.
-     *
-     * @see Elevator.Position
-     * @param position The target elevator position
-     */
-    public static void moveToPosition(Position position) {
-        setPID();   // TEMP
-        System.out.println(position.getTarget());
-        left.set(ControlMode.MotionMagic, position.getTarget());       // ControlMode.MotionMagic or ControlMode.Position
-    }
+//    /**
+//     * Testing code to easily set PID constants
+//     */
+//    public static void setPID() {
+//        KP = SmartDashboard.getNumber("KP", KP);
+//        KI = SmartDashboard.getNumber("KI", KI);
+//        KD = SmartDashboard.getNumber("KD", KD);
+//        KF = SmartDashboard.getNumber("KD", KF);
+//
+//        left.config_kP(0, KP, 0);
+//        left.config_kI(0, KI, 0);
+//        left.config_kD(0, KD, 0);
+//        left.config_kF(0, KF, 0);
+//
+//
+//        System.out.println("KP: " + KP);
+//        System.out.println("KI: " + KI);
+//        System.out.println("KD: " + KD);
+//        System.out.println("KF: " + KF);
+//    }
 
     /**
-     * Moves the elevator to a specified elevator absolute encoder tick (4096 ticks per revolution).
+     * Moves the elevator to a specified elevator absolute encoder tick (4096 ticks per revolution)
+     * using PID and MotionMagic.
      *
      * @param target The target elevator position defined in absolute encoder ticks
      */
-    public static void moveToDS(int target) {
-        setPID();   // TEMP
-        System.out.println(target); // TEMP
-        left.set(ControlMode.Position, target); // TODO: Switch to MotionMagic?
+    public static void moveToValue(int target) {
+        RobotLogger.getInstance().log(instance.getClass(), "Setting Elevator to: " + target);
+        left.set(ControlMode.MotionMagic, target);
+    }
+
+    /**
+     * Moves the elevator to a specified elevator position.
+     *
+     * @see Elevator.Position
+     * @see #moveToValue(int)
+     * @param position The target elevator position
+     */
+    public static void moveToPosition(Position position) {
+        moveToValue(position.target);
     }
 
     /**
@@ -186,6 +185,20 @@ public class Elevator extends Subsystem {
     public static void moveWithVelocity(double speed) {
         left.set(ControlMode.PercentOutput, speed);
     }
+
+    // CONFIG STUFF //
+
+    public static void setNormalVoltageLimits() {
+        left.configPeakOutputForward((2.0/3.0), 0);
+        left.configPeakOutputReverse(-(1.0/3.0), 0);
+    }
+
+    public static void setEndgameVoltageLimits() {  // TODO: FIX LATER
+        left.configPeakOutputForward((2.0/3.0), 0);
+        left.configPeakOutputReverse(-(1.0/3.0), 0);
+    }
+
+    // ENCODER STUFF //
 
     /**
      * Gets the absolute position of the left talon's encoder
@@ -210,25 +223,44 @@ public class Elevator extends Subsystem {
     }
 
     // ------------ FINISHED METHODS ------------- //
+//
+//    public static boolean reachedBoundaries() {
+//        return getTopLimitSwitch() || getBottomLimitSwitch();
+//    }
+//
+//    public static boolean getTopLimitSwitch() {
+//        return topLimit.get();
+//    }
+//
+//    public static boolean getBottomLimitSwitch() {
+//        return bottomLimit.get();
+//    }
 
-    public static boolean getPIDFinished() {
-        return left.getClosedLoopError(0) <= MAX_ERROR;
+    public static double getError() {
+        return left.getClosedLoopError(0);
     }
 
-    public static boolean reachedBoundaries() {
-        return getTopLimitSwitch() || getBottomLimitSwitch();
+    public static boolean reachedTarget(int value) {
+        double max = value + 600;
+        double min = value - 600;
+        double current = Elevator.getEncoderPosition();
+
+        if (current >= min && current <= max) {
+            System.out.println("Elevator has reached target!");
+            return true;
+        }
+
+        return false;
+
+        // return getError() < MAX_ERROR;
     }
 
-    public static boolean getTopLimitSwitch() {
-        return topLimit.get();
+    public static boolean reachedTarget(Position position) {
+        return reachedTarget(position.getTarget());
     }
 
-    public static boolean getBottomLimitSwitch() {
-        return bottomLimit.get();
-    }
-
-    public static boolean reachedTarget() {
-        return left.getClosedLoopError(0) < MAX_ERROR;
+    public static int getMaxError() {
+        return MAX_ERROR;
     }
 
     // ------------ AUXILIARY COMMANDS ------------- //

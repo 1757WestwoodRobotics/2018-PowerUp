@@ -1,5 +1,6 @@
 package org.whsrobotics.subsystems;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.communications.JetsonLAN;
 import org.whsrobotics.utils.RobotLogger;
@@ -8,17 +9,17 @@ import java.util.Arrays;
 
 public class Vision {
 
-    private static String camera1URL;
-    private static String camera2URL;
+//    private static String camera1URL;
+//    private static String camera2URL;
 
     private static Rcommand rcommand;
     private static Jcommand jcommand;
 
-    private static double box1angle;
-    private static double box1distance;
-
-    private static double refltargangle;
-    private static double refltargdistance;
+//    private static double box1angle;
+//    private static double box1distance;
+//
+//    private static double refltargangle;
+//    private static double refltargdistance;
 
     private static Vision instance;
 
@@ -65,8 +66,12 @@ public class Vision {
         }
     }
 
-    private Vision() {
+    public enum TableValues {
+        box1angle, box1distance, refltargangle, refltargdistance
+    }
 
+    private Vision() {
+       CameraServer.getInstance().startAutomaticCapture();  // Only if camera is connected to the RoboRIO!
     }
 
     public static Vision getInstance(){
@@ -95,5 +100,34 @@ public class Vision {
 
         // TODO: Handle Jcommand
     }
+
+    private static double getEntryAsDouble(TableValues tableValue) {
+        try {
+            return JetsonLAN.getValue(tableValue.toString()).getDouble();
+        } catch (ClassCastException e) {
+            RobotLogger.getInstance().err(instance.getClass(), "##### Error casting to double for " + tableValue.toString(), false);
+        }
+
+        return -1;
+
+    }
+
+
+    public static double getBox1angle() {
+        return getEntryAsDouble(TableValues.box1angle);
+    }
+
+    public static double getBox1distance() {
+        return getEntryAsDouble(TableValues.box1distance);
+    }
+
+    public static double getRefltargangle() {
+        return getEntryAsDouble(TableValues.refltargangle);
+    }
+
+    public static double getRefltargdistance() {
+        return getEntryAsDouble(TableValues.refltargdistance);
+    }
+
 
 }

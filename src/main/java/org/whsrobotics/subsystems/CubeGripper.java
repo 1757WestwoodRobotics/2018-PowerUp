@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -12,17 +13,15 @@ import org.whsrobotics.utils.RobotLogger;
 
 public class CubeGripper extends Subsystem {
 
-    // TODO: Reset encoder with homing mode (limit switch detector)?
-
     private static TalonSRX left;
     private static TalonSRX right;
 
     public enum Position {
-        START_MATCH(0), RECEIVE(1550), CLOSE_ARMS(2048);  // Native Encoder Units // 1 complete rotation = 4096 ticks
+        FOLD_BACK(0), OPEN_ARMS(1550), GRAB_CUBE(2048);  // Native Encoder Units // 1 complete rotation = 4096 ticks
 
-        // START_MATCH is folded back
-        // RECEIVE is at a ~45º angle, easier to drive up to a cube
-        // CLOSE_ARMS is where the arms are parallel [NOT NEEDED]
+        // FOLD_BACK is folded back
+        // OPEN_ARMS is at a ~45º angle, easier to drive up to a cube
+        // GRAB_CUBE is where the arms are parallel [NOT NEEDED]
 
         private int target;
 
@@ -103,8 +102,10 @@ public class CubeGripper extends Subsystem {
             right.configMotionCruiseVelocity(200, 0);
             right.configMotionAcceleration(200, 0);
 
+//            resetEncoderPosition();
+
         } catch (Exception e) {
-            RobotLogger.getInstance().err(this.getClass(), "Error instantiating CubeGripper hardware" + e.getMessage());
+            RobotLogger.getInstance().err(this.getClass(), "Error instantiating CubeGripper hardware" + e.getMessage(), true);
 
         }
 
@@ -136,11 +137,8 @@ public class CubeGripper extends Subsystem {
             SmartDashboard.putNumber("CubeGripLeftVel", getLeftEncoderVelocity());
             SmartDashboard.putNumber("CubeGripRightPos", getRightEncoderPosition());
             SmartDashboard.putNumber("CubeGripRightVel", getRightEncoderVelocity());
-
-//            SmartDashboard.putNumber("CubeGripLeftPIDPosition", left.getClosedLoopTarget(0));
-//            SmartDashboard.putNumber("CubeGripRightPIDPosition", right.getClosedLoopTarget(0));
         } catch (Exception e) {
-            RobotLogger.getInstance().err(instance.getClass(), "Can't get CubeGripper encoder data!" + e.getMessage());
+            RobotLogger.getInstance().err(instance.getClass(), "Can't get CubeGripper encoder data!" + e.getMessage(), false);
         }
     }
 
@@ -160,18 +158,15 @@ public class CubeGripper extends Subsystem {
         right.config_kD(0, KD, 0);
         right.config_kF(0, KF, 0);
 
-        System.out.println("KP: " + KP);
-        System.out.println("KI: " + KI);
-        System.out.println("KD: " + KD);
-        System.out.println("KF: " + KF);
+        RobotLogger.getInstance().log(instance.getClass(), "KP: " + KP);
+        RobotLogger.getInstance().log(instance.getClass(), "KI: " + KI);
+        RobotLogger.getInstance().log(instance.getClass(), "KD: " + KD);
+        RobotLogger.getInstance().log(instance.getClass(), "KF: " + KF);
     }
 
     public static void moveToDS(int target) {
         setPID();   // TEMP
         System.out.println(target); // TEMP
-
-//        left.set(ControlMode.Position, target);
-//        right.set(ControlMode.Position, target);
 
         left.set(ControlMode.MotionMagic, target);
         right.set(ControlMode.MotionMagic, target);

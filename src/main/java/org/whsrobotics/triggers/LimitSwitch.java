@@ -15,7 +15,7 @@ public class LimitSwitch {
         try {
             return !limitSwitch.get();
         } catch (Exception ex) {
-            RobotLogger.getInstance().err(this.getClass(), "Error getting a limit switch!");
+            RobotLogger.getInstance().err(this.getClass(), "Error getting a limit switch!", true);
             throw ex;
         }
 

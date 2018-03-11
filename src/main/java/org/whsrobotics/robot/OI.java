@@ -1,11 +1,15 @@
 package org.whsrobotics.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.commands.*;
+import org.whsrobotics.commands.commandgroups.CGDeployCubeToExchange;
 import org.whsrobotics.commands.commandgroups.CGDeployCubeToScale;
 import org.whsrobotics.commands.commandgroups.CGDeployCubeToSwitch;
 import org.whsrobotics.commands.commandgroups.CGGrabCube;
@@ -14,13 +18,18 @@ import org.whsrobotics.subsystems.CubeSpinner;
 import org.whsrobotics.subsystems.DriveTrain;
 import org.whsrobotics.subsystems.Elevator;
 import org.whsrobotics.triggers.ElevatorVelocityMode;
+import org.whsrobotics.utils.AutomationCanceler;
 import org.whsrobotics.utils.RobotLogger;
 
+import static org.whsrobotics.robot.RobotMap.BUTTONBOX_PORT;
+import static org.whsrobotics.robot.RobotMap.BUTTONBOX_PORT1;
 import static org.whsrobotics.robot.RobotMap.XBOX_PORT;
 
 public class OI {
 
     private static XboxController xboxController;
+    private static Joystick buttonBox;
+    private static Joystick buttonBox1;
 
     private static SendableChooser<Autonomous.FieldTarget> fieldTargetChooser;
     private static SendableChooser<Autonomous.StartingPosition> startingPositionChooser;
@@ -32,12 +41,122 @@ public class OI {
 
     private OI() {
         xboxController = new XboxController(XBOX_PORT);
-        (new JoystickButton(xboxController, XboxButton.kA.value)).whenPressed(new CGGrabCube());
-        (new JoystickButton(xboxController, XboxButton.kB.value)).whenPressed(new CGDeployCubeToSwitch());
-        (new JoystickButton(xboxController, XboxButton.kX.value)).whenPressed(new CGDeployCubeToScale());
+        buttonBox = new Joystick(BUTTONBOX_PORT);
+        buttonBox1 = new Joystick(BUTTONBOX_PORT1);
 
-        (new JoystickButton(xboxController, XboxButton.kBumperRight.getValue())).whenPressed(DriveTrain.disableLimitedAcceleration);
-        (new ElevatorVelocityMode()).whenActive(new MoveElevatorVelocity());
+
+        // (new JoystickButton(xboxController, XboxButton.kB.value)).whenPressed(new DriveForward());  // TODO: Find Box
+        // (new JoystickButton(xboxController, XboxButton.kY.value)).whenPressed(new DriveForward());  // TODO: Refl. Tape
+        (new JoystickButton(xboxController, XboxButton.kBumperLeft.value)).whileHeld(new Command() {
+
+            @Override
+            protected void initialize() {
+                DriveTrain.setBrakeMode();
+            }
+
+            @Override
+            protected void end() {
+                DriveTrain.setCoastMode();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+
+        }); // TODO: Test. Switch to whileHeld?
+        (new JoystickButton(xboxController, XboxButton.kBumperRight.value)).whileHeld(new Command() {
+
+            @Override
+            protected void initialize() {
+                DriveTrain.removeDriveTrainAccelLimit();
+            }
+
+            @Override
+            protected void end() {
+                DriveTrain.setDriveTrainAccelLimit();
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+
+        }); // TODO: Test. Switch to whileHeld?
+        (new JoystickButton(xboxController, XboxButton.kX.value)).whileHeld(new Command() {
+            @Override
+            protected boolean isFinished() {
+                CubeGripper.resetEncoderPosition();
+                return true;
+            }
+        });
+
+        // (new JoystickButton(buttonBox, 1)).whenPressed(new CGGrabCube());
+        (new JoystickButton(buttonBox, 2)).whenPressed(new CGDeployCubeToSwitch());
+        (new JoystickButton(buttonBox, 3)).whenPressed(new CGDeployCubeToScale());
+        (new JoystickButton(buttonBox, 4)).whenPressed(new CGDeployCubeToExchange());
+        (new JoystickButton(buttonBox, 5)).whenPressed(new AutomationCanceler());   // TODO: Test. Does this even work?
+
+        (new JoystickButton(buttonBox, 6)).whenPressed(new MoveCubeGripper(CubeGripper.Position.OPEN_ARMS));
+        (new JoystickButton(buttonBox, 7)).whenPressed(new CubeGripperApplyConstantVoltage());
+        (new JoystickButton(buttonBox, 8)).whenPressed(new MoveCubeGripper(CubeGripper.Position.FOLD_BACK));
+
+        (new JoystickButton(buttonBox, 9)).whileHeld(new SpinCubeSpinner(CubeSpinner.Mode.INWARDS));
+        (new JoystickButton(buttonBox, 9)).whenReleased(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
+        (new JoystickButton(buttonBox, 10)).whileHeld(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS));
+        (new JoystickButton(buttonBox, 10)).whenReleased(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
+
+        (new JoystickButton(buttonBox, 11)).whenPressed(CubeGripper.disableOutputCommand);  // TODO: May not work! Put in its own command?
+
+        (new JoystickButton(buttonBox, 12)).whileHeld(new Command() {
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+        }); // Open Arms
+        (new JoystickButton(buttonBox1, 1)).whileHeld(new Command() {
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+        }); // Close Arms
+
+        (new JoystickButton(buttonBox1, 2)).whileHeld(new Command() {
+
+            @Override
+            protected void execute() {
+                Elevator.moveWithVelocity(0.7);
+            }
+
+            @Override
+            protected void end() {
+                Elevator.moveToValue(Elevator.getEncoderPosition());
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+
+        }); // Elevator Up
+        (new JoystickButton(buttonBox1, 3)).whileHeld(new Command() {
+            @Override
+            protected void execute() {
+                Elevator.moveWithVelocity(-0.1);
+            }
+
+            @Override
+            protected void end() {
+                Elevator.moveToValue(Elevator.getEncoderPosition());
+            }
+
+            @Override
+            protected boolean isFinished() {
+                return false;
+            }
+        }); // Elevator Down
+
+        (new ElevatorVelocityMode()).whenActive(new MoveElevatorVelocity());    // Convert to LT/RT?
 
         publishElevator();
         publishCubeSpinner();
@@ -61,8 +180,8 @@ public class OI {
 
     // ------------ XBOX CONTROLLER ------------- //
 
-    private static final double XBOX_DEADZONE = 0.05;
-    private static final double XBOX_RIGHT_DEADZONE = 0.1;
+    private static final double XBOX_DEADZONE = 0.07;
+    private static final double XBOX_RIGHT_DEADZONE = 0.08;
 
     private enum XboxButton {
         kBumperLeft(5),
@@ -92,20 +211,34 @@ public class OI {
         return xboxController;
     }
 
-    public static double checkXboxDeadzone(double value) {
+    /**
+     * Curving for the left joystick (forwards/backwards)
+     *
+     * @param value
+     * @return
+     */
+    public static double leftXboxJoystickCurve(double value) {
 
         if (Math.abs(value) >= XBOX_DEADZONE) {
-            return value;
+            // Raises the raw xbox input to the 3rd power and adds 10%
+            return Math.copySign(Math.pow(value, 3) + 0.10, value);
         }
 
         return 0;
 
     }
 
-    public static double checkXboxRightDeadzone(double value) {
+    /**
+     * Curving for the right joystick (used for turning)
+     *
+     * @param value
+     * @return
+     */
+    public static double rightXboxJoystickCurve(double value) {
 
         if (Math.abs(value) >= XBOX_RIGHT_DEADZONE) {
-            return value;
+            // Raises the (xbox input / 1.2) to the 2nd power and adds 10%. Full joystick = ~80%
+            return Math.copySign(Math.pow((value / 1.2), 2) + 0.10, value);
         }
 
         return 0;
@@ -166,7 +299,7 @@ public class OI {
     }
 
     public static Elevator.Position getSelectedElevatorPosition() {
-        System.out.println("getSelectedElevatorPosition");
+        RobotLogger.getInstance().log(instance.getClass(), "getSelectedElevatorPosition");
         return elevatorPositionChooser.getSelected();
     }
 
@@ -194,7 +327,7 @@ public class OI {
 
     private static void publishCubeGripper() {
         cubeGripperModeChooser = new SendableChooser<>();
-        cubeGripperModeChooser.addDefault("Default - SWITCH", CubeGripper.Position.RECEIVE);
+        cubeGripperModeChooser.addDefault("Default - OPEN_ARMS", CubeGripper.Position.OPEN_ARMS);
 
         for (CubeGripper.Position position : CubeGripper.Position.values()) {
             cubeGripperModeChooser.addObject(position.toString(), position);
@@ -223,7 +356,7 @@ public class OI {
             try {
                 alliance = DriverStation.getInstance().getAlliance();
             } catch (Exception e) {
-                RobotLogger.getInstance().err(instance.getClass(), "Error with getting the Alliance Data! " + e.getMessage());
+                RobotLogger.getInstance().err(instance.getClass(), "Error with getting the Alliance Data! " + e.getMessage(), false);
             }
         }
 
