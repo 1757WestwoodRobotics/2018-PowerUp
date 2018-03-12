@@ -17,7 +17,7 @@ public class CubeGripper extends Subsystem {
     private static TalonSRX right;
 
     public enum Position {
-        FOLD_BACK(0), OPEN_ARMS(1550), GRAB_CUBE(2048), ALMOST_FOLD(100);  // Native Encoder Units // 1 complete rotation = 4096 ticks
+        FOLD_BACK(0), OPEN_ARMS(1550), GRAB_CUBE(2048), ALMOST_FOLD(500);  // Native Encoder Units // 1 complete rotation = 4096 ticks
 
         // FOLD_BACK is folded back
         // OPEN_ARMS is at a ~45º angle, easier to drive up to a cube
