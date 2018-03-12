@@ -156,6 +156,16 @@ public class OI {
             }
         }); // Elevator Down
 
+
+        //This is the code for the "almost folded back" setting on the cube gripper
+
+        //(new JoystickButton(buttonBox1, 4)).whenPressed(new MoveCubeGripper(CubeGripper.Position.ALMOST_FOLD));
+
+        /*
+        TODO: Sean: I think that we should make like 4 modes, which are controlled by the D-Pad
+        TODO: Ex. Up goes to really fast mode, Right goes to fast mode, Left goes to slow mode, and down goes to normal
+        */
+
         (new ElevatorVelocityMode()).whenActive(new MoveElevatorVelocity());    // Convert to LT/RT?
 
         publishElevator();
