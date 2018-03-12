@@ -196,6 +196,7 @@ public class DriveTrain extends Subsystem {
     }
 
     /**
+     * DOESN'T SEEM TO WORK. Use a counter instead and scale it?
      *
      * @return accumulated encoder distance (in m)
      */
