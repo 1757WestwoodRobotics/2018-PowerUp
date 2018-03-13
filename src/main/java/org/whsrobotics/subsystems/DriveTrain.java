@@ -19,6 +19,8 @@ import org.whsrobotics.robot.OI;
 import org.whsrobotics.robot.RobotMap;
 import org.whsrobotics.utils.RobotLogger;
 
+import java.io.File;
+
 public class DriveTrain extends Subsystem {
 
     private static WPI_TalonSRX leftFront;
@@ -275,7 +277,7 @@ public class DriveTrain extends Subsystem {
     private static final double maxAcceleration = 2.0;   // m/s/s
     private static final double maxJerk = 60.0;          // m/s/s/s
 
-    private static final double wheelbaseWidth = 0.0;   // TODO: MEASURE (width of robot from left wheel to right wheel)
+    private static final double wheelbaseWidth = 0.442;   // TODO: MEASURE (width of robot from left wheel to right wheel) (meters)
 
     private static void configPathfinder() {
         config = new Trajectory.Config(fitMethod, samples, timeStep, maxVelocity, maxAcceleration, maxJerk);
@@ -283,6 +285,14 @@ public class DriveTrain extends Subsystem {
 
     public static Trajectory generateTrajectory(Waypoint[] points) {
         return Pathfinder.generate(points, config);
+    }
+
+    public static Trajectory generateTrajectoryFromFile(File file) {
+        return Pathfinder.readFromCSV(file);
+    }
+
+    public static void applyTrajectories(Trajectory left, Trajectory right) {
+        // TODO: Implement!
     }
 
     public static void applyTrajectory(Trajectory trajectory) {
