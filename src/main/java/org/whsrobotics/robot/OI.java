@@ -159,7 +159,7 @@ public class OI {
 
         //This is the code for the "almost folded back" setting on the cube gripper
 
-        (new JoystickButton(buttonBox1, 4)).whenPressed(new MoveCubeGripper(CubeGripper.Position.ALMOST_FOLD));
+        //(new JoystickButton(buttonBox1, 4)).whenPressed(new MoveCubeGripper(CubeGripper.Position.ALMOST_FOLD));
 
         /*
         TODO: Sean: I think that we should make like 4 modes, which are controlled by the D-Pad
