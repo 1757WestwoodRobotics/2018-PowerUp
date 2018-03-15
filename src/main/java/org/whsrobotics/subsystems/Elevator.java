@@ -186,7 +186,7 @@ public class Elevator extends Subsystem {
         left.set(ControlMode.PercentOutput, speed);
     }
 
-    // TODO: Bind to button as an emergency?
+    // TODO: Bind to button as an emergency? --> CANCEL
     public static void setTalonNeutral() {
         left.neutralOutput();
         right.neutralOutput();
