@@ -99,6 +99,8 @@ public class Robot extends TimedRobot {
         CubeSpinner.spinWithMode(CubeSpinner.Mode.OFF);
         CubeGripper.setTalonNeutral();
 
+        Elevator.setTalonNeutral();
+
         Arduino.getInstance().onDisabledInit();
 
     }

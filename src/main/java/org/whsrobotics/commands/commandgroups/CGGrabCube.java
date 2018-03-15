@@ -10,6 +10,9 @@ import org.whsrobotics.utils.AutomationCancelerHelper;
 
 /**
  * Sequence of commands to grab a Power Cube. Opens the robot arms and spins the intake wheels.
+ *
+ * IF COMMANDGROUPS DON'T WORK, DO CONDITION CHECKING IN A REGULAR COMMAND.execute()
+ *
  */
 public class CGGrabCube extends CommandGroup {
 
@@ -24,13 +27,13 @@ public class CGGrabCube extends CommandGroup {
 //        addSequential(new Command() {
 //            @Override
 //            protected boolean isFinished() {
-//                return Elevator.reachedTarget(Elevator.Position.DOWN.getTarget());
+//                return Elevator.reachedTargetRange(Elevator.Position.DOWN.getTarget());
 //            }
 //        });
 
         // TODO: TEST
         addSequential(new ExecuteCommandWithFinishable(new MoveElevatorPosition(position),
-                () -> Elevator.reachedTarget(position)), 5);    // If it doesn't get there in 3 seconds, move on.
+                () -> Elevator.reachedTargetRange(position)), 5);    // If it doesn't get there in 3 seconds, move on.
 
         // Move the CubeGripper arms to the OPEN_ARMS position
         addSequential(new MoveCubeGripper(CubeGripper.Position.OPEN_ARMS), 3); // Maximum 3 seconds
