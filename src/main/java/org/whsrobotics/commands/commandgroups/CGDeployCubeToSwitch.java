@@ -10,25 +10,33 @@ import org.whsrobotics.utils.AutomationCancelerHelper;
 
 public class CGDeployCubeToSwitch extends CommandGroup {
 
+    // Specification:
+    // Moves the Elevator to the SWITCH position
+    // Spins the cube out of the arms
+    // Stops spinning
+    // Moves the arm back to the ALMOST_FOLD position (prevents hitting the switch)
+    // Moves the Elevator back to the DOWN position
+
     private final Elevator.Position position = Elevator.Position.SWITCH;
 
-    public CGDeployCubeToSwitch(){
+    public CGDeployCubeToSwitch() {
 
         requires(new AutomationCancelerHelper());
-//
-//        addSequential(new MoveElevatorPosition(Elevator.Position.SWITCH));
+
+        addSequential(new MoveElevatorPosition(Elevator.Position.SWITCH));
+//        THIS CODE WORKS
 //        addSequential(new Command() {
 //            @Override
 //            protected boolean isFinished() {
-//                return Elevator.reachedTarget(Elevator.Position.SWITCH.getTarget());
+//                return Elevator.reachedTargetRange(Elevator.Position.SWITCH.getTarget());
 //            }
 //        });
 
         // TODO: TEST
         addSequential(new ExecuteCommandWithFinishable(new MoveElevatorPosition(position),
-                () -> Elevator.reachedTarget(position)), 8);    // If it doesn't get there in 3 seconds, move on.
+                () -> Elevator.reachedTargetRange(position)), 8);    // If it doesn't get there in 3 seconds, move on.
 
-        // Spin the CubeSpinner motors in the OUTWARDS mode (until Cube has left the ultrasonic sensor), and open arms
+        // Spin the CubeSpinner motors in the OUTWARDS mode
         addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS));
 
         addSequential(new TimedCommand(2));

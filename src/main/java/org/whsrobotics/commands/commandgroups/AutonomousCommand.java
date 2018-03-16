@@ -16,8 +16,6 @@ public class AutonomousCommand extends CommandGroup {
      */
     public AutonomousCommand(Autonomous.StartingPosition startingPosition, Autonomous.Ownership switchSide, Autonomous.Ownership scaleSide, boolean crossField) {
 
-        int numCubes = 1;
-
         // Left Routine
         if (startingPosition == Autonomous.StartingPosition.LEFT) {
 
@@ -27,50 +25,44 @@ public class AutonomousCommand extends CommandGroup {
                 addSequential(new DriveForward(5));  // TODO: Stop with sensor or time, or use Pathfinder
                 // Deploy cube
                 addSequential(new CGDeployCubeToSwitch()); // TODO: Stop with sensor
-                numCubes--;
                 // Drive to Point #2 (left 90 deg)
                 addSequential(new TurnToAngle(-90));
 
             } else {
-                // Drive to Point #2
-                addSequential(new DriveForward(5));
+                addSequential(new AutoCrossLine());
             }
 
-            if (scaleSide == Autonomous.Ownership.LEFT) {
-
-                // Grab another cube if needed
-                if (numCubes == 0) {
-                    // Turn and align to grab cube
-                    addSequential(new TurnToAngle(10)); // TODO: Calculate
-                    addSequential(new DriveForward(5));  // TODO: Drive with Vision
-                    addSequential(new CGGrabCube());
-                    numCubes++;
-
-                    // Reorient to scale
-                    addSequential(new TurnToAngle(0));    // TODO: Calculate
-                    addSequential(new DriveForward(5));
-                } else {
-                    // Orient to scale
-                    addSequential(new TurnToAngle(0));
-                    addSequential(new DriveForward(5));
-                }
-
-                // Deploy the cube
-                addSequential(new CGDeployCubeToScale());
-                numCubes--;
-
-                // Return to Point #2 (90 deg)
-                //  Backup
-                //  TurnToAngle(90)
-
-            }
-
-            if (switchSide == Autonomous.Ownership.LEFT) {
-                // Turn around
-                // Grab another cube
-                numCubes++;
-                // Deploy the cube
-            }
+//            if (scaleSide == Autonomous.Ownership.LEFT) {
+//
+//                // Grab another cube if needed
+//                // Turn and align to grab cube
+//                addSequential(new TurnToAngle(10)); // TODO: Calculate
+//                addSequential(new DriveForward(5));  // TODO: Drive with Vision
+//                addSequential(new CGGrabCube());
+//
+//                // Reorient to scale
+//                addSequential(new TurnToAngle(0));    // TODO: Calculate
+//                addSequential(new DriveForward(5));
+//            } else {
+//                // Orient to scale
+//                addSequential(new TurnToAngle(0));
+//                addSequential(new DriveForward(5));
+//            }
+//
+//                // Deploy the cube
+//                addSequential(new CGDeployCubeToScale());
+//
+//                // Return to Point #2 (90 deg)
+//                //  Backup
+//                //  TurnToAngle(90)
+//
+//            }
+//
+//            if (switchSide == Autonomous.Ownership.LEFT) {
+//                // Turn around
+//                // Grab another cube
+//                // Deploy the cube
+//            }
 
 //            // Only if we choose to cross the field AND the field has randomized everything to the right
 //            if (crossField && (switchSide == Autonomous.Ownership.RIGHT || scaleSide == Autonomous.Ownership.RIGHT)) {

@@ -1,5 +1,9 @@
 package org.whsrobotics.subsystems;
 
+import edu.wpi.cscore.MjpegServer;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.UsbCameraInfo;
+import edu.wpi.cscore.VideoMode;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.whsrobotics.communications.JetsonLAN;
@@ -71,7 +75,22 @@ public class Vision {
     }
 
     private Vision() {
-       CameraServer.getInstance().startAutomaticCapture();  // Only if camera is connected to the RoboRIO!
+        try {
+                UsbCameraInfo[] cameras = UsbCamera.enumerateUsbCameras();
+                if (cameras.length > 0) {
+                    UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(cameras[0].dev);  // Only if camera is connected to the RoboRIO!
+                    camera.setVideoMode(new VideoMode(VideoMode.PixelFormat.kMJPEG, 160, 120, 20));
+
+                    MjpegServer server = (MjpegServer) CameraServer.getInstance().getServer();  // TODO: NEED TO TEST!!!
+                    RobotLogger.getInstance().log(instance.getClass(), "Camera connected at ADDRESS: " + server.getListenAddress() + " PORT: " + server.getPort());
+                } else {
+                    RobotLogger.getInstance().err(instance.getClass(), "No cameras found!", false);
+                }
+
+        } catch (Exception e) {
+            RobotLogger.getInstance().err(instance.getClass(), "Cannot create cameras " + e.getMessage(), false);
+        }
+
     }
 
     public static Vision getInstance(){

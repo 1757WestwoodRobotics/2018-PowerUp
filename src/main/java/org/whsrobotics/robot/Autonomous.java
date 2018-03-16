@@ -132,10 +132,10 @@ public class Autonomous {
                 }
             };
         } else if (fieldTarget == FieldTarget.CROSS_LINE) {
-            return new DriveForward(5);
+            return new DriveForward(6.5);
         } else {
             // Do not cross the field at the moment
-            return new DriveForward(5);
+            return new DriveForward(6.5);
             // return new AutonomousCommand(startingPosition, switchSide, scaleSide, false);
         }
 

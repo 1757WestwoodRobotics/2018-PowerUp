@@ -15,7 +15,7 @@ public class CGDeployCubeToScale extends CommandGroup {
         addSequential(new Command() {
             @Override
             protected boolean isFinished() {
-                return Elevator.reachedTarget(Elevator.Position.SCALE_TOP.getTarget());
+                return Elevator.reachedTargetRange(Elevator.Position.SCALE_TOP.getTarget());
             }
         });
 

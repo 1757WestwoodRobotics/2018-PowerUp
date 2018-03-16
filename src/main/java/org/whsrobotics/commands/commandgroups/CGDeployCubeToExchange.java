@@ -18,7 +18,7 @@ public class CGDeployCubeToExchange extends CommandGroup {
         addSequential(new Command() {
             @Override
             protected boolean isFinished() {
-                return Elevator.reachedTarget(Elevator.Position.DOWN.getTarget());
+                return Elevator.reachedTargetRange(Elevator.Position.DOWN.getTarget());
             }
         });
 

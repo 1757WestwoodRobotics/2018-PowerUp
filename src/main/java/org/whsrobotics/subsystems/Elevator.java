@@ -186,6 +186,12 @@ public class Elevator extends Subsystem {
         left.set(ControlMode.PercentOutput, speed);
     }
 
+    // TODO: Bind to button as an emergency? --> CANCEL
+    public static void setTalonNeutral() {
+        left.neutralOutput();
+        right.neutralOutput();
+    }
+
     // CONFIG STUFF //
 
     public static void setNormalVoltageLimits() {
@@ -240,7 +246,7 @@ public class Elevator extends Subsystem {
         return left.getClosedLoopError(0);
     }
 
-    public static boolean reachedTarget(int value) {
+    public static boolean reachedTargetRange(int value) {
         double max = value + 600;
         double min = value - 600;
         double current = Elevator.getEncoderPosition();
@@ -255,8 +261,8 @@ public class Elevator extends Subsystem {
         // return getError() < MAX_ERROR;
     }
 
-    public static boolean reachedTarget(Position position) {
-        return reachedTarget(position.getTarget());
+    public static boolean reachedTargetRange(Position position) {
+        return reachedTargetRange(position.getTarget());
     }
 
     public static int getMaxError() {

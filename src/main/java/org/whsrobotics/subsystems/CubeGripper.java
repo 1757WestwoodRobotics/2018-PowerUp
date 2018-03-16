@@ -34,7 +34,6 @@ public class CubeGripper extends Subsystem {
         }
     }
 
-    // TODO: Tune!
     private static double KP = 0.8;
     private static double KI = 0.0;
     private static double KD = 0.0;
@@ -102,8 +101,6 @@ public class CubeGripper extends Subsystem {
             right.configMotionCruiseVelocity(200, 0);
             right.configMotionAcceleration(200, 0);
 
-//            resetEncoderPosition();
-
         } catch (Exception e) {
             RobotLogger.getInstance().err(this.getClass(), "Error instantiating CubeGripper hardware" + e.getMessage(), true);
 
@@ -142,30 +139,29 @@ public class CubeGripper extends Subsystem {
         }
     }
 
-    public static void setPID() {
-        KP = SmartDashboard.getNumber("KP", KP);
-        KI = SmartDashboard.getNumber("KI", KI);
-        KD = SmartDashboard.getNumber("KD", KD);
-        KF = SmartDashboard.getNumber("KD", KF);
-
-        left.config_kP(0, KP, 0);
-        left.config_kI(0, KI, 0);
-        left.config_kD(0, KD, 0);
-        left.config_kF(0, KF, 0);
-
-        right.config_kP(0, KP, 0);
-        right.config_kI(0, KI, 0);
-        right.config_kD(0, KD, 0);
-        right.config_kF(0, KF, 0);
-
-        RobotLogger.getInstance().log(instance.getClass(), "KP: " + KP);
-        RobotLogger.getInstance().log(instance.getClass(), "KI: " + KI);
-        RobotLogger.getInstance().log(instance.getClass(), "KD: " + KD);
-        RobotLogger.getInstance().log(instance.getClass(), "KF: " + KF);
-    }
+//    public static void setPID() {
+//        KP = SmartDashboard.getNumber("KP", KP);
+//        KI = SmartDashboard.getNumber("KI", KI);
+//        KD = SmartDashboard.getNumber("KD", KD);
+//        KF = SmartDashboard.getNumber("KD", KF);
+//
+//        left.config_kP(0, KP, 0);
+//        left.config_kI(0, KI, 0);
+//        left.config_kD(0, KD, 0);
+//        left.config_kF(0, KF, 0);
+//
+//        right.config_kP(0, KP, 0);
+//        right.config_kI(0, KI, 0);
+//        right.config_kD(0, KD, 0);
+//        right.config_kF(0, KF, 0);
+//
+//        RobotLogger.getInstance().log(instance.getClass(), "KP: " + KP);
+//        RobotLogger.getInstance().log(instance.getClass(), "KI: " + KI);
+//        RobotLogger.getInstance().log(instance.getClass(), "KD: " + KD);
+//        RobotLogger.getInstance().log(instance.getClass(), "KF: " + KF);
+//    }
 
     public static void moveToDS(int target) {
-        setPID();   // TEMP
         System.out.println(target); // TEMP
 
         left.set(ControlMode.MotionMagic, target);
