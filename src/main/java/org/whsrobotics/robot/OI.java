@@ -99,7 +99,7 @@ public class OI {
 
         (new JoystickButton(buttonBox, 6)).whenPressed(new MoveCubeGripper(CubeGripper.Position.OPEN_ARMS));
         (new JoystickButton(buttonBox, 7)).whenPressed(new CubeGripperApplyConstantVoltage());
-        (new JoystickButton(buttonBox, 8)).whenPressed(new MoveCubeGripper(CubeGripper.Position.FOLD_BACK));
+        (new JoystickButton(buttonBox, 8)).whenPressed(new MoveCubeGripper(CubeGripper.Position.ALMOST_FOLD));
 
         (new JoystickButton(buttonBox, 9)).whileHeld(new SpinCubeSpinner(CubeSpinner.Mode.INWARDS));
         (new JoystickButton(buttonBox, 9)).whenReleased(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
@@ -108,12 +108,13 @@ public class OI {
 
         (new JoystickButton(buttonBox, 11)).whenPressed(CubeGripper.disableOutputCommand);  // TODO: May not work! Put in its own command?
 
-        (new JoystickButton(buttonBox, 12)).whileHeld(new Command() {
+        (new JoystickButton(buttonBox1, 12)).whileHeld(new Command() {
             @Override
             protected boolean isFinished() {
                 return false;
             }
         }); // Open Arms
+        (new JoystickButton(buttonBox, 12)).whenPressed(new MoveCubeGripper(CubeGripper.Position.FOLD_BACK));
         (new JoystickButton(buttonBox1, 1)).whileHeld(new Command() {
             @Override
             protected boolean isFinished() {
