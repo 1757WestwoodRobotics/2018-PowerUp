@@ -41,7 +41,7 @@ public class CGDeployCubeToSwitch extends CommandGroup {
 
         addSequential(new TimedCommand(2));
 
-        addSequential(new MoveCubeGripper(CubeGripper.Position.OPEN_ARMS));
+        addSequential(new MoveCubeGripper(CubeGripper.Position.ALMOST_FOLD));
         addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
         addSequential(new MoveElevatorPosition(Elevator.Position.DOWN));
 
