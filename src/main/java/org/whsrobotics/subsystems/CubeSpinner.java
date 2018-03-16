@@ -18,9 +18,8 @@ public class CubeSpinner extends Subsystem {
 
         private double speed;
 
-        Mode(double speedLeft) {
-            this.speed = speedLeft;
-
+        Mode(double speed) {
+            this.speed = speed;
         }
 
         public double getSpeed() {
