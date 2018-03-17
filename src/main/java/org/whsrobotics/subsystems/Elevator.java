@@ -189,18 +189,17 @@ public class Elevator extends Subsystem {
     // TODO: Bind to button as an emergency? --> CANCEL
     public static void setTalonNeutral() {
         left.neutralOutput();
-        right.neutralOutput();
     }
 
     // CONFIG STUFF //
 
     public static void setNormalVoltageLimits() {
-        left.configPeakOutputForward((2.0/3.0), 0);
+        left.configPeakOutputForward(0.4, 0);     // Originally 2.0/3.0 = 66.67% == ~8V
         left.configPeakOutputReverse(-(1.0/3.0), 0);
     }
 
     public static void setEndgameVoltageLimits() {  // TODO: FIX LATER
-        left.configPeakOutputForward((2.0/3.0), 0);
+        left.configPeakOutputForward(0.4, 0);
         left.configPeakOutputReverse(-(1.0/3.0), 0);
     }
 

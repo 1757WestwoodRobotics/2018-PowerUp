@@ -79,10 +79,10 @@ public class Vision {
                 UsbCameraInfo[] cameras = UsbCamera.enumerateUsbCameras();
                 if (cameras.length > 0) {
                     UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(cameras[0].dev);  // Only if camera is connected to the RoboRIO!
-                    camera.setVideoMode(new VideoMode(VideoMode.PixelFormat.kMJPEG, 160, 120, 20));
+                    camera.setVideoMode(new VideoMode(VideoMode.PixelFormat.kMJPEG, 320, 240, 30));
 
-                    MjpegServer server = (MjpegServer) CameraServer.getInstance().getServer();  // TODO: NEED TO TEST!!!
-                    RobotLogger.getInstance().log(instance.getClass(), "Camera connected at ADDRESS: " + server.getListenAddress() + " PORT: " + server.getPort());
+//                    MjpegServer server = (MjpegServer) CameraServer.getInstance().getServer();  // TODO: NEED TO TEST!!!
+//                    RobotLogger.getInstance().log(instance.getClass(), "Camera connected at ADDRESS: " + server.getListenAddress() + " PORT: " + server.getPort());
                 } else {
                     RobotLogger.getInstance().err(instance.getClass(), "No cameras found!", false);
                 }

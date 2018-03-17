@@ -44,7 +44,6 @@ public class OI {
         buttonBox = new Joystick(BUTTONBOX_PORT);
         buttonBox1 = new Joystick(BUTTONBOX_PORT1);
 
-
         // (new JoystickButton(xboxController, XboxButton.kB.value)).whenPressed(new DriveForward());  // TODO: Find Box
         // (new JoystickButton(xboxController, XboxButton.kY.value)).whenPressed(new DriveForward());  // TODO: Refl. Tape
         (new JoystickButton(xboxController, XboxButton.kBumperLeft.value)).whileHeld(new Command() {
@@ -99,21 +98,22 @@ public class OI {
 
         (new JoystickButton(buttonBox, 6)).whenPressed(new MoveCubeGripper(CubeGripper.Position.OPEN_ARMS));
         (new JoystickButton(buttonBox, 7)).whenPressed(new CubeGripperApplyConstantVoltage());
-        (new JoystickButton(buttonBox, 8)).whenPressed(new MoveCubeGripper(CubeGripper.Position.ALMOST_FOLD));
+        (new JoystickButton(buttonBox, 8)).whenPressed(new MoveCubeGripper(CubeGripper.Position.ALMOST_FOLD)); //TODO: Sean's
 
         (new JoystickButton(buttonBox, 9)).whileHeld(new SpinCubeSpinner(CubeSpinner.Mode.INWARDS));
         (new JoystickButton(buttonBox, 9)).whenReleased(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
         (new JoystickButton(buttonBox, 10)).whileHeld(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS));
         (new JoystickButton(buttonBox, 10)).whenReleased(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
 
-        (new JoystickButton(buttonBox, 11)).whenPressed(CubeGripper.disableOutputCommand);  // TODO: May not work! Put in its own command?
+        (new JoystickButton(buttonBox, 11)).whenPressed(CubeGripper.disableOutputCommand);
 
-        (new JoystickButton(buttonBox1, 12)).whileHeld(new Command() {
-            @Override
-            protected boolean isFinished() {
-                return false;
-            }
-        }); // Open Arms
+//        (new JoystickButton(buttonBox1, 12)).whileHeld(new Command() {
+//            @Override
+//            protected boolean isFinished() {
+//                return false;
+//            }
+//        }); // Open Arms
+
         (new JoystickButton(buttonBox, 12)).whenPressed(new MoveCubeGripper(CubeGripper.Position.FOLD_BACK));
         (new JoystickButton(buttonBox1, 1)).whileHeld(new Command() {
             @Override

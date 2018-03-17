@@ -14,7 +14,7 @@ deploy {
     targets {
         target("roborio", jaci.openrio.gradle.frc.RoboRIO) {
             team = TEAM
-            addresses << '10.17.57.2'
+//            addresses << '10.17.57.2'
         }
     }
     artifacts {
