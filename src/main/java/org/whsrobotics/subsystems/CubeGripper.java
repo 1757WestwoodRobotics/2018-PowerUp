@@ -17,7 +17,7 @@ public class CubeGripper extends Subsystem {
     private static TalonSRX right;
 
     public enum Position {
-        FOLD_BACK(0), OPEN_ARMS(1550), GRAB_CUBE(2048), ALMOST_FOLD(200);  // Native Encoder Units // 1 complete rotation = 4096 ticks
+        FOLD_BACK(0), ALMOST_FOLD(320), OPEN_ARMS(1550), GRAB_CUBE(2048);  // Native Encoder Units // 1 complete rotation = 4096 ticks
 
         // FOLD_BACK is folded back
         // OPEN_ARMS is at a ~45º angle, easier to drive up to a cube
@@ -34,7 +34,8 @@ public class CubeGripper extends Subsystem {
         }
     }
 
-    private static double KP = 0.8;
+    private static double LEFT_KP = 3.2;
+    private static double RIGHT_KP = 3.2;
     private static double KI = 0.0;
     private static double KD = 0.0;
     private static double KF = 0.0;
@@ -60,7 +61,10 @@ public class CubeGripper extends Subsystem {
             right.configPeakOutputForward(.50, 0);
             right.configPeakOutputReverse(-.50, 0);
 
-            left.setInverted(true);
+            right.setInverted(true);
+
+            left.setSensorPhase(true);
+            right.setSensorPhase(true);
 
             // ------------ PID ------------- //
 
@@ -82,13 +86,13 @@ public class CubeGripper extends Subsystem {
             left.configAllowableClosedloopError(0, MAX_ERROR, 0);
             right.configAllowableClosedloopError(0, MAX_ERROR, 0);
 
-            left.config_kP(0, KP, 0);
+            left.config_kP(0, LEFT_KP, 0);
             left.config_kI(0, KI, 0);
             left.config_kD(0, KD, 0);
             left.config_kF(0, KF, 0);
             left.selectProfileSlot(0, 0);
 
-            right.config_kP(0, KP, 0);
+            right.config_kP(0, RIGHT_KP, 0);
             right.config_kI(0, KI, 0);
             right.config_kD(0, KD, 0);
             right.config_kF(0, KF, 0);
@@ -105,13 +109,13 @@ public class CubeGripper extends Subsystem {
             RobotLogger.getInstance().err(this.getClass(), "Error instantiating CubeGripper hardware" + e.getMessage(), true);
 
         }
-
-        SmartDashboard.putNumber("KP", KP);
-        SmartDashboard.putNumber("KI", KI);
-        SmartDashboard.putNumber("KD", KD);
-        SmartDashboard.putNumber("KF", KF);
-
-        SmartDashboard.putNumber("CubeGripper Target Position", 0);
+//
+//        SmartDashboard.putNumber("KP", KP);
+//        SmartDashboard.putNumber("KI", KI);
+//        SmartDashboard.putNumber("KD", KD);
+//        SmartDashboard.putNumber("KF", KF);
+//
+//        SmartDashboard.putNumber("CubeGripper Target Position", 0);
 
     }
 
