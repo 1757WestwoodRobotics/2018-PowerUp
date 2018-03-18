@@ -99,11 +99,11 @@ public class CubeGripper extends Subsystem {
             right.selectProfileSlot(0, 0);
 
             // Motion Magic
-            left.configMotionCruiseVelocity(200, 0);
-            left.configMotionAcceleration(200, 0);
+            left.configMotionCruiseVelocity(500, 0);
+            left.configMotionAcceleration(500, 0);
 
-            right.configMotionCruiseVelocity(200, 0);
-            right.configMotionAcceleration(200, 0);
+            right.configMotionCruiseVelocity(500, 0);
+            right.configMotionAcceleration(500, 0);
 
         } catch (Exception e) {
             RobotLogger.getInstance().err(this.getClass(), "Error instantiating CubeGripper hardware" + e.getMessage(), true);

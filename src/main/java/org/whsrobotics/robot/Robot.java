@@ -81,7 +81,10 @@ public class Robot extends TimedRobot {
 
         System.out.println("left count: " + DriveTrain.getLeftEncoderCount() +
                 " distance (m): " + DriveTrain.getLeftEncoderDistance() +
-                " rate (m/s): " + DriveTrain.getLeftEncoderRate());
+                " rate (m/s): " + DriveTrain.getLeftEncoderRate() +
+                " right count: " + DriveTrain.getRightEncoderCount() +
+                " distance (m): " + DriveTrain.getRightEncoderDistance() +
+                " rate (m/s): " + DriveTrain.getRightEncoderRate());
 
     }
 

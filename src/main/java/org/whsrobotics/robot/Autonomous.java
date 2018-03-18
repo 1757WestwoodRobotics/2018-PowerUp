@@ -66,7 +66,11 @@ public class Autonomous {
 
         // set arduino light strips to alliance color (it should be white or alternating at this point)
         Arduino.getInstance().Send(Arduino.Command.StripLEDs20vOff);
+
+        RobotLogger.getInstance().log(instance.getClass(), "## Field Target: " + fieldTarget.toString());
+        RobotLogger.getInstance().log(instance.getClass(), "## Starting Position: " + startingPosition.toString());
         RobotLogger.getInstance().log(instance.getClass(), "## Alliance: " + OI.getAlliance().toString());
+
         switch (OI.getAlliance()) {
             case Red:
                 Arduino.getInstance().Send(Arduino.Command.StripLEDsRed);

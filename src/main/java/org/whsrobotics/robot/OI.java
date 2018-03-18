@@ -143,7 +143,7 @@ public class OI {
         (new JoystickButton(buttonBox1, 3)).whileHeld(new Command() {
             @Override
             protected void execute() {
-                Elevator.moveWithVelocity(-0.1);
+                Elevator.moveWithVelocity(-0.2);
             }
 
             @Override

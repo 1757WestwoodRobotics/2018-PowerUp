@@ -54,8 +54,6 @@ public class DriveTrain extends Subsystem {
     private static final double distancePerPulse = wheelCircumference / encoderResolution;
 
     private static double rotationPIDOutput;
-    private static double leftPositionPIDOutput;
-    private static double rightPositionPIDOutput;
 
     private static final double ROT_TOLERANCE_DEG = 0.5f;
     private static final double POS_TOLERANCE_TICKS = 20;
@@ -94,12 +92,11 @@ public class DriveTrain extends Subsystem {
             resetNavXYaw();
 
             leftEncoder = new Encoder(RobotMap.DigitalInputPort.ENCODER_LEFT_A.port,
-                    RobotMap.DigitalInputPort.ENCODER_LEFT_B.port,
-                    RobotMap.DigitalInputPort.ENCODER_LEFT_INDEX.port);
+                    RobotMap.DigitalInputPort.ENCODER_LEFT_B.port);
+//                    RobotMap.DigitalInputPort.ENCODER_LEFT_INDEX.port);
             leftEncoder.setDistancePerPulse(distancePerPulse);
             rightEncoder = new Encoder(RobotMap.DigitalInputPort.ENCODER_RIGHT_A.port,
-                    RobotMap.DigitalInputPort.ENCODER_RIGHT_B.port,
-                    RobotMap.DigitalInputPort.ENCODER_RIGHT_INDEX.port);
+                    RobotMap.DigitalInputPort.ENCODER_RIGHT_B.port, true);
             rightEncoder.setDistancePerPulse(distancePerPulse);
             resetEncoders();
 
@@ -221,7 +218,7 @@ public class DriveTrain extends Subsystem {
     public static void initializeLeftPositionPIDController() {
         if (leftPositionPIDController == null) {
             try {
-                leftPositionPIDController = new PIDController(KP, KI, KD, leftEncoder, leftDrive);
+                leftPositionPIDController = new PIDController(0.5, KI, KD, leftEncoder, leftDrive);
 
                 leftPositionPIDController.setAbsoluteTolerance(POS_TOLERANCE_TICKS);
                 leftPositionPIDController.setOutputRange(-1.0, 1.0);
@@ -236,7 +233,7 @@ public class DriveTrain extends Subsystem {
 
         if (rightPositionPIDController == null) {
             try {
-                rightPositionPIDController = new PIDController(KP, KI, KD, rightEncoder, rightDrive);
+                rightPositionPIDController = new PIDController(0.5, KI, KD, rightEncoder, rightDrive);
 
                 rightPositionPIDController.setAbsoluteTolerance(POS_TOLERANCE_TICKS);
                 rightPositionPIDController.setOutputRange(-1.0, 1.0);
@@ -255,16 +252,26 @@ public class DriveTrain extends Subsystem {
         rightPositionPIDController.enable();
     }
 
+    public static double getLeftPositionPIDOutput() {
+        return leftPositionPIDController.get();
+    }
+
+    public static double getRightPositionPIDOutput() {
+        return rightPositionPIDController.get();
+    }
+
     /**
-     * In terms of native encoder units (counts)
+     * In meters
      */
-    public static void setPositionPID(double count) {
-        leftPositionPIDController.setSetpoint(count);
-        rightPositionPIDController.setSetpoint(count);
+    public static void setPositionPID(double meters) {
+        System.out.println("setting left setpoint");
+        leftPositionPIDController.setSetpoint(meters);
+        System.out.println("setting right setpoint");
+        rightPositionPIDController.setSetpoint(meters);
     }
 
     public static void setPositionPIDInMeters(double meters) {
-        setPositionPID(Units.convert(Units.METERS, Units.NATIVE_QUAD_ENC, meters));
+        setPositionPID(meters);
     }
 
     public static boolean arePositionPIDControllersOnTarget() {
