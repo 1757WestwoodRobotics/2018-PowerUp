@@ -46,7 +46,8 @@
 #define TRIG_PIN          12    // SR04 Ultrasound Sensor
 #define ECHO_PIN          11    // SR04 Ultrasound Sensor
 #define RING_LIGHT_PIN     6    // Ring Light control
-#define STRIP_LIGHT_PIN    5    // Strip Light control
+#define STRIP_LIGHT_PIN1    5    // Strip Light control
+#define STRIP_LIGHT_PIN2    4    // Strip Light control
 #define STRIP_LIGHT_20V    9    // Strip Light 20V Lighting control PWM pin
 
 // Ultrasonic sensor
@@ -56,10 +57,11 @@ SR04 sr04 = SR04(ECHO_PIN, TRIG_PIN);
 
 #define COLOR_ORDER GRB
 #define CHIPSET     WS2812B   // WS2812B has 4 pins/LED, WS2812 has 6 pins/LED
-#define NUM_LED_UNITS        2
+#define NUM_LED_UNITS        3
 #define NUM_RING_LEDS        24
-#define NUM_STRIP_LEDS       128
-#define MAX_LEDS             128
+#define NUM_STRIP_LEDS1       24
+#define NUM_STRIP_LEDS2       24
+#define MAX_LEDS             24+24+24
 
 CRGB leds[NUM_LED_UNITS][MAX_LEDS];
 
@@ -82,7 +84,7 @@ const CHSV OFF(0, 0, 0);
 // Global Variables hold object distance as seen by the ultrasonic sensor, led commands etc.
 double distance;
 int led_command = AllLEDsOff;
-int last_strip_command = StripLEDsOff;
+int last_strip_command = StripLEDsWhite;
 boolean do_led_command = false;
 boolean debug = false;
 
@@ -93,13 +95,14 @@ void setup() {
 
   // Set up LED Control PIN
   pinMode (RING_LIGHT_PIN, OUTPUT);
-  pinMode (STRIP_LIGHT_PIN, OUTPUT);
+  pinMode (STRIP_LIGHT_PIN1, OUTPUT);
+   pinMode (STRIP_LIGHT_PIN2, OUTPUT);
   pinMode (STRIP_LIGHT_20V, OUTPUT);
 
   FastLED.delay(3000); // Sanity delay
   FastLED.addLeds<CHIPSET, RING_LIGHT_PIN, COLOR_ORDER>(leds[0], NUM_RING_LEDS); // Initializes Ring leds
-  FastLED.addLeds<CHIPSET, STRIP_LIGHT_PIN, COLOR_ORDER>(leds[1], NUM_STRIP_LEDS); // Initializes Strip leds
-
+  FastLED.addLeds<CHIPSET, STRIP_LIGHT_PIN1, COLOR_ORDER>(leds[1], NUM_STRIP_LEDS1); // Initializes Strip leds
+  FastLED.addLeds<CHIPSET, STRIP_LIGHT_PIN2, COLOR_ORDER>(leds[2], NUM_STRIP_LEDS2);
   // Turn off all LEDs
   ledCommands(AllLEDsOff);
 
@@ -122,7 +125,12 @@ void loop() {
     do_led_command = StripLEDsOrange;
   }
   else {
-    do_led_command = last_strip_command;
+     // do_led_command = StripLEDsGreen;
+   do_led_command = last_strip_command;
+  }
+
+  if(debug) {
+     do_led_command = StripLEDsGreen;
   }
 
   // If we received an LED command event, then process the LED command.
@@ -133,14 +141,14 @@ void loop() {
   // LED Test section.
   if (debug) {
     // Test Ring Light Leds
-    ledCommands(RingLEDsGreen);
+    //ledCommands(RingLEDsGreen);
 
     // Test Strip Lights 20V
-    analogWrite(STRIP_LIGHT_20V, INTENSITY_HIGH);
-    delay(1000);
-    analogWrite(STRIP_LIGHT_20V, INTENSITY_MED);
-    delay(1000);
-    analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
+   // analogWrite(STRIP_LIGHT_20V, INTENSITY_HIGH);
+   // delay(1000);
+   // analogWrite(STRIP_LIGHT_20V, INTENSITY_MED);
+   // delay(1000);
+   // analogWrite(STRIP_LIGHT_20V, INTENSITY_LOW);
   }
 
   delay(100);
@@ -170,8 +178,8 @@ double readUltrasonicSensor() {
   }
 
   if (debug) {
-    Serial.print(dist);
-    Serial.println(" - Cms");
+   // Serial.print(dist);
+   // Serial.println(" - Cms");
   }
   return dist;
 }
@@ -196,7 +204,7 @@ void receiveEvent(int howMany)
   }
   if (debug) {
     Serial.print("Value = ");
-    Serial.println(LED.c_str());
+    Serial.println(LED.toInt());
   }
   // Save the command and set the do_led_command flag to true and get out of the interrupt
   led_command = LED.toInt();
@@ -329,7 +337,8 @@ void setRingLEDsColor(CHSV color) {
 
 // Control Strip LED Color
 void setStripLEDsColor(CHSV color) {
-  fill_solid(leds[1], NUM_STRIP_LEDS, color);
+  fill_solid(leds[1], NUM_STRIP_LEDS1, color);
+  fill_solid(leds[2], NUM_STRIP_LEDS2, color);
   updateLEDs();
 }
 
