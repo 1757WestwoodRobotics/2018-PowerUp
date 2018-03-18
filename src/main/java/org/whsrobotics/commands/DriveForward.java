@@ -32,7 +32,7 @@ public class DriveForward extends Command {
 
     @Override
     protected boolean isFinished() {
-
+        return false;   // TODO: Fix later
     }
 
 }
