@@ -9,6 +9,11 @@ public enum Units {
     NATIVE_CTRE_MAGENC, NATIVE_QUAD_ENC, INCHES, FEET, CENTIMETERS, METERS, DEGREES, RADIANS;
 
     /**
+     * Method for converting between various units. Note: Not all units are compatible with each other,
+     * meaning that only some can be converted into others. This is defined by two intra-convertable groups:
+     *
+     * 1. INCHES/FEET/CENTIMETERS/METERS
+     * 2. DEGREES/RADIANS/NATIVE_CTRE_MAGENC/NATIVE_QUAD_ENC
      *
      * @param from the unit to convert from
      * @param to the unit to convert to

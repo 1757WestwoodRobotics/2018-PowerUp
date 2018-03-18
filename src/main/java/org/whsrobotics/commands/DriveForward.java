@@ -24,7 +24,7 @@ public class DriveForward extends Command {
     @Override
     protected void execute() {
         DriveTrain.enablePositionPIDControllers();
-        DriveTrain.driveForwardByMeters(meters);
+        DriveTrain.setPositionPIDInMeters(meters);
     }
 
     @Override

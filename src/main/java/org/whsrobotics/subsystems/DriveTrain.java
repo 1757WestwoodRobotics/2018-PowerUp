@@ -18,6 +18,7 @@ import org.whsrobotics.commands.DefaultDrive;
 import org.whsrobotics.robot.OI;
 import org.whsrobotics.robot.RobotMap;
 import org.whsrobotics.utils.RobotLogger;
+import org.whsrobotics.utils.Units;
 
 import java.io.File;
 
@@ -254,9 +255,16 @@ public class DriveTrain extends Subsystem {
         rightPositionPIDController.enable();
     }
 
-    public static void driveForwardByMeters(double meters) {
-        leftPositionPIDController.setSetpoint(meters);
-        rightPositionPIDController.setSetpoint(meters);
+    /**
+     * In terms of native encoder units (counts)
+     */
+    public static void setPositionPID(double count) {
+        leftPositionPIDController.setSetpoint(count);
+        rightPositionPIDController.setSetpoint(count);
+    }
+
+    public static void setPositionPIDInMeters(double meters) {
+        setPositionPID(Units.convert(Units.METERS, Units.NATIVE_QUAD_ENC, meters));
     }
 
     public static boolean arePositionPIDControllersOnTarget() {
