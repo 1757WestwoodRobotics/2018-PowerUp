@@ -1,30 +1,38 @@
 package org.whsrobotics.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.command.TimedCommand;
 import org.whsrobotics.subsystems.DriveTrain;
+import org.whsrobotics.utils.Units;
 
-public class DriveForward extends TimedCommand {
+public class DriveForward extends Command {
 
-    public DriveForward(double timeout) {
-        super(timeout);
+    private double meters = 0.0;
+
+
+    public DriveForward(double distance, Units unit) {
         requires(DriveTrain.getInstance());
+
+        this.meters = Units.convert(unit, Units.METERS, distance);
+    }
+
+    @Override
+    protected void initialize() {
+
     }
 
     @Override
     protected void execute() {
-        DriveTrain.controllerDrive(.5, 0);
+
     }
 
     @Override
     protected void end() {
-        DriveTrain.stopDrive();
+
     }
 
     @Override
     protected boolean isFinished() {
-        return isTimedOut();
+
     }
 
 }

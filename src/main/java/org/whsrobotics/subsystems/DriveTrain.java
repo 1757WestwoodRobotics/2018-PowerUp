@@ -38,6 +38,8 @@ public class DriveTrain extends Subsystem {
     private static Encoder rightEncoder;
 
     private static PIDController rotationPIDController;
+    private static PIDController leftPositionPIDController;
+    private static PIDController rightPositionPIDController;
 
     private static final double KP = 0.05;
     private static final double KI = 0;
@@ -51,7 +53,11 @@ public class DriveTrain extends Subsystem {
     private static final double distancePerPulse = wheelCircumference / encoderResolution;
 
     private static double rotationPIDOutput;
+    private static double leftPositionPIDOutput;
+    private static double rightPositionPIDOutput;
+
     private static final double ROT_TOLERANCE_DEG = 0.5f;
+    private static final double POS_TOLERANCE_TICKS = 20;
 
     private static DriveTrain instance;
 
@@ -166,8 +172,6 @@ public class DriveTrain extends Subsystem {
         rightBack.setNeutralMode(NeutralMode.Coast);
     }
 
-
-
     public static void stopDrive() {
         differentialDrive.stopMotor();
     }
@@ -197,11 +201,6 @@ public class DriveTrain extends Subsystem {
         return rightEncoder.get();
     }
 
-    /**
-     * DOESN'T SEEM TO WORK. Use a counter instead and scale it?
-     *
-     * @return accumulated encoder distance (in m)
-     */
     public static double getLeftEncoderDistance() {
         return leftEncoder.getDistance();
     }
@@ -218,9 +217,56 @@ public class DriveTrain extends Subsystem {
         return rightEncoder.getRate();
     }
 
+    public static void initializeLeftPositionPIDController() {
+        if (leftPositionPIDController == null) {
+            try {
+                leftPositionPIDController = new PIDController(KP, KI, KD, leftEncoder, leftDrive);
+
+                leftPositionPIDController.setAbsoluteTolerance(POS_TOLERANCE_TICKS);
+                leftPositionPIDController.setOutputRange(-1.0, 1.0);
+                leftPositionPIDController.disable();
+            } catch (Exception e) {
+                RobotLogger.getInstance().err(instance.getClass(), "Error creating the DriveTrain LeftPosition PIDController!" + e.getMessage(), true);
+            }
+        }
+    }
+
+    public static void initializeRightPositionPIDController() {
+
+        if (rightPositionPIDController == null) {
+            try {
+                rightPositionPIDController = new PIDController(KP, KI, KD, rightEncoder, rightDrive);
+
+                rightPositionPIDController.setAbsoluteTolerance(POS_TOLERANCE_TICKS);
+                rightPositionPIDController.setOutputRange(-1.0, 1.0);
+                rightPositionPIDController.disable();
+            } catch (Exception e) {
+                RobotLogger.getInstance().err(instance.getClass(), "Error creating the DriveTrain RightPosition PIDController!" + e.getMessage(), true);
+            }
+        }
+    }
+
+    public static void enablePositionPIDControllers() {
+        leftPositionPIDController.enable();
+    }
+
+    public static void disablePositionPIDControllers() {
+        rightPositionPIDController.enable();
+    }
+
+    public static void driveForwardByMeters(double meters) {
+        leftPositionPIDController.setSetpoint(meters);
+        rightPositionPIDController.setSetpoint(meters);
+    }
+
+    public static boolean arePositionPIDControllersOnTarget() {
+        return leftPositionPIDController.onTarget() && rightPositionPIDController.onTarget();
+    }
+
+
     // ------------ ANGLE TURNING / ROTATION PID METHODS ------------- //
 
-    public static boolean initializeRotationPIDController() {
+    public static void initializeRotationPIDController() {
 
         if (rotationPIDController == null) {
 
@@ -235,12 +281,9 @@ public class DriveTrain extends Subsystem {
 
             } catch (Exception e) {
                 RobotLogger.getInstance().err(instance.getClass(), "Error creating the DriveTrain Rotation PIDController!" + e.getMessage(), true);
-                return false;
             }
 
         }
-
-        return true;
 
     }
 

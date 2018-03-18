@@ -22,8 +22,11 @@ public class TurnToAngle extends Command {
 
     @Override
     protected void initialize() {
-        if (!DriveTrain.initializeRotationPIDController()) {
+        try {
+            DriveTrain.initializeRotationPIDController();
             DriveTrain.enableRotationPIDController();
+        } catch (Exception e) {
+            RobotLogger.getInstance().err(this.getClass(), "Error with RotationPID Initialization!", false);
             end();
         }
     }

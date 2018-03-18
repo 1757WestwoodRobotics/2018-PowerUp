@@ -85,6 +85,7 @@ public class Vision {
 //                    RobotLogger.getInstance().log(instance.getClass(), "Camera connected at ADDRESS: " + server.getListenAddress() + " PORT: " + server.getPort());
                 } else {
                     RobotLogger.getInstance().err(instance.getClass(), "No cameras found!", false);
+                    // Billy was here
                 }
 
         } catch (Exception e) {
