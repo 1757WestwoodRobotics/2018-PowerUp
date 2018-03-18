@@ -17,22 +17,24 @@ public class DriveForward extends Command {
 
     @Override
     protected void initialize() {
-
+        DriveTrain.initializeLeftPositionPIDController();
+        DriveTrain.initializeRightPositionPIDController();
     }
 
     @Override
     protected void execute() {
-
+        DriveTrain.enablePositionPIDControllers();
+        DriveTrain.driveForwardByMeters(meters);
     }
 
     @Override
     protected void end() {
-
+        DriveTrain.disablePositionPIDControllers();
     }
 
     @Override
     protected boolean isFinished() {
-        return false;   // TODO: Fix later
+        return DriveTrain.arePositionPIDControllersOnTarget();
     }
 
 }

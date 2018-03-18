@@ -8,6 +8,7 @@ import org.whsrobotics.subsystems.Arduino;
 import org.whsrobotics.subsystems.CubeGripper;
 import org.whsrobotics.subsystems.Elevator;
 import org.whsrobotics.utils.RobotLogger;
+import org.whsrobotics.utils.Units;
 
 /**
  * Code that runs at the beginning of Autonomous
@@ -132,10 +133,10 @@ public class Autonomous {
                 }
             };
         } else if (fieldTarget == FieldTarget.CROSS_LINE) {
-            return new DriveForward(6.5);
+            return new DriveForward(120, Units.INCHES);
         } else {
             // Do not cross the field at the moment
-            return new DriveForward(6.5);
+            return new DriveForward(120, Units.INCHES);
             // return new AutonomousCommand(startingPosition, switchSide, scaleSide, false);
         }
 

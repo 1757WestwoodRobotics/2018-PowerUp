@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import org.whsrobotics.commands.DriveForward;
 import org.whsrobotics.commands.TurnToAngle;
 import org.whsrobotics.robot.Autonomous;
+import org.whsrobotics.utils.Units;
 
 public class AutonomousCommand extends CommandGroup {
 
@@ -22,7 +23,7 @@ public class AutonomousCommand extends CommandGroup {
             // DEPLOY CUBE IN LEFT SWITCH
             if (switchSide == Autonomous.Ownership.LEFT) {
                 // Drive up to Switch (using Vision or encoder)
-                addSequential(new DriveForward(5));  // TODO: Stop with sensor or time, or use Pathfinder
+                addSequential(new DriveForward(120, Units.INCHES));
                 // Deploy cube
                 addSequential(new CGDeployCubeToSwitch()); // TODO: Stop with sensor
                 // Drive to Point #2 (left 90 deg)
