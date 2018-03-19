@@ -188,7 +188,6 @@ public class OI {
         return instance;
     }
 
-
     // ------------ XBOX CONTROLLER ------------- //
 
     private static final double XBOX_DEADZONE = 0.07;

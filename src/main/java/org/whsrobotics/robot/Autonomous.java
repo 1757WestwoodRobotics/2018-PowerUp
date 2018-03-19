@@ -3,6 +3,7 @@ package org.whsrobotics.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
 import org.whsrobotics.commands.DriveForward;
+import org.whsrobotics.commands.DriveTimed;
 import org.whsrobotics.commands.commandgroups.*;
 import org.whsrobotics.subsystems.Arduino;
 import org.whsrobotics.subsystems.CubeGripper;
@@ -22,7 +23,7 @@ public class Autonomous {
     private static StartingPosition startingPosition = StartingPosition.LEFT;   // Default option
 
     public enum FieldTarget {
-        CODE_DECISION, NONE, CROSS_LINE
+        CODE_DECISION, NONE, CROSS_LINE, AUTO_SWITCH
     }
 
     public enum StartingPosition {
@@ -138,8 +139,9 @@ public class Autonomous {
             };
         } else if (fieldTarget == FieldTarget.CROSS_LINE) {
             return new DriveForward(120, Units.INCHES);
+        } else if (fieldTarget == FieldTarget.AUTO_SWITCH) {
+            return new AutoSwitchDeploy(startingPosition, switchSide);
         } else {
-            // Do not cross the field at the moment
             return new DriveForward(120, Units.INCHES);
             // return new AutonomousCommand(startingPosition, switchSide, scaleSide, false);
         }
