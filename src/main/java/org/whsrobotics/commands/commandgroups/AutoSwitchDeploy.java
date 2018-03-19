@@ -11,7 +11,11 @@ public class AutoSwitchDeploy extends CommandGroup {
 
     public AutoSwitchDeploy(Autonomous.StartingPosition startingPosition, Autonomous.Ownership switchSide) {
 
-        if (startingPosition == Autonomous.StartingPosition.LEFT && switchSide == Autonomous.Ownership.LEFT) {
+        boolean sameSide =
+                startingPosition == Autonomous.StartingPosition.LEFT && switchSide == Autonomous.Ownership.LEFT ||
+                startingPosition == Autonomous.StartingPosition.RIGHT && switchSide == Autonomous.Ownership.RIGHT;
+
+        if (sameSide) {
 
             // Force Grip
             // Move Forwards
@@ -33,9 +37,13 @@ public class AutoSwitchDeploy extends CommandGroup {
             addSequential(new MoveElevatorPosition(Elevator.Position.DOWN));
             addSequential(new TimedCommand(2));
 
+        } else {
+
+            // Just Drive Forwards
+
+            addSequential(new DriveTimed(7));
 
         }
-
 
     }
 
