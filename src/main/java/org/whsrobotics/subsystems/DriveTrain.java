@@ -93,7 +93,6 @@ public class DriveTrain extends Subsystem {
 
             leftEncoder = new Encoder(RobotMap.DigitalInputPort.ENCODER_LEFT_A.port,
                     RobotMap.DigitalInputPort.ENCODER_LEFT_B.port);
-//                    RobotMap.DigitalInputPort.ENCODER_LEFT_INDEX.port);
             leftEncoder.setDistancePerPulse(distancePerPulse);
             rightEncoder = new Encoder(RobotMap.DigitalInputPort.ENCODER_RIGHT_A.port,
                     RobotMap.DigitalInputPort.ENCODER_RIGHT_B.port, true);

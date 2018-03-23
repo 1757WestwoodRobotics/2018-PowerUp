@@ -9,6 +9,12 @@ import org.whsrobotics.subsystems.Elevator;
 
 public class AutoSwitchDeploy extends CommandGroup {
 
+    /**
+     * Constructor for AutoSwitchDeploy
+     *
+     * @param startingPosition
+     * @param switchSide
+     */
     public AutoSwitchDeploy(Autonomous.StartingPosition startingPosition, Autonomous.Ownership switchSide) {
 
         boolean sameSide =
@@ -25,7 +31,7 @@ public class AutoSwitchDeploy extends CommandGroup {
             // Bring down Elevator
 
             addSequential(new CubeGripperApplyConstantVoltage());
-            addSequential(new DriveTimed(7));
+            addSequential(new MaintainAngle(0), 7);
             addSequential(new MoveElevatorPosition(Elevator.Position.SWITCH));
             addSequential(new TimedCommand(2));
 

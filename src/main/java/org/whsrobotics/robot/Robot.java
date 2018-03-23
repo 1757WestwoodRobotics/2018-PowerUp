@@ -51,6 +51,13 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousPeriodic() {
         Scheduler.getInstance().run();
+
+        try {
+            System.out.println("Set: " + DriveTrain.getRotationPIDControllerSetpoint() + "Current: " + DriveTrain.getYawAngle());
+        } catch (Exception e) {
+
+        }
+
     }
 
 
@@ -79,12 +86,14 @@ public class Robot extends TimedRobot {
 //
         // System.out.println(new String("Ultrasonic sensor value - ") + Arduino.getInstance().getDistance());
 
-        System.out.println("left count: " + DriveTrain.getLeftEncoderCount() +
-                " distance (m): " + DriveTrain.getLeftEncoderDistance() +
-                " rate (m/s): " + DriveTrain.getLeftEncoderRate() +
-                " right count: " + DriveTrain.getRightEncoderCount() +
-                " distance (m): " + DriveTrain.getRightEncoderDistance() +
-                " rate (m/s): " + DriveTrain.getRightEncoderRate());
+//        System.out.println("left count: " + DriveTrain.getLeftEncoderCount() +
+//                " distance (m): " + DriveTrain.getLeftEncoderDistance() +
+//                " rate (m/s): " + DriveTrain.getLeftEncoderRate() +
+//                " right count: " + DriveTrain.getRightEncoderCount() +
+//                " distance (m): " + DriveTrain.getRightEncoderDistance() +
+//                " rate (m/s): " + DriveTrain.getRightEncoderRate());
+
+        System.out.println(DriveTrain.getLeftEncoderRate());
 
     }
 
