@@ -138,11 +138,11 @@ public class Autonomous {
                 }
             };
         } else if (fieldTarget == FieldTarget.CROSS_LINE) {
-            return new DriveForward(120, Units.INCHES);
+            return new DriveTimed(3);
         } else if (fieldTarget == FieldTarget.AUTO_SWITCH) {
             return new AutoSwitchDeploy(startingPosition, switchSide);
         } else {
-            return new DriveForward(120, Units.INCHES);
+            return new DriveTimed(3);
             // return new AutonomousCommand(startingPosition, switchSide, scaleSide, false);
         }
 

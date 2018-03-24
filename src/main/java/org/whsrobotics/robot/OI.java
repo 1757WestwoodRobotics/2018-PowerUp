@@ -261,7 +261,7 @@ public class OI {
 
         // Field Target (Manual)
         fieldTargetChooser = new SendableChooser<>();
-        fieldTargetChooser.addDefault("Default - CODE_DECISION", Autonomous.FieldTarget.CODE_DECISION);
+        fieldTargetChooser.addDefault("Default - AUTO_SWITCH", Autonomous.FieldTarget.AUTO_SWITCH);
 
         for (Autonomous.FieldTarget target : Autonomous.FieldTarget.values()) {
             fieldTargetChooser.addObject(target.toString(), target);
