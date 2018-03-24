@@ -194,12 +194,12 @@ public class Elevator extends Subsystem {
     // CONFIG STUFF //
 
     public static void setNormalVoltageLimits() {
-        left.configPeakOutputForward((2.0/3.0), 0);     // Originally 2.0/3.0 = 66.67% == ~8V
+        left.configPeakOutputForward((7.0/12.0), 0);     // Originally 2.0/3.0 = 66.67% == ~8V
         left.configPeakOutputReverse(-(1.0/3.0), 0);
     }
 
     public static void setEndgameVoltageLimits() {  // TODO: FIX LATER
-        left.configPeakOutputForward((1.0/2.0), 0);
+        left.configPeakOutputForward((7.0/12.0), 0);
         left.configPeakOutputReverse(-(1.0/3.0), 0);
     }
 
