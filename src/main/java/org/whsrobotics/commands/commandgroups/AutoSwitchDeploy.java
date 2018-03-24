@@ -12,8 +12,8 @@ public class AutoSwitchDeploy extends CommandGroup {
     public AutoSwitchDeploy(Autonomous.StartingPosition startingPosition, Autonomous.Ownership switchSide) {
 
         boolean sameSide =
-                startingPosition == Autonomous.StartingPosition.LEFT && switchSide == Autonomous.Ownership.LEFT ||
-                startingPosition == Autonomous.StartingPosition.RIGHT && switchSide == Autonomous.Ownership.RIGHT;
+                ((startingPosition == Autonomous.StartingPosition.LEFT) && (switchSide == Autonomous.Ownership.LEFT)) ||
+                ((startingPosition == Autonomous.StartingPosition.RIGHT) && (switchSide == Autonomous.Ownership.RIGHT));
 
         if (sameSide) {
 
@@ -25,9 +25,11 @@ public class AutoSwitchDeploy extends CommandGroup {
             // Bring down Elevator
 
             addSequential(new CubeGripperApplyConstantVoltage());
-            addSequential(new DriveTimed(7));
+            addSequential(new DriveTimed(2));
             addSequential(new MoveElevatorPosition(Elevator.Position.SWITCH));
             addSequential(new TimedCommand(2));
+
+            addSequential(new DriveTimed(1));
 
             addSequential(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS));
             addSequential(new TimedCommand(1));
@@ -41,7 +43,7 @@ public class AutoSwitchDeploy extends CommandGroup {
 
             // Just Drive Forwards
 
-            addSequential(new DriveTimed(7));
+            addSequential(new DriveTimed(2));
 
         }
 

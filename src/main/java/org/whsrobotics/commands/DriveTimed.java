@@ -12,7 +12,7 @@ public class DriveTimed extends TimedCommand {
 
     @Override
     protected void execute() {
-        DriveTrain.controllerDrive(.5, 0);
+        DriveTrain.controllerDrive(.75, 0);
     }
 
     @Override
