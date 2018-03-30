@@ -21,15 +21,15 @@ import org.whsrobotics.triggers.ElevatorVelocityMode;
 import org.whsrobotics.utils.AutomationCanceler;
 import org.whsrobotics.utils.RobotLogger;
 
-import static org.whsrobotics.robot.RobotMap.BUTTONBOX_PORT;
-import static org.whsrobotics.robot.RobotMap.BUTTONBOX_PORT1;
-import static org.whsrobotics.robot.RobotMap.XBOX_PORT;
+import static org.whsrobotics.robot.RobotMap.*;
 
 public class OI {
 
     private static XboxController xboxController;
     private static Joystick buttonBox;
     private static Joystick buttonBox1;
+    private static Joystick flightStickLeft;
+    private static Joystick flightStickRight;
 
     private static SendableChooser<Autonomous.FieldTarget> fieldTargetChooser;
     private static SendableChooser<Autonomous.StartingPosition> startingPositionChooser;
@@ -43,6 +43,8 @@ public class OI {
         xboxController = new XboxController(XBOX_PORT);
         buttonBox = new Joystick(BUTTONBOX_PORT);
         buttonBox1 = new Joystick(BUTTONBOX_PORT1);
+        flightStickLeft = new Joystick(FLIGHTSTICK_LEFT);
+        flightStickRight = new Joystick(FLIGHTSTICK_RIGHT);
 
         // (new JoystickButton(xboxController, XboxButton.kB.value)).whenPressed(new DriveForward());  // TODO: Find Box
         // (new JoystickButton(xboxController, XboxButton.kY.value)).whenPressed(new DriveForward());  // TODO: Refl. Tape
@@ -254,6 +256,17 @@ public class OI {
         return 0;
 
     }
+
+    // ------------ FLIGHTSTICK METHODS ------------- //
+
+    public static Joystick getFlightStickLeft() {
+        return flightStickLeft;
+    }
+
+    public static Joystick getFlightStickRight() {
+        return flightStickRight;
+    }
+
 
     // ------------ AUTONOMOUS METHODS ------------- //
 

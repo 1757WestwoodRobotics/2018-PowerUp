@@ -15,6 +15,7 @@ import jaci.pathfinder.Waypoint;
 import jaci.pathfinder.followers.EncoderFollower;
 import jaci.pathfinder.modifiers.TankModifier;
 import org.whsrobotics.commands.DefaultDrive;
+import org.whsrobotics.commands.FlightStickDrive;
 import org.whsrobotics.robot.OI;
 import org.whsrobotics.robot.RobotMap;
 import org.whsrobotics.utils.RobotLogger;
@@ -117,7 +118,7 @@ public class DriveTrain extends Subsystem {
 
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new DefaultDrive());
+        setDefaultCommand(new FlightStickDrive());
     }
 
     @Override
@@ -135,11 +136,19 @@ public class DriveTrain extends Subsystem {
         differentialDrive.arcadeDrive(speed, rotation, squaredInputs);
     }
 
+    private static void driveTank(double leftSpeed, double rightSpeed, boolean squaredInputs) {
+        differentialDrive.tankDrive(leftSpeed, rightSpeed, squaredInputs);
+    }
+
     /**
      * Arcade drive with input curving, and xbox controller deadzone implementation
      */
     public static void controllerDrive(double speed, double rotation) {
         drive(OI.leftXboxJoystickCurve(speed), OI.rightXboxJoystickCurve(rotation), false);
+    }
+
+    public static void flightStickDrive(double leftSpeed, double rightSpeed) {
+        driveTank(leftSpeed, rightSpeed, true);
     }
 
     public static void setDriveTrainAccelLimit() {
