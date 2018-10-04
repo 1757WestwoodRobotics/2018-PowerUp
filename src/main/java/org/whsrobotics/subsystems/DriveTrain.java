@@ -118,7 +118,7 @@ public class DriveTrain extends Subsystem {
 
     @Override
     protected void initDefaultCommand() {
-        setDefaultCommand(new FlightStickDrive());
+        setDefaultCommand(new DefaultDrive());
     }
 
     @Override
