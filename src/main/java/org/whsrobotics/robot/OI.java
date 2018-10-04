@@ -93,15 +93,17 @@ public class OI {
         });
 
 
-        (new JoystickButton(xboxController, 8)).whenPressed(new CubeGripperApplyConstantVoltage());
+        (new JoystickButton(xboxController, 1)).whenPressed(new CubeGripperApplyConstantVoltage());
+
+        (new JoystickButton(xboxController, 2)).whenPressed(new MoveCubeGripper(CubeGripper.Position.ALMOST_FOLD));
 
         (new JoystickButton(xboxController, 4)).whenPressed(new MoveCubeGripper(CubeGripper.Position.OPEN_ARMS));
 
-        (new JoystickButton(xboxController, 1)).whileHeld(new SpinCubeSpinner(CubeSpinner.Mode.INWARDS));
-        (new JoystickButton(xboxController, 1)).whenReleased(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
+        (new JoystickButton(xboxController, 7)).whileHeld(new SpinCubeSpinner(CubeSpinner.Mode.INWARDS));
+        (new JoystickButton(xboxController, 7)).whenReleased(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
 
-        (new JoystickButton(xboxController, 2)).whileHeld(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS));
-        (new JoystickButton(xboxController, 2)).whenReleased(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
+        (new JoystickButton(xboxController, 8)).whileHeld(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS));
+        (new JoystickButton(xboxController, 8)).whenReleased(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
 
 
         // (new JoystickButton(buttonBox, 1)).whenPressed(new CGGrabCube());
