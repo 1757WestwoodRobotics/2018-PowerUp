@@ -97,6 +97,8 @@ public class OI {
 
         (new JoystickButton(xboxController, 2)).whenPressed(new MoveCubeGripper(CubeGripper.Position.ALMOST_FOLD));
 
+        (new JoystickButton(xboxController, 10)).whenPressed(new MoveCubeGripper(CubeGripper.Position.FOLD_BACK));
+
         (new JoystickButton(xboxController, 4)).whenPressed(new MoveCubeGripper(CubeGripper.Position.OPEN_ARMS));
 
         (new JoystickButton(xboxController, 7)).whileHeld(new SpinCubeSpinner(CubeSpinner.Mode.INWARDS));
@@ -104,6 +106,8 @@ public class OI {
 
         (new JoystickButton(xboxController, 8)).whileHeld(new SpinCubeSpinner(CubeSpinner.Mode.OUTWARDS));
         (new JoystickButton(xboxController, 8)).whenReleased(new SpinCubeSpinner(CubeSpinner.Mode.OFF));
+
+        (new JoystickButton(xboxController, 9)).whenPressed(CubeGripper.disableOutputCommand);
 
 
         // (new JoystickButton(buttonBox, 1)).whenPressed(new CGGrabCube());
